@@ -49,6 +49,10 @@ tempo di 30 secondi per la giocata, se non gioca viene buttato fuori (stessa cos
 CLASSE GIOCO:
 contine il Mazzo, la GestioneGiocatori e la GestioneScarti
 
+ogni Utente ha la variaible isTurno 
+    - true turno mio
+    - false turno di qualcun altro
+
 quando il mazzo finisce, si mescolano gli scarti e diventano il nuovo mazzo
 
 se rimane un solo giocatore (gli altri abbandonano) finisce la partita e vince per abbandono

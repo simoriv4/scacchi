@@ -24,6 +24,8 @@ comandi client --> server:
                                                                                                             OPPURE
                                                                                                          --> 201 con username di chi ha vinto
                 - sbagliata --> 400 con le 2 carte pescate dall'utente
+    appena si controlla ed è corretto, isUno ritorna false            
+
 
     - exit --> giocatore esce dalla partita
            --> server lo toglie dalla lista dei giocatori
@@ -51,4 +53,5 @@ quando il mazzo finisce, si mescolano gli scarti e diventano il nuovo mazzo
 
 se rimane un solo giocatore (gli altri abbandonano) finisce la partita e vince per abbandono
 
-se un giocatore rimane senza carte 
+se un giocatore rimane senza carte vince il match ( invia al server skip, isUno (false) 0 carte ) --> il server gli mette isVinto = true
+    il server elimina i giocatori che hanno perso e li fa disconnettere mettendo a tutti gli utenti isVinto = false 

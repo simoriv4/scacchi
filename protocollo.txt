@@ -1,0 +1,54 @@
+comando, username e messaggio mandati in xml
+
+messaggio:
+    - carta singola (controllata dal server)
+
+es:
+    - gioca, username e messaggio vuoto
+    - mossa, username e messaggio con carte giocate
+
+
+il primo client gioca una carta alla volta (che viene controllata dal server e ritorna un errore se sbagliato) e può dire "passa il turno" tramite un bottone
+
+comandi client --> server:
+    - start --> mandato dal client con il proprio username per iniziare la partita
+                - corretta --> 200
+                - sbagliata --> 400 con messaggio (manca nome o nome uguale a un'altro, .......)
+
+    - play --> giocata carta da parte del client, server la controlla
+                - corretta --> 200
+                - sbagliata --> 406 con feedback delle carte possibili da giocare 
+
+    - skip, uno ( segnala che è rimasto a una carta (isUno) ) numero di carte --> salta il turno (non ha carte da giocare o non ne vuole più giocare)
+                - corretta ( quando è a una carta e segnala uno o quando ha più carte e non lo segnala ) --> 200 con username prossimo giocatore
+                                                                                                            OPPURE
+                                                                                                         --> 201 con username di chi ha vinto
+                - sbagliata --> 400 con le 2 carte pescate dall'utente
+
+    - exit --> giocatore esce dalla partita
+           --> server lo toglie dalla lista dei giocatori
+                - corretta --> 200
+                - sbagliata --> 400 con messaggio (......)
+
+comandi client:
+    - uno --> solo sul client; il client segnala che è rimasto con una carta 
+          --> si modifica la booleana (isUno) del client che verrà poi manda con il comando skip (vedi sopra)
+
+    - menù --> apre tendina con opzioni
+                - esci dalla partita --> server lo toglie dalla lista dei giocatori (exit) e le carte vanno nella lista delle carte scartate
+                - help --> visualizza regole del gioco 
+
+
+DA FARE SE C'E' TEMPO
+tempo di 30 secondi per la giocata, se non gioca viene buttato fuori (stessa cosa del "esci dalla partita")
+
+
+
+CLASSE GIOCO:
+contine il Mazzo, la GestioneGiocatori e la GestioneScarti
+
+quando il mazzo finisce, si mescolano gli scarti e diventano il nuovo mazzo
+
+se rimane un solo giocatore (gli altri abbandonano) finisce la partita e vince per abbandono
+
+se un giocatore rimane senza carte 

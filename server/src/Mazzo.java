@@ -46,7 +46,7 @@ public class Mazzo <E extends Carta>  //<E extends Carta> --> indica che la clas
     public List<Carta> mazzo;
 
     /**
-     * costruttore parametrico del Mazzo
+     * costruttore non parametrico del Mazzo
      * 
      * crea il Mazzo generico
      */
@@ -57,6 +57,32 @@ public class Mazzo <E extends Carta>  //<E extends Carta> --> indica che la clas
 
         //riempio il mazzo con le carte
         riempiMazzo();
+    }
+
+    /** 
+     * metodo per sapere quante carte rimangono nel Mazzo
+     * 
+     * @return int con numero di carte rimaste nel Mazzo
+    */
+    public int getSizeMazzo()
+    {
+        return mazzo.size();
+    }
+
+    /**
+     * metodo per ripopolare il mazzo vuoto con le carte nel mazzo degli scarti
+     * 
+     * @param mazzoScarti nuovo mazzo da mescolare e usare
+     */
+    public void ripopolaMazzo(List<Carta> mazzoScarti)
+    {
+        /*
+         * richiamato solo quando non ci sono più carte quindi mazzo.size() = 0 --> già controllato nel metodo che richiama questo metodo
+         *
+         * metto le carte degli scarti tranne l'ultima che rimane sul tavolo
+        */
+        
+        //.............
     }
 
     /**

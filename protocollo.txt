@@ -59,3 +59,8 @@ se rimane un solo giocatore (gli altri abbandonano) finisce la partita e vince p
 
 se un giocatore rimane senza carte vince il match ( invia al server skip, isUno (false) 0 carte ) --> il server gli mette isVinto = true
     il server elimina i giocatori che hanno perso e li fa disconnettere mettendo a tutti gli utenti isVinto = false 
+
+
+
+l'utente nel client ha una booleana(turno)
+il server scorre la lista degli utenti e invia all'utente quando è il suo turno --> il client rimane sempre in ascolto quando non è il suo turno( turno = false)

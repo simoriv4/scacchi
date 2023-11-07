@@ -8,7 +8,7 @@ import org.w3c.dom.NodeList;
 public class Server {
     // classe che contiene le informazioni del server--> caricate dal file xml
     // costante nome file
-    final String fileName = "configServer.xml";
+    final static String fileName = "configServer.xml";
     // informazioni server
     String IP;
     Integer port;
@@ -42,7 +42,7 @@ public class Server {
             DocumentBuilder builder = factory.newDocumentBuilder();
 
             // Parsa il file XML e restituisce un oggetto Document
-            Document document = builder.parse(this.fileName);
+            Document document = builder.parse(fileName);
 
             // Ottieni l'elemento radice
             Element root = document.getDocumentElement();

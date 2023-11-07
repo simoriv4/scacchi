@@ -8,11 +8,12 @@ public class GUI extends JFrame {
 
     public GUI() {
         setTitle("Uno Client");
+        // creo la finestra con le dimensioni specificate
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        messageLabel = new JLabel("Benvenuto a Uno!\n Inserisci il nome utente");
+        messageLabel = new JLabel("Benvenuto a Uno! Inserisci il nome utente");
         add(messageLabel, BorderLayout.NORTH);
 
         JPanel inputPanel = new JPanel();
@@ -24,8 +25,9 @@ public class GUI extends JFrame {
         add(inputPanel, BorderLayout.CENTER);
 
         playButton.addActionListener(e -> {
-            String inputText = inputField.getText();
-            messageLabel.setText("Hai inserito: " + inputText);
+            String username = inputField.getText();
+            // invio al server la richiesta di giocare--> passo il nome utente inserito
+            //messageLabel.setText("Hai inserito: " + inputText);
             inputField.setText("");
         });
     }

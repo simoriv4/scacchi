@@ -1,6 +1,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -8,60 +9,48 @@ public class GUI extends JFrame {
     private JLabel messageLabel;
     private JTextField inputField;
     private JButton playButton;
+    private BufferedImage immagineSfondo;
+    private JPanel panel = new JPanel(); // pannello per il contenuto
 
-    public GUI() {
+    public GUI() throws IOException {
         setTitle("Uno Client");
-        // creo la finestra con le dimensioni specificate
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        
+        immagineSfondo = ImageIO.read(new File("client2/img/wallpaper.jpg"));
+        panel = initWallpaperPanel();
+        panel.setLayout(new BorderLayout());
 
         messageLabel = new JLabel("Benvenuto a Uno! Inserisci il nome utente");
-        add(messageLabel, BorderLayout.NORTH);
-        
-        setWallpaper();
+        panel.add(messageLabel, BorderLayout.NORTH);
 
-        JPanel inputPanel = new JPanel();
         inputField = new JTextField(20);
         playButton = new JButton("Gioca");
+
+        // Crea un pannello per il campo di input e il pulsante
+        JPanel inputPanel = new JPanel();
         inputPanel.add(inputField);
         inputPanel.add(playButton);
 
-        add(inputPanel, BorderLayout.CENTER);
+        panel.add(inputPanel, BorderLayout.CENTER);
 
-        playButton.addActionListener(e -> {
-            String username = inputField.getText();
-            // invio al server la richiesta di giocare--> passo il nome utente inserito
-            //messageLabel.setText("Hai inserito: " + inputText);
-            inputField.setText("");
-        });
+        add(panel);
+        setVisible(true);
     }
-    /**
-     * setta lo sfondo della finsetra
-     */
-    private void setWallpaper() {
-        JFrame frame = new JFrame("Sfondo con immagine");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
 
-        // Crea un JLabel per contenere l'immagine di sfondo
-        JLabel background = new JLabel();
+    private JPanel initWallpaperPanel() {
+        return new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.fillRect(0, 0, getWidth(), getHeight());
+                disegnaSfondo(g);
+            }
+        };
+    }
 
-        // Carica l'immagine da un file
-        try {
-            ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File("sfondo.jpg"))); // Sostituisci con il percorso dell'immagine
-            background.setIcon(imageIcon);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Imposta il layout del frame su null in modo da poter posizionare il JLabel come sfondo
-        frame.setLayout(null);
-
-        // Imposta le dimensioni del JLabel per coprire l'intero frame
-        background.setBounds(0, 0, frame.getWidth(), frame.getHeight());
-
-        // Aggiungi il JLabel al frame
-        frame.add(background);
+    private void disegnaSfondo(Graphics g) {
+        if (immagineSfondo != null)
+            g.drawImage(immagineSfondo, 0, 0, getWidth(), getHeight(), this);
     }
 }

@@ -8,7 +8,7 @@ import org.w3c.dom.NodeList;
 public class Server {
     // classe che contiene le informazioni del server--> caricate dal file xml
     // costante nome file
-    final static String fileName = "configServer.xml";
+    final static String fileName = "client2\\configServer.xml";
     // informazioni server
     String IP;
     Integer port;

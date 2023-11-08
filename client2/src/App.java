@@ -7,9 +7,9 @@ public class App {
         // carico le info del server(ip e port)
        // Server s = new Server();
         SwingUtilities.invokeLater(() -> {
-            GUI gui;
+            homepage gui;
             try {
-                gui = new GUI();
+                gui = new homepage();
                 //gui.setVisible(true);
             } catch (IOException e) {
                 // TODO Auto-generated catch block

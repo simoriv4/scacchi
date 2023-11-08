@@ -6,51 +6,42 @@ import java.io.File;
 import java.io.IOException;
 
 public class GUI extends JFrame {
-    private JLabel messageLabel;
+    private BufferedImage backgroundImage;
     private JTextField inputField;
     private JButton playButton;
-    private BufferedImage immagineSfondo;
-    private JPanel panel = new JPanel(); // pannello per il contenuto
 
     public GUI() throws IOException {
         setTitle("Uno Client");
-        setSize(800, 600);
+        setSize(1050, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        immagineSfondo = ImageIO.read(new File("client2/img/wallpaper.jpg"));
-        panel = initWallpaperPanel();
-        panel.setLayout(new BorderLayout());
 
-        messageLabel = new JLabel("Benvenuto a Uno! Inserisci il nome utente");
-        panel.add(messageLabel, BorderLayout.NORTH);
+        backgroundImage = ImageIO.read(new File("client2/img/wallpaper2.jpg"));
+
+        // creo un pannello personalizzato per sovrapporre i componenti
+        JPanel overlayPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // disegno l'immagine di sfondo
+                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+
+        // imposto il layout manager su null per posizionare manualmente i componenti
+        overlayPanel.setLayout(null);
 
         inputField = new JTextField(20);
         playButton = new JButton("Gioca");
 
-        // Crea un pannello per il campo di input e il pulsante
-        JPanel inputPanel = new JPanel();
-        inputPanel.add(inputField);
-        inputPanel.add(playButton);
+        // imposto le posizioni e le dimensioni dei componenti manualmente
+        inputField.setBounds(100, 100, 200, 30);
+        playButton.setBounds(100, 150, 100, 30);
 
-        panel.add(inputPanel, BorderLayout.CENTER);
+        // aggiungo i componenti al pannello di sovrapposizione
+        overlayPanel.add(inputField);
+        overlayPanel.add(playButton);
 
-        add(panel);
+        add(overlayPanel);
         setVisible(true);
-    }
-
-    private JPanel initWallpaperPanel() {
-        return new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.fillRect(0, 0, getWidth(), getHeight());
-                disegnaSfondo(g);
-            }
-        };
-    }
-
-    private void disegnaSfondo(Graphics g) {
-        if (immagineSfondo != null)
-            g.drawImage(immagineSfondo, 0, 0, getWidth(), getHeight(), this);
     }
 }

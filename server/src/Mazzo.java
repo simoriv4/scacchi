@@ -2,9 +2,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 /**
- * classe genertica di tipo Carta (<E extends Carta>) che contiene tutte le carte presenti in una partita
+ * classe genertica di tipo Card (<E extends Card>) che contiene tutte le carte presenti in una partita
  */
-public class Mazzo <E extends Carta>  //<E extends Carta> --> indica che la classe è generica di tipo Carta
+public class Mazzo <E extends Card>  //<E extends Card> --> indica che la classe è generica di tipo Card
 {
     /*
      * COSTANTI
@@ -43,7 +43,7 @@ public class Mazzo <E extends Carta>  //<E extends Carta> --> indica che la clas
     private final static int NUMERO_CARTE_CAMBIA_COLORE = 4;
 
     //attributi della classe Mazzo
-    public List<Carta> mazzo;
+    public List<Card> mazzo;
 
     /**
      * costruttore non parametrico del Mazzo
@@ -53,7 +53,7 @@ public class Mazzo <E extends Carta>  //<E extends Carta> --> indica che la clas
     public Mazzo()
     {
         //creo il Mazzo generico
-        mazzo = new ArrayList<Carta>();
+        mazzo = new ArrayList<Card>();
 
         //riempio il mazzo con le carte
         riempiMazzo();
@@ -74,7 +74,7 @@ public class Mazzo <E extends Carta>  //<E extends Carta> --> indica che la clas
      * 
      * @param mazzoScarti nuovo mazzo da mescolare e usare
      */
-    public void ripopolaMazzo(List<Carta> mazzoScarti)
+    public void ripopolaMazzo(List<Card> mazzoScarti)
     {
         /*
          * richiamato solo quando non ci sono più carte quindi mazzo.size() = 0 --> già controllato nel metodo che richiama questo metodo
@@ -135,90 +135,90 @@ public class Mazzo <E extends Carta>  //<E extends Carta> --> indica che la clas
         //carte rosse
         for(int i = 0; i < NUMERO_CARTE_NUMERATE; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaNumerata();
+            //creo una CardNumber
+            Card Card = new CardNumber();
 
-            //metto il colore rosso alla carta
-            carta.setColore("rosso");
+            //metto il colore rosso alla Card
+            Card.setColor("rosso");
 
             //se i >= 10 
             if(i >= 10)
             {
                 //aggiungo i-9 così da inserire al posto di 10 1, al posto di 11 2, e così via
-                carta.setNumero(i - 9);
+                Card.setNumber(i - 9);
             }
             else    //i < 10 (da 0 1 9)
-                carta.setNumero(i);   //aggiugno da 0 a 9
+                Card.setNumber(i);   //aggiugno da 0 a 9
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
 
 
         //carte verdi
         for(int i = 0; i < NUMERO_CARTE_NUMERATE; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaNumerata();
+            //creo una CardNumber
+            Card Card = new CardNumber();
 
-            //metto il colore verde alla carta
-            carta.setColore("verde");
+            //metto il colore verde alla Card
+            Card.setColor("verde");
 
             //se i >= 10 
             if(i >= 10)
             {
                 //aggiungo i-9 così da inserire al posto di 10 1, al posto di 11 2, e così via
-                carta.setNumero(i - 9);
+                Card.setNumber(i - 9);
             }
             else    //i < 10 (da 0 1 9)
-                carta.setNumero(i);   //aggiugno da 0 a 9
+                Card.setNumber(i);   //aggiugno da 0 a 9
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
 
         //carte gialle
         for(int i = 0; i < NUMERO_CARTE_NUMERATE; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaNumerata();
+            //creo una CardNumber
+            Card Card = new CardNumber();
 
-            //metto il colore giallo alla carta
-            carta.setColore("giallo");
+            //metto il colore giallo alla Card
+            Card.setColor("giallo");
 
             //se i >= 10 
             if(i >= 10)
             {
                 //aggiungo i-9 così da inserire al posto di 10 1, al posto di 11 2, e così via
-                carta.setNumero(i - 9);
+                Card.setNumber(i - 9);
             }
             else    //i < 10 (da 0 1 9)
-                carta.setNumero(i);   //aggiugno da 0 a 9
+                Card.setNumber(i);   //aggiugno da 0 a 9
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
 
         //carte blu
         for(int i = 0; i < NUMERO_CARTE_NUMERATE; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaNumerata();
+            //creo una CardNumber
+            Card Card = new CardNumber();
 
-            //metto il colore blu alla carta
-            carta.setColore("blu");
+            //metto il colore blu alla Card
+            Card.setColor("blu");
 
             //se i >= 10 
             if(i >= 10)
             {
                 //aggiungo i-9 così da inserire al posto di 10 1, al posto di 11 2, e così via
-                carta.setNumero(i - 9);
+                Card.setNumber(i - 9);
             }
             else    //i < 10 (da 0 1 9)
-                carta.setNumero(i);   //aggiugno da 0 a 9
+                Card.setNumber(i);   //aggiugno da 0 a 9
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
     }
 
@@ -237,54 +237,54 @@ public class Mazzo <E extends Carta>  //<E extends Carta> --> indica che la clas
         //carte rosse
         for(int i = 0; i < NUMERO_CARTE_CAMBIA_GIRO; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaCambiaGiro();
+            //creo una CardNumber
+            Card Card = new CardChangeTurn();
 
-            //metto il colore rosso alla carta
-            carta.setColore("rosso");
+            //metto il colore rosso alla Card
+            Card.setColor("rosso");
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
 
 
         //carte verdi
         for(int i = 0; i < NUMERO_CARTE_CAMBIA_GIRO; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaCambiaGiro();
+            //creo una CardNumber
+            Card Card = new CardChangeTurn();
 
-            //metto il colore verde alla carta
-            carta.setColore("verde");
+            //metto il colore verde alla Card
+            Card.setColor("verde");
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
 
         //carte gialle
         for(int i = 0; i < NUMERO_CARTE_CAMBIA_GIRO; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaCambiaGiro();
+            //creo una CardNumber
+            Card Card = new CardChangeTurn();
 
-            //metto il colore giallo alla carta
-            carta.setColore("giallo");
+            //metto il colore giallo alla Card
+            Card.setColor("giallo");
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
 
         //carte blu
         for(int i = 0; i < NUMERO_CARTE_CAMBIA_GIRO; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaCambiaGiro();
+            //creo una CardNumber
+            Card Card = new CardChangeTurn();
 
-            //metto il colore blu alla carta
-            carta.setColore("blu");
+            //metto il colore blu alla Card
+            Card.setColor("blu");
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
     }
 
@@ -299,14 +299,14 @@ public class Mazzo <E extends Carta>  //<E extends Carta> --> indica che la clas
 
         for(int i = 0; i < NUMERO_CARTE_CAMBIA_COLORE; i++)
         {
-            //creo una CartaCambiaColore
-            Carta carta = new CartaCambiaColore();
+            //creo una CardChangeColor
+            Card Card = new CardChangeColor();
 
-            //metto il colore rosso alla carta
-            carta.setColore("rosso");
+            //metto il colore rosso alla Card
+            Card.setColor("rosso");
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
     }
 
@@ -325,54 +325,54 @@ public class Mazzo <E extends Carta>  //<E extends Carta> --> indica che la clas
         //carte rosse
         for(int i = 0; i < NUMERO_CARTE_BLOCCA; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaBlocca();
+            //creo una CardNumber
+            Card Card = new CardBlock();
 
-            //metto il colore rosso alla carta
-            carta.setColore("rosso");
+            //metto il colore rosso alla Card
+            Card.setColor("rosso");
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
 
 
         //carte verdi
         for(int i = 0; i < NUMERO_CARTE_BLOCCA; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaBlocca();
+            //creo una CardNumber
+            Card Card = new CardBlock();
 
-            //metto il colore verde alla carta
-            carta.setColore("verde");
+            //metto il colore verde alla Card
+            Card.setColor("verde");
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
 
         //carte gialle
         for(int i = 0; i < NUMERO_CARTE_BLOCCA; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaBlocca();
+            //creo una CardNumber
+            Card Card = new CardBlock();
 
-            //metto il colore giallo alla carta
-            carta.setColore("giallo");
+            //metto il colore giallo alla Card
+            Card.setColor("giallo");
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
 
         //carte blu
         for(int i = 0; i < NUMERO_CARTE_BLOCCA; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaBlocca();
+            //creo una CardNumber
+            Card Card = new CardBlock();
 
-            //metto il colore blu alla carta
-            carta.setColore("blu");
+            //metto il colore blu alla Card
+            Card.setColor("blu");
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
     }
 
@@ -391,54 +391,54 @@ public class Mazzo <E extends Carta>  //<E extends Carta> --> indica che la clas
         //carte rosse
         for(int i = 0; i < NUMERO_CARTE_AGGIUNGI_2_CARTE; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaAggiungi2Carte();
+            //creo una CardNumber
+            Card Card = new CardAdd2Cards();
 
-            //metto il colore rosso alla carta
-            carta.setColore("rosso");
+            //metto il colore rosso alla Card
+            Card.setColor("rosso");
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
 
 
         //carte verdi
         for(int i = 0; i < NUMERO_CARTE_AGGIUNGI_2_CARTE; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaAggiungi2Carte();
+            //creo una CardNumber
+            Card Card = new CardAdd2Cards();
 
-            //metto il colore verde alla carta
-            carta.setColore("verde");
+            //metto il colore verde alla Card
+            Card.setColor("verde");
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
 
         //carte gialle
         for(int i = 0; i < NUMERO_CARTE_AGGIUNGI_2_CARTE; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaAggiungi2Carte();
+            //creo una CardNumber
+            Card Card = new CardAdd2Cards();
 
-            //metto il colore giallo alla carta
-            carta.setColore("giallo");
+            //metto il colore giallo alla Card
+            Card.setColor("giallo");
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
 
         //carte blu
         for(int i = 0; i < NUMERO_CARTE_AGGIUNGI_2_CARTE; i++)
         {
-            //creo una CartaNumerata
-            Carta carta = new CartaAggiungi2Carte();
+            //creo una CardNumber
+            Card Card = new CardAdd2Cards();
 
-            //metto il colore blu alla carta
-            carta.setColore("blu");
+            //metto il colore blu alla Card
+            Card.setColor("blu");
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
     }
 
@@ -453,14 +453,14 @@ public class Mazzo <E extends Carta>  //<E extends Carta> --> indica che la clas
 
         for(int i = 0; i < NUMERO_CARTE_AGGIUNGI_4_CARTE; i++)
         {
-            //creo una CartaCambiaColore
-            Carta carta = new CartaAggiungi4Carte();
+            //creo una CardChangeColor
+            Card Card = new CardAdd4Cards();
 
-            //metto il colore rosso alla carta
-            carta.setColore("rosso");
+            //metto il colore rosso alla Card
+            Card.setColor("rosso");
 
-            //aggiungo la carta al mazzo
-            mazzo.add(carta);
+            //aggiungo la Card al mazzo
+            mazzo.add(Card);
         }
     }
 }

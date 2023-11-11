@@ -12,6 +12,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -32,6 +33,9 @@ public class homepage extends JFrame {
     private final String IP_ATTRIBUTE = "IP";
     private final String PORT_ATTRIBUTE = "port";
 
+    private final String XML_PATH = rootName + "/configServer.xml";
+
+
     // dati server
     private String IP;
     private Integer port;
@@ -48,8 +52,9 @@ public class homepage extends JFrame {
     private BufferedReader inStream;
     private PrintWriter outStream;
 
-    public homepage() throws IOException {
+    public homepage() throws IOException, ParserConfigurationException, SAXException {
         this.isListening = false;
+        this.initServerInfo(XML_PATH);
         this.playMusic();
         setTitle("Uno Client");
 
@@ -170,12 +175,12 @@ public class homepage extends JFrame {
         }
     }
 
-    public void initServerInfo(String fileName) throws ParserConfigurationException {
+    public void initServerInfo(String fileName) throws ParserConfigurationException, SAXException, IOException {
         // leggo dal file xml le informazioni del server e le salvo
         // istanzio il documento per creare l'oggetto XML
         DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
         DocumentBuilder b = f.newDocumentBuilder();
-        Document d = b.newDocument();
+        Document d = b.parse(fileName);
 
         Element root = d.getDocumentElement();
 

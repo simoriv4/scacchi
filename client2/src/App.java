@@ -1,6 +1,9 @@
 import java.io.IOException;
 
 import javax.swing.SwingUtilities;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 public class App {
     public static void main(String[] args) {
@@ -11,7 +14,7 @@ public class App {
             try {
                 gui = new homepage();
                 //gui.setVisible(true);
-            } catch (IOException e) {
+            } catch (IOException | ParserConfigurationException | SAXException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }

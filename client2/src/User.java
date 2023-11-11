@@ -1,4 +1,4 @@
-public class Utente {
+public class User {
     Boolean turno;
     Boolean vinto;
     String userName;
@@ -8,7 +8,7 @@ public class Utente {
      * @param vinto
      * @param userName
      */
-    public Utente(Boolean turno, Boolean vinto, String userName) {
+    public User(Boolean turno, Boolean vinto, String userName) {
         this.turno = turno;
         this.vinto = vinto;
         this.userName = userName;
@@ -16,7 +16,7 @@ public class Utente {
     /**
      * costruttore non parametrico
      */
-    public Utente() {
+    public User() {
         this.turno = false;
         this.vinto = false;
         this.userName = "userName";

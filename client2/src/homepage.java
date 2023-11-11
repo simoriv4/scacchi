@@ -3,20 +3,53 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class homepage extends JFrame {
+    private final String rootName = "client2";
+    // lista comandi
+    private final String start = "start";
+
+    // nomi elementi del file XML con i dati del server
+    private final String IP_ATTRIBUTE = "IP";
+    private final String PORT_ATTRIBUTE = "port";
+
+    // dati server
+    private String IP;
+    private Integer port;
+
     private BufferedImage backgroundImage;
     private JTextField username;
     private JButton playButton;
     private JLabel messageLabel;
     private JLabel imageLabel;
-    private final String rootName = "client2";
+    private Message message;
+    private Boolean isListening;
+
+    // Streams
+    private BufferedReader inStream;
+    private PrintWriter outStream;
 
     public homepage() throws IOException {
+        this.isListening = false;
         this.playMusic();
         setTitle("Uno Client");
 
@@ -49,7 +82,7 @@ public class homepage extends JFrame {
 
         this.username = new JTextField(20);
         this.playButton = new JButton("Gioca");
-        this.messageLabel= new JLabel("Inserisci il nome con il quale vuoi giocare:");
+        this.messageLabel = new JLabel("Inserisci il nome con il quale vuoi giocare:");
 
         // creo l'oggetto font che mi serve per impostare il font
         Font font = new Font("Bauhaus 93", Font.BOLD, 16);
@@ -60,7 +93,6 @@ public class homepage extends JFrame {
         // imposto il colore della label
         this.messageLabel.setForeground(Color.WHITE);
         this.messageLabel.setFont(font);
-
 
         // aggiungo i componenti al pannello di sovrapposizione
         overlayPanel.add(imageLabel);
@@ -73,41 +105,59 @@ public class homepage extends JFrame {
 
         // funzione che verifica quando viene premuto il pulsante
         playButton.addActionListener(e -> {
-            String inputText = username.getText();
+            if (!username.getText().isEmpty()) {
+                // quando premo il pulsante GIOCA mando una richiesta al server di aggiungere il
+                // client ad una nuova partita-->se non ci sono altri client rimane in attesa
+                // setto il messaggio da inviare
+                message = new Message(start, username.getText(), "");
+                // invio il messaggio al server
+                try {
+                    sendMessage(message);
+                } catch (ParserConfigurationException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                } catch (TransformerException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                // aspetto la risposta
+                //this.isListening = true;
+                String risposta = listening();
+                username.setText("");
+            } else {
+                JOptionPane.showMessageDialog(this, "Inserisci un nome utente", "Errore", JOptionPane.ERROR_MESSAGE);
+            }
 
-            username.setText("");
         });
+    }
+
+    private String listening() {
+        return null;
     }
 
     /**
      * setto la posizione degli elementi nella finestra
+     * 
      * @param screenWidth
      * @param screenHeight
      */
-    public void setPositions(int screenWidth, int screenHeight)
-    {
+    public void setPositions(int screenWidth, int screenHeight) {
         this.imageLabel.setBounds((int) (screenWidth * 0.1), (int) (screenHeight * 0.1), 600, 50);
-        this.messageLabel.setBounds(20,(int) (screenHeight * 0.2), 600, 30);
+        this.messageLabel.setBounds(20, (int) (screenHeight * 0.2), 600, 30);
         this.username.setBounds((int) (screenWidth * 0.30), (int) (screenHeight * 0.2), 200, 40);
         this.playButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.2), 100, 30);
-    }
-
-    public void setFontLabel()
-    {
-
     }
 
     /**
      * funzione che permette l'avvio del file audio di sottofondo
      */
-    public void playMusic()
-    {
+    public void playMusic() {
         try {
             // Crea un oggetto Clip per riprodurre il file audio
             Clip clip = AudioSystem.getClip();
 
             // Apri il file audio
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(rootName +"/audio/UNO_track.wav"));
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(rootName + "/audio/UNO_track.wav"));
             clip.open(audioStream);
 
             // Riproduci la musica in loop
@@ -117,6 +167,53 @@ public class homepage extends JFrame {
             clip.start();
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public void initServerInfo(String fileName) throws ParserConfigurationException {
+        // leggo dal file xml le informazioni del server e le salvo
+        // istanzio il documento per creare l'oggetto XML
+        DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
+        DocumentBuilder b = f.newDocumentBuilder();
+        Document d = b.newDocument();
+
+        Element root = d.getDocumentElement();
+
+        // salvo le informazioni relative al server
+        this.IP = getValue(root, IP_ATTRIBUTE);
+        this.port = Integer.parseInt(getValue(root, PORT_ATTRIBUTE));
+    }
+
+    private String getValue(Element e, String attribute) {
+        NodeList nodeList = e.getElementsByTagName(attribute);
+        Node node = nodeList.item(0);
+        return node.getTextContent();
+    }
+
+    /**
+     * funzione che invia al server un messaggio
+     * @param message
+     * @throws TransformerException
+     * @throws ParserConfigurationException
+     */
+    public void sendMessage(Message message) throws ParserConfigurationException, TransformerException {
+        try {
+            // creo una connessione TCP con il server
+            Socket socket = new Socket(this.IP, this.port);
+
+            OutputStream outputStream = socket.getOutputStream();
+
+            // creo un oggetto OutputStreamWriter per inviare dati al server
+            OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+
+            // invio il messaggio al server
+            writer.write(message.serialize());
+            writer.flush(); // scrivo e svuoto il buffer
+
+            // chiduo la connessione
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

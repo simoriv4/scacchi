@@ -10,9 +10,9 @@ public class App {
         // carico le info del server(ip e port)
        // Server s = new Server();
         SwingUtilities.invokeLater(() -> {
-            homepage gui;
+            homepage homepage;
             try {
-                gui = new homepage();
+                homepage = new homepage();
                 //gui.setVisible(true);
             } catch (IOException | ParserConfigurationException | SAXException e) {
                 // TODO Auto-generated catch block

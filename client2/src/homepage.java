@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class homepage extends JFrame {
     private BufferedImage backgroundImage;
-    private JTextField inputField;
+    private JTextField username;
     private JButton playButton;
     private JLabel messageLabel;
     private JLabel imageLabel;
@@ -47,7 +47,7 @@ public class homepage extends JFrame {
         // imposto il layout manager su null per posizionare manualmente i componenti
         overlayPanel.setLayout(null);
 
-        this.inputField = new JTextField(20);
+        this.username = new JTextField(20);
         this.playButton = new JButton("Gioca");
         this.messageLabel= new JLabel("Inserisci il nome con il quale vuoi giocare:");
 
@@ -65,7 +65,7 @@ public class homepage extends JFrame {
         // aggiungo i componenti al pannello di sovrapposizione
         overlayPanel.add(imageLabel);
         overlayPanel.add(messageLabel);
-        overlayPanel.add(inputField);
+        overlayPanel.add(username);
         overlayPanel.add(playButton);
 
         add(overlayPanel);
@@ -73,9 +73,9 @@ public class homepage extends JFrame {
 
         // funzione che verifica quando viene premuto il pulsante
         playButton.addActionListener(e -> {
-            String inputText = inputField.getText();
-            messageLabel.setText("Hai inserito: " + inputText);
-            inputField.setText("");
+            String inputText = username.getText();
+
+            username.setText("");
         });
     }
 
@@ -88,7 +88,7 @@ public class homepage extends JFrame {
     {
         this.imageLabel.setBounds((int) (screenWidth * 0.1), (int) (screenHeight * 0.1), 600, 50);
         this.messageLabel.setBounds(20,(int) (screenHeight * 0.2), 600, 30);
-        this.inputField.setBounds((int) (screenWidth * 0.30), (int) (screenHeight * 0.2), 200, 40);
+        this.username.setBounds((int) (screenWidth * 0.30), (int) (screenHeight * 0.2), 200, 40);
         this.playButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.2), 100, 30);
     }
 

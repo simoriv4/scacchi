@@ -29,17 +29,6 @@ public class homepage extends JFrame {
     // lista comandi
     private final String start = "start";
 
-    // nomi elementi del file XML con i dati del server
-    private final String IP_ATTRIBUTE = "IP";
-    private final String PORT_ATTRIBUTE = "port";
-
-    private final String XML_PATH = rootName + "/configServer.xml";
-
-
-    // dati server
-    private String IP;
-    private Integer port;
-
     private BufferedImage backgroundImage;
     private JTextField username;
     private JButton playButton;
@@ -48,13 +37,18 @@ public class homepage extends JFrame {
     private Message message;
     private Boolean isListening;
 
+    private Server server;
+
     // Streams
     private BufferedReader inStream;
     private PrintWriter outStream;
 
     public homepage() throws IOException, ParserConfigurationException, SAXException {
-        this.isListening = false;
-        this.initServerInfo(XML_PATH);
+        // this.isListening = false;
+
+        // ininzializzo le informazioni del server
+        this.server = new Server();
+    
         this.playMusic();
         setTitle("Uno Client");
 
@@ -175,26 +169,6 @@ public class homepage extends JFrame {
         }
     }
 
-    public void initServerInfo(String fileName) throws ParserConfigurationException, SAXException, IOException {
-        // leggo dal file xml le informazioni del server e le salvo
-        // istanzio il documento per creare l'oggetto XML
-        DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
-        DocumentBuilder b = f.newDocumentBuilder();
-        Document d = b.parse(fileName);
-
-        Element root = d.getDocumentElement();
-
-        // salvo le informazioni relative al server
-        this.IP = getValue(root, IP_ATTRIBUTE);
-        this.port = Integer.parseInt(getValue(root, PORT_ATTRIBUTE));
-    }
-
-    private String getValue(Element e, String attribute) {
-        NodeList nodeList = e.getElementsByTagName(attribute);
-        Node node = nodeList.item(0);
-        return node.getTextContent();
-    }
-
     /**
      * funzione che invia al server un messaggio
      * @param message
@@ -204,7 +178,7 @@ public class homepage extends JFrame {
     public void sendMessage(Message message) throws ParserConfigurationException, TransformerException {
         try {
             // creo una connessione TCP con il server
-            Socket socket = new Socket(this.IP, this.port);
+            Socket socket = new Socket(this.server.IP, this.server.port);
 
             OutputStream outputStream = socket.getOutputStream();
 

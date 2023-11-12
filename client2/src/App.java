@@ -5,7 +5,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
-public class App {
+public class App {  
     public static void main(String[] args) {
         // carico le info del server(ip e port)
        // Server s = new Server();

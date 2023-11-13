@@ -3,15 +3,9 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.awt.*;
@@ -19,10 +13,12 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class homepage extends JFrame {
     private final String rootName = "client2";
@@ -30,15 +26,14 @@ public class homepage extends JFrame {
     private final String start = "start";
 
     // messaggi di risposta
-    private final String CORRECT = "200";
-    private final String ERROR_USERNAME = "400";
-    private final String ERROR_CARD_PALYED = "406";
-    private final String WINNER = "201";
-    private final String ERROR_SKIP = "409";
-    private final String ERROR_EXIT = "500";
+    private final static String CORRECT = "200";
+    private final static String ERROR_USERNAME = "400";
+    private final static String ERROR_CARD_PALYED = "406";
+    private final static String WINNER = "201";
+    private final static String ERROR_SKIP = "409";
+    private final static String ERROR_EXIT = "500";
 
-
-
+    public static Socket socket;
 
 
     private BufferedImage backgroundImage;
@@ -47,14 +42,16 @@ public class homepage extends JFrame {
     private JLabel messageLabel;
     private JLabel imageLabel;
     private Message message;
-    private Boolean isListening;
+    // private Boolean isListening;
     private User user;
 
     private Server server;
 
+
+
     // Streams
-    private BufferedReader inStream;
-    private PrintWriter outStream;
+    // private BufferedReader inStream;
+    // private PrintWriter outStream;
 
     public homepage() throws IOException, ParserConfigurationException, SAXException {
         // this.isListening = false;
@@ -117,44 +114,44 @@ public class homepage extends JFrame {
 
         // funzione che verifica quando viene premuto il pulsante
         playButton.addActionListener(e -> {
-            if (!username.getText().isEmpty()) {
-                // quando premo il pulsante GIOCA mando una richiesta al server di aggiungere il
-                // client ad una nuova partita-->se non ci sono altri client rimane in attesa
-                // setto il messaggio da inviare
-                message = new Message(start, username.getText(), "");
-                // invio il messaggio al server
-                try {
+            try{
+                if (!username.getText().isEmpty()) {
+                    // quando premo il pulsante GIOCA mando una richiesta al server di aggiungere il
+                    // client ad una nuova partita-->se non ci sono altri client rimane in attesa
+                    // setto il messaggio da inviare
+                    message = new Message(start, username.getText(), "");
+                    // invio il messaggio al server
                     sendMessage(message);
-                } catch (ParserConfigurationException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                } catch (TransformerException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-                // aspetto la risposta
-                String response = listening();
-                // <root_message>
-                    // <command>response</command>
-                    // <message>200</message>
-                    // <username>username</username>
-                // </root_message>
-                message = new Message();
-                try {
+
+                    // aspetto la risposta
+                    String response = listening();
+                    // <root_message>
+                        // <command>response</command>
+                        // <message>200</message>
+                        // <username>username</username>
+                    // </root_message>
                     message.InitMessageFromStringXML(response);
-                } catch (ParserConfigurationException | SAXException | IOException e1) {
+
+                    if(message.message == CORRECT)
+                    {
+                        // se risosta è positiva -> creo l'utente e passo alla seconda finestra
+                        this.initUser();
+                        // creo la gamepage
+                        gamepage gp = new gamepage();
+                    }
+                    else{
+                        // messaggio di errore
+                        JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    username.setText("");
+                } else {
+                    // messaggio di errore
+                    JOptionPane.showMessageDialog(this, "Inserisci un nome utente", "Errore", JOptionPane.ERROR_MESSAGE);
+                }
+            }catch (ParserConfigurationException | SAXException | IOException | TransformerException e1){
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
-                }
-
-                if(message.message == CORRECT)
-                {
-                    this.initUser();
-                }
-
-                username.setText("");
-            } else {
-                JOptionPane.showMessageDialog(this, "Inserisci un nome utente", "Errore", JOptionPane.ERROR_MESSAGE);
             }
 
         });
@@ -163,9 +160,17 @@ public class homepage extends JFrame {
     private void initUser() {
     }
 
-    private String listening() {
+    private String listening() throws UnknownHostException, IOException {
+        Socket s = new Socket(this.server.IP, this.server.port);
 
-        return null;
+        InputStreamReader streamReader = new InputStreamReader(s.getInputStream());
+        BufferedReader reader = new BufferedReader(streamReader);
+
+        //Get the response message and print it to console
+        String responseMessage;
+        while ((responseMessage = reader.readLine()) != null) 
+        reader.close();
+        return responseMessage;
     }
 
     /**
@@ -212,7 +217,7 @@ public class homepage extends JFrame {
     public void sendMessage(Message message) throws ParserConfigurationException, TransformerException {
         try {
             // creo una connessione TCP con il server
-            Socket socket = new Socket(this.server.IP, this.server.port);
+           // Socket socket = new Socket(this.server.IP, this.server.port);
 
             OutputStream outputStream = socket.getOutputStream();
 

@@ -37,8 +37,8 @@ public class CardChangeColor implements Card {
 
     /**
      * metodo per controllare se una carta è giocabile oppure no
-     * @param color colore in cima al mazzo
-     * @param number numero in cima al mazzo
+     * @param color colore in cima al mazzo degli scarti
+     * @param number numero in cima al mazzo degli scarti
      * @return true: carta giocabile --- false: carta non giocabile
      */
     public boolean isPlayable(String color, int number)

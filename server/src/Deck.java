@@ -520,15 +520,25 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
      */
     public void sortCardsByColor()
     {
+        //metto le carte rosse
 
+        //metto le carte blu
+
+        //metto le carte verdi
+
+        //metto le carte gialle
+
+        //metto le carte speciali
     }
 
     /**
-     * metodo che ordina le carte in mano dell'utente per numero (1 --> 9, carte speciali)
+     * metodo che ordina le carte in mano dell'utente per numero (1 --> 9, carte senza numero e speciali)
      */
     public void sortCardsByNumber()
     {
+        //ordino i numeri
 
+        //metto le carte senza numero e speciali
     }
 
     //FINE METODI PER MAZZO DEGLI UTENTI (carte che ha in mano)

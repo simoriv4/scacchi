@@ -476,7 +476,12 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
 
 
 
+
+
+
+
     //INIZIO METODI PER MAZZO DEGLI SCARTI
+
     /**
      * metodo per ottenere il colore della carta in cima al mazzo degli scarti
      * @return colore della carta in cima al mazzo degli scarti
@@ -496,10 +501,35 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
         //la carta in cima al mazzo si trova all'ultima posizione della lista
         return deck.get(deck.size() - 1).getNumber();
     }
+
     //FINE METODI PER MAZZO DEGLI SCARTI
 
 
+
+
+
+
+
+
+
+
     //INIZIO METODI PER MAZZO DEGLI UTENTI (carte che ha in mano)
+
+    /**
+     * metodo che ordina le carte in mano dell'utente per colore (rosso, blu, verde, giallo, carte speciali)
+     */
+    public void sortCardsByColor()
+    {
+
+    }
+
+    /**
+     * metodo che ordina le carte in mano dell'utente per numero (1 --> 9, carte speciali)
+     */
+    public void sortCardsByNumber()
+    {
+
+    }
 
     //FINE METODI PER MAZZO DEGLI UTENTI (carte che ha in mano)
 }

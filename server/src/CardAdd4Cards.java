@@ -40,43 +40,8 @@ public class CardAdd4Cards implements Card
     {
         return -1;  //ritorno un valore di default perchè la CardCambiacolor non ha un number
     }
-    
-    /**
-     * metodo per confrontare questa Card con una CardAdd4Cards
-     * 
-     * @param card CardAdd4Cards da confrontare
-     * @return true: carte uguali --- false: carte diverse
-     */
-    public boolean compareCard(CardAdd4Cards card)
-    {
-        //se la Card è null --> ERRORE
-        if (card == null)
-            return false; //la Card non può essere null
 
-        //confronto il nuovo color e ritorno true o false
-        //return this.newColor.equals(Card.newColor);
-
-        //confronto questa Card con la Card passata come parametro
-        return this == card;
-    }
-
-    /**
-     * metodo per confrontare il nuovo color di questa Card con il nuovo color di una CardAdd4Cards
-     * 
-     * @param card CardAdd4Cards di cui confontare il nuovo color
-     * @return true: nuovo color uguale --- false: nuovo color diverso
-     */
-    public boolean compareNewColorCard(CardAdd4Cards card)
-    {
-        //se la Card è null --> ERRORE
-        if (card == null)
-            return false; //la Card non può essere null
-
-        //confronto il color di questa Card con il color della Card passata come parametro
-        return this.newColor.equals(card.newColor);
-    }
-
-    public boolean isPlayable()
+    public boolean isPlayable(String color, int number)
     {
         return false;
     }

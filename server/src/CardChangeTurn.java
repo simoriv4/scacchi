@@ -53,41 +53,16 @@ public class CardChangeTurn implements Card
     }
     
     /**
-     * metodo per confrontare questa Card con una CardChangeTurn
-     * 
-     * @param card CardChangeTurn da confrontare
-     * @return true: carte uguali --- false: carte diverse
+     * metodo per confrontare il colore di quest carta con un colore
+     * @param color colore con cui confrontare
+     * @return true: colori uguali --- false: colori diversi
      */
-    public boolean compareCard(CardChangeTurn card)
+    public boolean compareColor(String color)
     {
-        //se la Card è null --> ERRORE
-        if (card == null)
-            return false; //la Card non può essere null
-
-        //confronto il color e ritorno true o false
-        //return (this.color.equals(Card.color));
-
-        //confronto questa Card con la Card passata come parametro
-        return this == card;
+        return this.color.equals(color);
     }
 
-    /**
-     * metodo per confrontare il color di questa Card con il color di una CardChangeTurn
-     * 
-     * @param card CardChangeTurn di cui confontare il color
-     * @return true: color uguale --- false: color diverso
-     */
-    public boolean compareColorCard(CardChangeTurn card)
-    {
-        //se la Card è null --> ERRORE
-        if (card == null)
-            return false; //la Card non può essere null
-
-        //confronto il color di questa Card con il color della Card passata come parametro
-        return this.color.equals(card.color);
-    }
-
-    public boolean isPlayable()
+    public boolean isPlayable(String color, int number)
     {
         return false;
     }

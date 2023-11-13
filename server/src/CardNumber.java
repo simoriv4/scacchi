@@ -55,60 +55,47 @@ public class CardNumber implements Card
     {
         return number;
     }
-    
+
     /**
-     * metodo per confrontare questa Card con una CardNumber
-     * 
-     * @param card CardNumber da confrontare
-     * @return true: carte uguali --- false: carte diverse
+     * metodo per confrontare il colore di quest carta con un colore
+     * @param color colore con cui confrontare
+     * @return true: colori uguali --- false: colori diversi
      */
-    public boolean compareCard(CardNumber card)
+    public boolean compareColor(String color)
     {
-        //se la Card è null --> ERRORE
-        if (card == null)
-            return false; //la Card non può essere null
-
-        //confronto il color e il number e ritorno true o false
-        //return (this.color.equals(Card.color) && this.number == Card.number);
-
-        //confronto questa Card con la Card passata come parametro
-        return this == card;
+        return this.color.equals(color);
     }
 
     /**
-     * metodo per confrontare il number di questa Card con il number di una CardNumber
-     * 
-     * @param card CardNumber di cui confontare il number
-     * @return true: number uguale --- false: number diverso
+     * metodo per confrontare il numerodi quest carta con un numero
+     * @param number numero con cui confrontare
+     * @return true: numeri uguali --- false: numeri diversi
      */
-    public boolean compareNumberCard(CardNumber card)
+    public boolean compareNumber(int number)
     {
-        //se la Card è null --> ERRORE
-        if (card == null)
-            return false; //la Card non può essere null
-
-        //confronto il number di questa Card con il number dellla Card passata come parametro
-        return this.number == card.number;
+        return this.number == number;
     }
 
     /**
-     * metodo per confrontare il color di questa Card con il color di una CardNumber
-     * 
-     * @param card CardNumber di cui confontare il color
-     * @return true: color uguale --- false: color diverso
+     * metodo per controllare se la carta è giocabile oppure no
      */
-    public boolean compareColorCard(CardNumber card)
+    public boolean isPlayable(String color, int number)
     {
-        //se la Card è null --> ERRORE
-        if (card == null)
-            return false; //la Card non può essere null
+        /*
+         * una carta numerata è giocabile se una delle due (o tutte e due) le situazioni sono vere:
+         * - il colore è uguale a quello in cima al mazzo
+         * - il numero è uguale a quello in cima al mazzo
+         */
 
-        //confronto il color di questa Card con il color della Card passata come parametro
-        return this.color.equals(card.color);
-    }
+        //confronto il colore
+        if(compareColor(color) == true)
+            return true;    //carta giocabile
 
-    public boolean isPlayable()
-    {
-        return false;
+        //confronto il numero
+        if(compareNumber(number) == true)
+            return true;    //carta giocabile
+
+        //nessuno dei due confronti è risultato vero
+        return false;   //carta non giocabile
     }
 }

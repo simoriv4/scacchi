@@ -41,7 +41,7 @@ public class CardChangeColor implements Card {
      * @param card CardChangeColor da confrontare
      * @return true: carte uguali --- false: carte diverse
      */
-    public boolean confrontaCardChangeColor(CardChangeColor card) {
+    public boolean compareCard(CardChangeColor card) {
         // se la Card è null --> ERRORE
         if (card == null)
             return false; // la Card non può essere null
@@ -60,7 +60,8 @@ public class CardChangeColor implements Card {
      * @param card CardChangeColor di cui confontare il nuovo color
      * @return true: nuovo color uguale --- false: nuovo color diverso
      */
-    public boolean confrontanewColorCard(CardChangeColor card) {
+    public boolean compareNewColorCard(CardChangeColor card)
+    {
         // se la Card è null --> ERRORE
         if (card == null)
             return false; // la Card non può essere null
@@ -68,5 +69,10 @@ public class CardChangeColor implements Card {
         // confronto il color di questa Card con il color della Card passata come
         // parametro
         return this.newColor.equals(card.newColor);
+    }
+
+    public boolean isPlayable()
+    {
+        return false;
     }
 }

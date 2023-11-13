@@ -62,7 +62,7 @@ public class CardNumber implements Card
      * @param card CardNumber da confrontare
      * @return true: carte uguali --- false: carte diverse
      */
-    public boolean confrontaCardNumber(CardNumber card)
+    public boolean compareCard(CardNumber card)
     {
         //se la Card è null --> ERRORE
         if (card == null)
@@ -81,7 +81,7 @@ public class CardNumber implements Card
      * @param card CardNumber di cui confontare il number
      * @return true: number uguale --- false: number diverso
      */
-    public boolean confrontanumberCard(CardNumber card)
+    public boolean compareNumberCard(CardNumber card)
     {
         //se la Card è null --> ERRORE
         if (card == null)
@@ -97,7 +97,7 @@ public class CardNumber implements Card
      * @param card CardNumber di cui confontare il color
      * @return true: color uguale --- false: color diverso
      */
-    public boolean confrontacolorCard(CardNumber card)
+    public boolean compareColorCard(CardNumber card)
     {
         //se la Card è null --> ERRORE
         if (card == null)
@@ -105,5 +105,10 @@ public class CardNumber implements Card
 
         //confronto il color di questa Card con il color della Card passata come parametro
         return this.color.equals(card.color);
+    }
+
+    public boolean isPlayable()
+    {
+        return false;
     }
 }

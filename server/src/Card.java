@@ -8,4 +8,6 @@ public interface Card
     
     void setNumber(int number);
     int getNumber();
+
+    boolean isPlayable();
 }

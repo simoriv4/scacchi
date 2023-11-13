@@ -58,7 +58,7 @@ public class CardBlock implements Card
      * @param card CardBlock da confrontare
      * @return true: carte uguali --- false: carte diverse
      */
-    public boolean confrontaCardBlock(CardBlock card)
+    public boolean compareCard(CardBlock card)
     {
         //se la Card è null --> ERRORE
         if (card == null)
@@ -77,7 +77,7 @@ public class CardBlock implements Card
      * @param card CardBlock di cui confontare il color
      * @return true: color uguale --- false: color diverso
      */
-    public boolean confrontacolorCard(CardBlock card)
+    public boolean compareColorCard(CardBlock card)
     {
         //se la Card è null --> ERRORE
         if (card == null)
@@ -85,5 +85,10 @@ public class CardBlock implements Card
 
         //confronto il color di questa Card con il color della Card passata come parametro
         return this.color.equals(card.color);
+    }
+
+    public boolean isPlayable()
+    {
+        return false;
     }
 }

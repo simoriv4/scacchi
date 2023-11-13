@@ -47,7 +47,7 @@ public class CardAdd4Cards implements Card
      * @param card CardAdd4Cards da confrontare
      * @return true: carte uguali --- false: carte diverse
      */
-    public boolean confrontaCardAdd4Cards(CardAdd4Cards card)
+    public boolean compareCard(CardAdd4Cards card)
     {
         //se la Card è null --> ERRORE
         if (card == null)
@@ -66,7 +66,7 @@ public class CardAdd4Cards implements Card
      * @param card CardAdd4Cards di cui confontare il nuovo color
      * @return true: nuovo color uguale --- false: nuovo color diverso
      */
-    public boolean confrontanewColorCard(CardAdd4Cards card)
+    public boolean compareNewColorCard(CardAdd4Cards card)
     {
         //se la Card è null --> ERRORE
         if (card == null)
@@ -74,5 +74,10 @@ public class CardAdd4Cards implements Card
 
         //confronto il color di questa Card con il color della Card passata come parametro
         return this.newColor.equals(card.newColor);
+    }
+
+    public boolean isPlayable()
+    {
+        return false;
     }
 }

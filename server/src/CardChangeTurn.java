@@ -58,7 +58,7 @@ public class CardChangeTurn implements Card
      * @param card CardChangeTurn da confrontare
      * @return true: carte uguali --- false: carte diverse
      */
-    public boolean confrontaCardChangeTurn(CardChangeTurn card)
+    public boolean compareCard(CardChangeTurn card)
     {
         //se la Card è null --> ERRORE
         if (card == null)
@@ -77,7 +77,7 @@ public class CardChangeTurn implements Card
      * @param card CardChangeTurn di cui confontare il color
      * @return true: color uguale --- false: color diverso
      */
-    public boolean confrontacolorCard(CardChangeTurn card)
+    public boolean compareColorCard(CardChangeTurn card)
     {
         //se la Card è null --> ERRORE
         if (card == null)
@@ -85,5 +85,10 @@ public class CardChangeTurn implements Card
 
         //confronto il color di questa Card con il color della Card passata come parametro
         return this.color.equals(card.color);
+    }
+
+    public boolean isPlayable()
+    {
+        return false;
     }
 }

@@ -58,7 +58,7 @@ public class CardAdd2Cards implements Card
      * @param card CardAdd2Cards da confrontare
      * @return true: carte uguali --- false: carte diverse
      */
-    public boolean compareCardAdd2Cards(CardAdd2Cards card)
+    public boolean compareCard(CardAdd2Cards card)
     {
         //se la Card è null --> ERRORE
         if (card == null)
@@ -85,5 +85,10 @@ public class CardAdd2Cards implements Card
 
         //confronto il color di questa Card con il color della Card passata come parametro
         return this.color.equals(card.color);
+    }
+
+    public boolean isPlayable()
+    {
+        return false;
     }
 }

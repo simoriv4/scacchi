@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -89,10 +88,12 @@ public class homepage extends JFrame {
         // imposto il layout manager su null per posizionare manualmente i componenti
         overlayPanel.setLayout(null);
 
-        this.username = new JTextField(20);
-        this.playButton = new JButton("Gioca");
-        this.messageLabel = new JLabel("Inserisci il nome con il quale vuoi giocare:");
+        // imposto la grafica del bottone
+        this.initButton();
 
+        this.initLabel();
+
+        this.initInputText();
         // creo l'oggetto font che mi serve per impostare il font
         Font font = new Font("Bauhaus 93", Font.BOLD, 16);
 
@@ -100,8 +101,8 @@ public class homepage extends JFrame {
         this.setPositions(screenWidth, screenHeight);
 
         // imposto il colore della label
-        this.messageLabel.setForeground(Color.WHITE);
-        this.messageLabel.setFont(font);
+        // this.messageLabel.setForeground(Color.WHITE);
+        // this.messageLabel.setFont(font);
 
         // aggiungo i componenti al pannello di sovrapposizione
         overlayPanel.add(imageLabel);
@@ -233,6 +234,43 @@ public class homepage extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * inizializzo l'oggetto bottone con la relativa grafica
+     */
+    public void initButton()
+    {
+        // inizializzo l'oggetto
+        this.playButton = new JButton("Gioca");
+
+        this.playButton.setBackground(new Color(0, 128, 255)); // sfondo blu
+        this.playButton.setForeground(Color.WHITE); // testo bianco
+        this.playButton.setFont(new Font("Arial", Font.BOLD, 14));
+    }
+
+    /**
+     * inizializzo l'oggetto label con la relativa grafica
+     */
+    public void initLabel()
+    {
+        // inizializzo l'oggetto
+        this.messageLabel = new JLabel("Inserisci il nome con il quale vuoi giocare:");
+        // imposto la grafica
+        this.messageLabel.setForeground(Color.WHITE);
+        this.messageLabel.setFont(new Font("Arial", Font.PLAIN, 16)); // Font di dimensione 16
+    }
+
+    /**
+     * inizializzo l'oggetto label con la relativa grafica
+     */
+    public void initInputText()
+    {
+        // inizializzo l'oggetto
+        this.username = new JTextField(20);
+        this.username.setBackground(new Color(255, 255, 255, 100)); // sfondo trasparente
+        this.username.setForeground(new Color(0, 0, 0)); // testo nero
+        this.username.setFont(new Font("Arial", Font.PLAIN, 14)); // font di dimensione 16
     }
 
 }

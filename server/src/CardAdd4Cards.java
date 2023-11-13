@@ -41,8 +41,17 @@ public class CardAdd4Cards implements Card
         return -1;  //ritorno un valore di default perchè la CardCambiacolor non ha un number
     }
 
+    /**
+     * metodo per controllare se una carta è giocabile oppure no
+     * @param color colore in cima al mazzo
+     * @param number numero in cima al mazzo
+     * @return true: carta giocabile --- false: carta non giocabile
+     */
     public boolean isPlayable(String color, int number)
     {
-        return false;
+        /*
+         * la carta è una carta speciale e quindi è sempre giocabile
+         */
+        return true;
     }
 }

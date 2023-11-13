@@ -77,7 +77,10 @@ public class CardNumber implements Card
     }
 
     /**
-     * metodo per controllare se la carta è giocabile oppure no
+     * metodo per controllare se una carta è giocabile oppure no
+     * @param color colore in cima al mazzo
+     * @param number numero in cima al mazzo
+     * @return true: carta giocabile --- false: carta non giocabile
      */
     public boolean isPlayable(String color, int number)
     {

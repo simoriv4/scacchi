@@ -23,14 +23,14 @@ comandi client --> server:
                 - corretta ( quando è a una carta e segnala uno o quando ha più carte e non lo segnala ) --> 200 con username prossimo giocatore
                                                                                                             OPPURE
                                                                                                          --> 201 con username di chi ha vinto
-                - sbagliata --> 400 con le 2 carte pescate dall'utente
+                - sbagliata --> 409 con le 2 carte pescate dall'utente
     appena si controlla ed è corretto, isUno ritorna false            
 
 
     - exit --> giocatore esce dalla partita
            --> server lo toglie dalla lista dei giocatori
                 - corretta --> 200
-                - sbagliata --> 400 con messaggio (......)
+                - sbagliata --> 500 con messaggio (......)
 
 comandi client:
     - uno --> solo sul client; il client segnala che è rimasto con una carta 

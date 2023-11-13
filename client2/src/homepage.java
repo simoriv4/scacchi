@@ -29,6 +29,18 @@ public class homepage extends JFrame {
     // lista comandi
     private final String start = "start";
 
+    // messaggi di risposta
+    private final String CORRECT = "200";
+    private final String ERROR_USERNAME = "400";
+    private final String ERROR_CARD_PALYED = "406";
+    private final String WINNER = "201";
+    private final String ERROR_SKIP = "409";
+    private final String ERROR_EXIT = "500";
+
+
+
+
+
     private BufferedImage backgroundImage;
     private JTextField username;
     private JButton playButton;
@@ -36,6 +48,7 @@ public class homepage extends JFrame {
     private JLabel imageLabel;
     private Message message;
     private Boolean isListening;
+    private User user;
 
     private Server server;
 
@@ -120,8 +133,25 @@ public class homepage extends JFrame {
                     e1.printStackTrace();
                 }
                 // aspetto la risposta
-                //this.isListening = true;
-                String risposta = listening();
+                String response = listening();
+                // <root_message>
+                    // <command>response</command>
+                    // <message>200</message>
+                    // <username>username</username>
+                // </root_message>
+                message = new Message();
+                try {
+                    message.InitMessageFromStringXML(response);
+                } catch (ParserConfigurationException | SAXException | IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+
+                if(message.message == CORRECT)
+                {
+                    this.initUser();
+                }
+
                 username.setText("");
             } else {
                 JOptionPane.showMessageDialog(this, "Inserisci un nome utente", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -130,7 +160,11 @@ public class homepage extends JFrame {
         });
     }
 
+    private void initUser() {
+    }
+
     private String listening() {
+
         return null;
     }
 
@@ -152,17 +186,17 @@ public class homepage extends JFrame {
      */
     public void playMusic() {
         try {
-            // Crea un oggetto Clip per riprodurre il file audio
+            // creo un oggetto Clip per riprodurre il file audio
             Clip clip = AudioSystem.getClip();
 
-            // Apri il file audio
+            // apro il file audio
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(rootName + "/audio/UNO_track.wav"));
             clip.open(audioStream);
 
-            // Riproduci la musica in loop
+            // riproduco l'audio in loop
             clip.loop(Clip.LOOP_CONTINUOUSLY);
 
-            // Avvia la riproduzione
+            // avvio l'audio
             clip.start();
         } catch (Exception ex) {
             ex.printStackTrace();

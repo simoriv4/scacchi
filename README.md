@@ -1,7 +1,7 @@
 # Repository del progetto UNO-GAME di Riva e Monti
 
 ## Struttura directory
-- clinet2 : contiene il client in Java Swing
+- client : contiene il client in Java Swing
 - server : contiene il server in Java
 
 ## Istruzioni

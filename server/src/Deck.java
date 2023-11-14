@@ -6,46 +6,34 @@ import java.util.List;
  */
 public class Deck <E extends Card>  //<E extends Card> --> indica che la classe è generica di tipo Card
 {
-    /*
-     * COSTANTI
-     * 
-     * 19 carte rosse da 1 a 9 (x2 volte) e uno 0
-     * 19 carte verdi da 1 a 9 (x2 volte) e uno 0
-     * 19 carte blu da 1 a 9 (x2 volte) e uno 0
-     * 19 carte gialle da 1 a 9 (x2 volte) e uno 0
-     * 8 carte cambia giro
-     * 8 carte blocca
-     * 8 carte aggiungi carte (+2)
-     * 4 carte aggiungi carte (+4)
-     * 4 carte cambia colore
-    */
+    //COSTANTI
     /**
-     * numero di carte per colore
+     * numero di carte, per colore, da 1 a 9 (x2 volte) e uno 0
      */
     private final static int NUMBER_CARD_NUMBERED = 19;
 
     /**
-     * numero di carte per colore
+     * numero di carte, per colore, cambia giro
      */
-    private final static int NUMBER_CARD_CHANGE_TURN = 2;
+    private final static int NUMBER_CARD_CHANGE_TURN = 2; 
 
     /**
-     * numero di carte per colore
+     * numero di carte, per colore, blocca turno
      */
     private final static int NUMBER_BLOCK_CARD = 2;
 
     /**
-     * numero di carte per colore
+     * numero di carte, per colore, aggiungi 2 carte
      */
-    private final static int NUMBER_ADD_2_CARDS_CARD = 2;
+    private final static int NUMBER_ADD_2_CARDS_CARD = 2;  
 
     /**
-     * numero di carte speciali (non hanno colore)
+     * numero di carte speciali (non hanno colore), aggiungi 4 carte
      */
     private final static int NUMBER_ADD_4_CARDS_CARD = 4;
 
     /**
-     * numero di carte speciali (non hanno colore)
+     * numero di carte speciali (non hanno colore), cambia colore
      */
     private final static int NUMBER_CHANGE_COLOR_CARD = 4;
 

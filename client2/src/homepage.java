@@ -17,11 +17,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.net.URL;
 import java.net.UnknownHostException;
 
 public class homepage extends JFrame {
     private final String rootName = "client2";
+    private final String UNO_PATH = rootName + "\\src\\assets\\card-back.png";
+    private final String BACKGROUND_IMAGE_PATH = rootName + "\\src\\assets\\backgrounds\\wallpaper.png";
+    private final String SONG_PATH = rootName + "\\audio\\UNO_track.wav";
+
     // lista comandi
     private final String start = "start";
 
@@ -73,12 +76,12 @@ public class homepage extends JFrame {
         setSize(800,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        this.backgroundImage = ImageIO.read(new File(rootName + "\\src\\assets\\backgrounds\\wallpaper.png"));
+        this.backgroundImage = ImageIO.read(new File(BACKGROUND_IMAGE_PATH));
         this.resizeBufferedImage(this.backgroundImage, (int) (screenWidth * 0.4), (int) (screenHeight * 0.4));
         // inizializzo una label che contiene l'immagine del titolo
         this.UNO_Label = new JLabel();
         // creo l'oggetto immagine
-        ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File(rootName + "\\src\\assets\\logo.png")));
+        ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File(UNO_PATH)));
         imageIcon =this.initImageIcon(imageIcon, WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
         this.UNO_Label.setIcon(imageIcon);
 
@@ -206,7 +209,7 @@ public class homepage extends JFrame {
             Clip clip = AudioSystem.getClip();
 
             // apro il file audio
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(rootName + "/audio/UNO_track.wav"));
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(SONG_PATH));
             clip.open(audioStream);
 
             // riproduco l'audio in loop

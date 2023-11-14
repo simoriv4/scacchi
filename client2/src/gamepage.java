@@ -21,7 +21,10 @@ import java.net.UnknownHostException;
 
 public class gamepage extends JFrame {
     private final String rootName = "client2";
-    private final String COVER_UNO_PATH = rootName + "\\src\\assets\\card-back.png";
+    private final String COVER_CARD_PATH = rootName + "\\src\\assets\\card-back.png";
+    private final String UNO_PATH = rootName + "\\src\\assets\\logo.png";
+
+
 
     // lista comandi
     private final String skip = "skip";
@@ -39,6 +42,9 @@ public class gamepage extends JFrame {
 
     private final static Integer WIDTH_UNO_IMAGE = 150;
     private final static Integer HEIGHT_UNO_IMAGE = 150;
+
+    private final static Integer WIDTH_CARDS= 150;
+    private final static Integer HEIGHT_CARDS = 200;
 
 
 
@@ -87,7 +93,9 @@ public class gamepage extends JFrame {
         this.resizeBufferedImage(this.backgroundImage, (int) (screenWidth * 0.4), (int) (screenHeight * 0.4));
 
         // inizializzo una label che contiene l'immagine del logo
-        this.initImageLabel(this.UNO_Label, COVER_UNO_PATH);
+        this.UNO_Label =  this.initImageLabel(this.UNO_Label, UNO_PATH, WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
+        this.deck_Label =  this.initImageLabel(this.deck_Label, COVER_CARD_PATH, WIDTH_CARDS, HEIGHT_CARDS);
+
 
         // creo un pannello personalizzato per sovrapporre i componenti
         JPanel overlayPanel = new JPanel() {
@@ -120,12 +128,13 @@ public class gamepage extends JFrame {
         this.UNO_Label.setSize(WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);;
 
         // aggiungo i componenti al pannello di sovrapposizione
-        overlayPanel.add(UNO_Label);
-        overlayPanel.add(playButton);
-        overlayPanel.add(drawButton);
-        overlayPanel.add(quitButton);
-        overlayPanel.add(skipButton);
-        overlayPanel.add(unoButton);
+        overlayPanel.add(this.UNO_Label);
+        overlayPanel.add(this.deck_Label);
+        overlayPanel.add(this.playButton);
+        overlayPanel.add(this.drawButton);
+        overlayPanel.add(this.quitButton);
+        overlayPanel.add(this.skipButton);
+        overlayPanel.add(this.unoButton);
 
         add(overlayPanel);
 
@@ -157,6 +166,7 @@ public class gamepage extends JFrame {
      */
     public void setPositions(int screenWidth, int screenHeight) {
         this.UNO_Label.setBounds(0, 0, WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
+        this.deck_Label.setBounds((int) (screenWidth * 0.4), (int) (screenHeight * 0.4), WIDTH_CARDS, HEIGHT_CARDS);
         this.playButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.4), 120, 30);
         this.quitButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.5), 100, 30);
         this.skipButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.6), 100, 30);
@@ -286,13 +296,13 @@ public class gamepage extends JFrame {
      * @return una JLabel con l'immagine passata
      * @throws IOException
      */
-    public JLabel initImageLabel(JLabel label, String imagePath) throws IOException
+    public JLabel initImageLabel(JLabel label, String imagePath, Integer width, Integer height) throws IOException
     {
         // inizializzo una label che contiene l'immagine del logo
         label = new JLabel();
         // creo l'oggetto immagine
         ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File(imagePath)));
-        imageIcon =this.initImageIcon(imageIcon, WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
+        imageIcon =this.initImageIcon(imageIcon, width, height);
         label.setIcon(imageIcon);
         return label;
     }

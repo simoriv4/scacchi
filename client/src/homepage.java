@@ -19,20 +19,14 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class gamepage extends JFrame {
-    private final String rootName = "client2";
-    private final String COVER_CARD_PATH = rootName + "\\src\\assets\\card-back.png";
-    private final String UNO_PATH = rootName + "\\src\\assets\\logo.png";
-    private final String BACKGROUND_IMAGE_PATH = rootName + "\\src\\assets\\backgrounds\\bgG.png";
-
-
-
+public class homepage extends JFrame {
+    private final String rootName = "client";
+    private final String UNO_PATH = rootName + "\\src\\assets\\card-back.png";
+    private final String BACKGROUND_IMAGE_PATH = rootName + "\\src\\assets\\backgrounds\\wallpaper.png";
+    private final String SONG_PATH = rootName + "\\audio\\UNO_track.wav";
 
     // lista comandi
-    private final String skip = "skip";
-    private final String uno = "uno";
-    private final String play = "play";
-
+    private final String start = "start";
 
     // messaggi di risposta
     private final static String CORRECT = "200";
@@ -42,26 +36,18 @@ public class gamepage extends JFrame {
     private final static String ERROR_SKIP = "409";
     private final static String ERROR_EXIT = "500";
 
-    private final static Integer WIDTH_UNO_IMAGE = 150;
-    private final static Integer HEIGHT_UNO_IMAGE = 150;
-
-    private final static Integer WIDTH_CARDS= 150;
-    private final static Integer HEIGHT_CARDS = 200;
+    private final static Integer WIDTH_UNO_IMAGE = 200;
+    private final static Integer HEIGHT_UNO_IMAGE = 200;
 
 
 
     public static Socket socket;
 
     private BufferedImage backgroundImage;
+    private JTextField username;
     private JButton playButton;
-    private JButton quitButton;
-    private JButton unoButton;
-    private JButton drawButton;
-    private JButton skipButton;
+    private JLabel messageLabel;
     private JLabel UNO_Label;
-    private JLabel deck_Label;
-    private JLabel discarded_Label;
-
     private Message message;
     // private Boolean isListening;
     private User user;
@@ -74,30 +60,30 @@ public class gamepage extends JFrame {
     // private BufferedReader inStream;
     // private PrintWriter outStream;
 
-    public gamepage() throws IOException, ParserConfigurationException, SAXException {
+    public homepage() throws IOException, ParserConfigurationException, SAXException {
 
         // ininzializzo le informazioni del server
         this.server = new Server();
         // avvio il sottofondo musicale
         this.playMusic();
         // imposto il titolo al frame
-        setTitle("gamepage");
+        setTitle("homepage");
 
         // calcolo le coordinate in base alle percentuali dello schermo
         int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
         int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 
-        // imposto le dimensioni del frame
         setSize(800,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         this.backgroundImage = ImageIO.read(new File(BACKGROUND_IMAGE_PATH));
         this.resizeBufferedImage(this.backgroundImage, (int) (screenWidth * 0.4), (int) (screenHeight * 0.4));
-
-        // inizializzo una label che contiene l'immagine del logo
-        this.UNO_Label =  this.initImageLabel(this.UNO_Label, UNO_PATH, WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
-        this.deck_Label =  this.initImageLabel(this.deck_Label, COVER_CARD_PATH, WIDTH_CARDS, HEIGHT_CARDS);
-
+        // inizializzo una label che contiene l'immagine del titolo
+        this.UNO_Label = new JLabel();
+        // creo l'oggetto immagine
+        ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File(UNO_PATH)));
+        imageIcon =this.initImageIcon(imageIcon, WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
+        this.UNO_Label.setIcon(imageIcon);
 
         // creo un pannello personalizzato per sovrapporre i componenti
         JPanel overlayPanel = new JPanel() {
@@ -113,38 +99,80 @@ public class gamepage extends JFrame {
         overlayPanel.setLayout(null);
 
         // imposto la grafica del bottone
-        this.initSkipButton();
-        this.initQuitButton();
-        this.initPlayButton();
-        this.initUnoButton();
-        this.initDrawButton();
-
-        
+        this.initButton();
 
         // this.initLabel();
+
+        this.initInputText();
 
         // imposto le posizioni e le dimensioni dei componenti manualmente
         this.setPositions(screenWidth, screenHeight);
 
-        // imposto la dimensione della label
+        // imposto il colore della label
         this.UNO_Label.setSize(WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);;
 
         // aggiungo i componenti al pannello di sovrapposizione
-        overlayPanel.add(this.UNO_Label);
-        overlayPanel.add(this.deck_Label);
-        overlayPanel.add(this.playButton);
-        overlayPanel.add(this.drawButton);
-        overlayPanel.add(this.quitButton);
-        overlayPanel.add(this.skipButton);
-        overlayPanel.add(this.unoButton);
-
+        overlayPanel.add(UNO_Label);
+        // overlayPanel.add(messageLabel);
+        overlayPanel.add(username);
+        overlayPanel.add(playButton);
+        //panel.add(GIF_Label);
         add(overlayPanel);
 
 
         //this.frame.add(panel);
         // imposta il frame a schermo intero
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+
         setVisible(true);
+
+        // funzione che verifica quando viene premuto il pulsante
+        playButton.addActionListener(e -> {
+            try{
+                if (!username.getText().isEmpty()) {
+                    // quando premo il pulsante GIOCA mando una richiesta al server di aggiungere il
+                    // client ad una nuova partita-->se non ci sono altri client rimane in attesa
+                    // setto il messaggio da inviare
+                    message = new Message(start, username.getText(), "");
+                    // invio il messaggio al server
+                    sendMessage(message);
+
+                    // aspetto la risposta
+                    String response = listening();
+                    // <root_message>
+                        // <command>response</command>
+                        // <message>200</message>
+                        // <username>username</username>
+                    // </root_message>
+                    message.InitMessageFromStringXML(response);
+
+                    if(message.message == CORRECT)
+                    {
+                        // se risosta è positiva -> creo l'utente e passo alla seconda finestra
+                        this.initUser();
+                        setVisible(false);
+                        // creo la gamepage
+                        gamepage gp = new gamepage();
+                    }
+                    else{
+                        // messaggio di errore
+                        JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    username.setText("");
+                } else {
+                    // messaggio di errore
+                    JOptionPane.showMessageDialog(this, "Inserisci un nome utente", "Errore", JOptionPane.ERROR_MESSAGE);
+                }
+            }catch (ParserConfigurationException | SAXException | IOException | TransformerException e1){
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+            }
+
+        });
+    }
+
+    private void initUser() {
     }
 
     private String listening() throws UnknownHostException, IOException {
@@ -167,14 +195,9 @@ public class gamepage extends JFrame {
      * @param screenHeight
      */
     public void setPositions(int screenWidth, int screenHeight) {
-        this.UNO_Label.setBounds(0, 0, WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
-        this.deck_Label.setBounds((int) (screenWidth * 0.4), (int) (screenHeight * 0.4), WIDTH_CARDS, HEIGHT_CARDS);
-        this.playButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.4), 120, 30);
-        this.quitButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.5), 100, 30);
-        this.skipButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.6), 100, 30);
-        this.drawButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.7), 100, 30);
-        this.unoButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.8), 100, 30);
-
+        this.UNO_Label.setBounds((int) (screenWidth * 0.4), (int) (screenHeight * 0.1), WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
+        this.username.setBounds((int) (screenWidth * 0.40), (int) (screenHeight * 0.4), 200, 40);
+        this.playButton.setBounds((int) (screenWidth * 0.58), (int) (screenHeight * 0.4), 100, 30);
     }
 
     /**
@@ -186,7 +209,7 @@ public class gamepage extends JFrame {
             Clip clip = AudioSystem.getClip();
 
             // apro il file audio
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(rootName + "/audio/UNO_track.wav"));
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(SONG_PATH));
             clip.open(audioStream);
 
             // riproduco l'audio in loop
@@ -229,87 +252,39 @@ public class gamepage extends JFrame {
     /**
      * inizializzo l'oggetto bottone con la relativa grafica
      */
-    public void initSkipButton()
+    public void initButton()
     {
         // inizializzo l'oggetto
-        this.skipButton = new JButton("Skip");
+        this.playButton = new JButton("Gioca");
 
-        this.skipButton.setBackground(new Color(128, 0, 0)); // sfondo rosso
-        this.skipButton.setForeground(Color.WHITE); // testo bianco
-        this.skipButton.setFont(new Font("Arial", Font.BOLD, 14));
-    }
-
-    /**
-     * inizializzo l'oggetto bottone con la relativa grafica
-     */
-    public void initQuitButton()
-    {
-        // inizializzo l'oggetto
-        this.quitButton = new JButton("Esci");
-
-        this.quitButton.setBackground(new Color(255, 0, 0)); // sfondo rosso
-        this.quitButton.setForeground(Color.WHITE); // testo bianco
-        this.quitButton.setFont(new Font("Arial", Font.BOLD, 14));
-    }
-
-    /**
-     * inizializzo l'oggetto bottone con la relativa grafica
-     */
-    public void initUnoButton()
-    {
-        // inizializzo l'oggetto
-        this.unoButton = new JButton("UNO");
-
-        this.unoButton.setBackground(new Color(255, 196, 0)); // sfondo giallo
-        this.unoButton.setForeground(Color.WHITE); // testo bianco
-        this.unoButton.setFont(new Font("Arial", Font.BOLD, 14));
-    }
-
-        /**
-     * inizializzo l'oggetto bottone con la relativa grafica
-     */
-    public void initPlayButton()
-    {
-        // inizializzo l'oggetto
-        this.playButton = new JButton("Gioca carta");
-
-        this.playButton.setBackground(new Color(0, 174, 46)); // sfondo verde
+        this.playButton.setBackground(new Color(255, 0, 0)); // sfondo blu
         this.playButton.setForeground(Color.WHITE); // testo bianco
         this.playButton.setFont(new Font("Arial", Font.BOLD, 14));
     }
 
     /**
-     * inizializzo l'oggetto bottone con la relativa grafica
+     * inizializzo l'oggetto label con la relativa grafica
      */
-    public void initDrawButton()
+    public void initLabel()
     {
         // inizializzo l'oggetto
-        this.drawButton = new JButton("Scarta");
-
-        this.drawButton.setBackground(new Color(0,162,174)); // sfondo azzuro
-        this.drawButton.setForeground(Color.WHITE); // testo bianco
-        this.drawButton.setFont(new Font("Arial", Font.BOLD, 14));
+        this.messageLabel = new JLabel("Inserisci il nome con il quale vuoi giocare:");
+        // imposto la grafica
+        this.messageLabel.setForeground(Color.WHITE);
+        this.messageLabel.setFont(new Font("Arial", Font.PLAIN, 16)); // Font di dimensione 16
     }
 
     /**
-     * funzione che imposta le immagini nella JLabel 
-     * @param label
-     * @param imagePath
-     * @return una JLabel con l'immagine passata
-     * @throws IOException
+     * inizializzo l'oggetto label con la relativa grafica
      */
-    public JLabel initImageLabel(JLabel label, String imagePath, Integer width, Integer height) throws IOException
+    public void initInputText()
     {
-        // inizializzo una label che contiene l'immagine del logo
-        label = new JLabel();
-        // creo l'oggetto immagine
-        ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File(imagePath)));
-        imageIcon =this.initImageIcon(imageIcon, width, height);
-        label.setIcon(imageIcon);
-        return label;
+        // inizializzo l'oggetto
+        this.username = new JTextField(15);
+        this.username.setBackground(new Color(255, 255, 255)); // sfondo bianco
+        this.username.setForeground(new Color(0, 0, 0)); // testo nero
+        this.username.setFont(new Font("Arial", Font.PLAIN, 16)); // font di dimensione 16
     }
-
-
 
     /**
      * funzione che imposta la dimensione di una BufferedImage

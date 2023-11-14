@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.net.URL;
 import java.net.UnknownHostException;
 
 public class homepage extends JFrame {
@@ -32,14 +33,18 @@ public class homepage extends JFrame {
     private final static String ERROR_SKIP = "409";
     private final static String ERROR_EXIT = "500";
 
-    public static Socket socket;
+    private final static Integer WIDTH_UNO_IMAGE = 200;
+    private final static Integer HEIGHT_UNO_IMAGE = 200;
 
+
+
+    public static Socket socket;
 
     private BufferedImage backgroundImage;
     private JTextField username;
     private JButton playButton;
     private JLabel messageLabel;
-    private JLabel imageLabel;
+    private JLabel UNO_Label;
     private Message message;
     // private Boolean isListening;
     private User user;
@@ -53,27 +58,29 @@ public class homepage extends JFrame {
     // private PrintWriter outStream;
 
     public homepage() throws IOException, ParserConfigurationException, SAXException {
-        // this.isListening = false;
 
         // ininzializzo le informazioni del server
         this.server = new Server();
-    
+        // avvio il sottofondo musicale
         this.playMusic();
-        setTitle("Uno Client");
+        // imposto il titolo al frame
+        setTitle("homepage");
 
         // calcolo le coordinate in base alle percentuali dello schermo
         int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
         int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 
-        setSize((int) (screenWidth * 1), (int) (screenHeight * 1));
+        setSize(800,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        this.backgroundImage = ImageIO.read(new File(rootName + "/img/wallpaper4.jpg"));
+        this.backgroundImage = ImageIO.read(new File(rootName + "\\src\\assets\\backgrounds\\wallpaper.png"));
+        this.resizeBufferedImage(this.backgroundImage, (int) (screenWidth * 0.4), (int) (screenHeight * 0.4));
         // inizializzo una label che contiene l'immagine del titolo
-        this.imageLabel = new JLabel();
+        this.UNO_Label = new JLabel();
         // creo l'oggetto immagine
-        ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File(rootName + "/img/title.png")));
-        this.imageLabel.setIcon(imageIcon);
+        ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File(rootName + "\\src\\assets\\logo.png")));
+        imageIcon =this.initImageIcon(imageIcon, WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
+        this.UNO_Label.setIcon(imageIcon);
 
         // creo un pannello personalizzato per sovrapporre i componenti
         JPanel overlayPanel = new JPanel() {
@@ -91,26 +98,29 @@ public class homepage extends JFrame {
         // imposto la grafica del bottone
         this.initButton();
 
-        this.initLabel();
+        // this.initLabel();
 
         this.initInputText();
-        // creo l'oggetto font che mi serve per impostare il font
-        Font font = new Font("Bauhaus 93", Font.BOLD, 16);
 
         // imposto le posizioni e le dimensioni dei componenti manualmente
         this.setPositions(screenWidth, screenHeight);
 
         // imposto il colore della label
-        // this.messageLabel.setForeground(Color.WHITE);
-        // this.messageLabel.setFont(font);
+        this.UNO_Label.setSize(WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);;
 
         // aggiungo i componenti al pannello di sovrapposizione
-        overlayPanel.add(imageLabel);
-        overlayPanel.add(messageLabel);
+        overlayPanel.add(UNO_Label);
+        // overlayPanel.add(messageLabel);
         overlayPanel.add(username);
         overlayPanel.add(playButton);
-
+        //panel.add(GIF_Label);
         add(overlayPanel);
+
+
+        //this.frame.add(panel);
+        // imposta il frame a schermo intero
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+
         setVisible(true);
 
         // funzione che verifica quando viene premuto il pulsante
@@ -137,6 +147,7 @@ public class homepage extends JFrame {
                     {
                         // se risosta è positiva -> creo l'utente e passo alla seconda finestra
                         this.initUser();
+                        setVisible(false);
                         // creo la gamepage
                         gamepage gp = new gamepage();
                     }
@@ -181,10 +192,9 @@ public class homepage extends JFrame {
      * @param screenHeight
      */
     public void setPositions(int screenWidth, int screenHeight) {
-        this.imageLabel.setBounds((int) (screenWidth * 0.1), (int) (screenHeight * 0.1), 600, 50);
-        this.messageLabel.setBounds(20, (int) (screenHeight * 0.2), 600, 30);
-        this.username.setBounds((int) (screenWidth * 0.30), (int) (screenHeight * 0.2), 200, 40);
-        this.playButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.2), 100, 30);
+        this.UNO_Label.setBounds((int) (screenWidth * 0.4), (int) (screenHeight * 0.1), WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
+        this.username.setBounds((int) (screenWidth * 0.40), (int) (screenHeight * 0.4), 200, 40);
+        this.playButton.setBounds((int) (screenWidth * 0.58), (int) (screenHeight * 0.4), 100, 30);
     }
 
     /**
@@ -218,7 +228,7 @@ public class homepage extends JFrame {
     public void sendMessage(Message message) throws ParserConfigurationException, TransformerException {
         try {
             // creo una connessione TCP con il server
-           // Socket socket = new Socket(this.server.IP, this.server.port);
+           Socket socket = new Socket(this.server.IP, this.server.port);
 
             OutputStream outputStream = socket.getOutputStream();
 
@@ -244,7 +254,7 @@ public class homepage extends JFrame {
         // inizializzo l'oggetto
         this.playButton = new JButton("Gioca");
 
-        this.playButton.setBackground(new Color(0, 128, 255)); // sfondo blu
+        this.playButton.setBackground(new Color(255, 0, 0)); // sfondo blu
         this.playButton.setForeground(Color.WHITE); // testo bianco
         this.playButton.setFont(new Font("Arial", Font.BOLD, 14));
     }
@@ -267,10 +277,43 @@ public class homepage extends JFrame {
     public void initInputText()
     {
         // inizializzo l'oggetto
-        this.username = new JTextField(20);
-        this.username.setBackground(new Color(255, 255, 255, 100)); // sfondo trasparente
+        this.username = new JTextField(15);
+        this.username.setBackground(new Color(255, 255, 255)); // sfondo bianco
         this.username.setForeground(new Color(0, 0, 0)); // testo nero
-        this.username.setFont(new Font("Arial", Font.PLAIN, 14)); // font di dimensione 16
+        this.username.setFont(new Font("Arial", Font.PLAIN, 16)); // font di dimensione 16
+    }
+
+    /**
+     * funzione che imposta la dimensione di una BufferedImage
+     * @param img
+     * @param newW
+     * @param newH
+     * @return bufferedImage con le nuove dimensioni
+     */
+    public BufferedImage resizeBufferedImage(BufferedImage img, Integer width, Integer height) {  
+        int w = img.getWidth();  
+        int h = img.getHeight();  
+        BufferedImage dimg = new BufferedImage(width, height, img.getType());  
+        Graphics2D g = dimg.createGraphics();  
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+        RenderingHints.VALUE_INTERPOLATION_BILINEAR);  
+        g.drawImage(img, 0, 0, width, height, 0, 0, w, h, null);  
+        g.dispose();  
+        return dimg;  
+    }
+    /**
+     * modifica la dimensione della Image Icon
+     * @param i
+     * @param width
+     * @param height
+     * @return
+     */
+    public ImageIcon initImageIcon(ImageIcon i, Integer width, Integer height)
+    {
+        Image image = i.getImage(); // transform it 
+        Image newimg = image.getScaledInstance(width, height,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+        i = new ImageIcon(newimg);  // transform it back
+        return i;
     }
 
 }

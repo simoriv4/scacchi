@@ -23,6 +23,8 @@ public class gamepage extends JFrame {
     private final String rootName = "client2";
     private final String COVER_CARD_PATH = rootName + "\\src\\assets\\card-back.png";
     private final String UNO_PATH = rootName + "\\src\\assets\\logo.png";
+    private final String BACKGROUND_IMAGE_PATH = rootName + "\\src\\assets\\backgrounds\\bgG.png";
+
 
 
 
@@ -89,7 +91,7 @@ public class gamepage extends JFrame {
         setSize(800,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        this.backgroundImage = ImageIO.read(new File(rootName + "\\src\\assets\\backgrounds\\bgG.png"));
+        this.backgroundImage = ImageIO.read(new File(BACKGROUND_IMAGE_PATH));
         this.resizeBufferedImage(this.backgroundImage, (int) (screenWidth * 0.4), (int) (screenHeight * 0.4));
 
         // inizializzo una label che contiene l'immagine del logo

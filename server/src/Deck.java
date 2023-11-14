@@ -127,7 +127,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardNumber();
 
             //metto il colore rosso alla Card
-            card.setColor("rosso");
+            card.setColor("red");
 
             //se i >= 10 
             if(i >= 10)
@@ -150,7 +150,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardNumber();
 
             //metto il colore verde alla Card
-            card.setColor("verde");
+            card.setColor("green");
 
             //se i >= 10 
             if(i >= 10)
@@ -172,7 +172,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardNumber();
 
             //metto il colore giallo alla Card
-            card.setColor("giallo");
+            card.setColor("yellow");
 
             //se i >= 10 
             if(i >= 10)
@@ -194,7 +194,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardNumber();
 
             //metto il colore blu alla Card
-            card.setColor("blu");
+            card.setColor("blue");
 
             //se i >= 10 
             if(i >= 10)
@@ -229,7 +229,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardChangeTurn();
 
             //metto il colore rosso alla Card
-            card.setColor("rosso");
+            card.setColor("red");
 
             //aggiungo la Card al Deck
             deck.add(card);
@@ -243,7 +243,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardChangeTurn();
 
             //metto il colore verde alla Card
-            card.setColor("verde");
+            card.setColor("green");
 
             //aggiungo la Card al Deck
             deck.add(card);
@@ -256,7 +256,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardChangeTurn();
 
             //metto il colore giallo alla Card
-            card.setColor("giallo");
+            card.setColor("yellow");
 
             //aggiungo la Card al Deck
             deck.add(card);
@@ -269,7 +269,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardChangeTurn();
 
             //metto il colore blu alla Card
-            card.setColor("blu");
+            card.setColor("blue");
 
             //aggiungo la Card al Deck
             deck.add(card);
@@ -289,9 +289,6 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
         {
             //creo una CardChangeColor
             Card card = new CardChangeColor();
-
-            //metto il colore rosso alla Card
-            card.setColor("rosso");
 
             //aggiungo la Card al Deck
             deck.add(card);
@@ -317,7 +314,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardBlock();
 
             //metto il colore rosso alla Card
-            card.setColor("rosso");
+            card.setColor("red");
 
             //aggiungo la Card al Deck
             deck.add(card);
@@ -331,7 +328,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardBlock();
 
             //metto il colore verde alla Card
-            card.setColor("verde");
+            card.setColor("green");
 
             //aggiungo la Card al Deck
             deck.add(card);
@@ -344,7 +341,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardBlock();
 
             //metto il colore giallo alla Card
-            card.setColor("giallo");
+            card.setColor("yellow");
 
             //aggiungo la Card al Deck
             deck.add(card);
@@ -357,7 +354,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardBlock();
 
             //metto il colore blu alla Card
-            card.setColor("blu");
+            card.setColor("blue");
 
             //aggiungo la Card al Deck
             deck.add(card);
@@ -383,7 +380,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardAdd2Cards();
 
             //metto il colore rosso alla Card
-            card.setColor("rosso");
+            card.setColor("red");
 
             //aggiungo la Card al Deck
             deck.add(card);
@@ -397,7 +394,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardAdd2Cards();
 
             //metto il colore verde alla Card
-            card.setColor("verde");
+            card.setColor("green");
 
             //aggiungo la Card al Deck
             deck.add(card);
@@ -410,7 +407,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardAdd2Cards();
 
             //metto il colore giallo alla Card
-            card.setColor("giallo");
+            card.setColor("yellow");
 
             //aggiungo la Card al Deck
             deck.add(card);
@@ -423,7 +420,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             Card card = new CardAdd2Cards();
 
             //metto il colore blu alla Card
-            card.setColor("blu");
+            card.setColor("blue");
 
             //aggiungo la Card al Deck
             deck.add(card);
@@ -443,9 +440,6 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
         {
             //creo una CardChangeColor
             Card card = new CardAdd4Cards();
-
-            //metto il colore rosso alla Card
-            card.setColor("rosso");
 
             //aggiungo la Card al Deck
             deck.add(card);

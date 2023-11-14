@@ -6,46 +6,34 @@ import java.util.List;
  */
 public class Deck <E extends Card>  //<E extends Card> --> indica che la classe è generica di tipo Card
 {
-    /*
-     * COSTANTI
-     * 
-     * 19 carte rosse da 1 a 9 (x2 volte) e uno 0
-     * 19 carte verdi da 1 a 9 (x2 volte) e uno 0
-     * 19 carte blu da 1 a 9 (x2 volte) e uno 0
-     * 19 carte gialle da 1 a 9 (x2 volte) e uno 0
-     * 8 carte cambia giro
-     * 8 carte blocca
-     * 8 carte aggiungi carte (+2)
-     * 4 carte aggiungi carte (+4)
-     * 4 carte cambia colore
-    */
+    //COSTANTI
     /**
-     * numero di carte per colore
+     * numero di carte, per colore, da 1 a 9 (x2 volte) e uno 0
      */
     private final static int NUMBER_CARD_NUMBERED = 19;
 
     /**
-     * numero di carte per colore
+     * numero di carte, per colore, cambia giro
      */
-    private final static int NUMBER_CARD_CHANGE_TURN = 2;
+    private final static int NUMBER_CARD_CHANGE_TURN = 2; 
 
     /**
-     * numero di carte per colore
+     * numero di carte, per colore, blocca turno
      */
     private final static int NUMBER_BLOCK_CARD = 2;
 
     /**
-     * numero di carte per colore
+     * numero di carte, per colore, aggiungi 2 carte
      */
-    private final static int NUMBER_ADD_2_CARDS_CARD = 2;
+    private final static int NUMBER_ADD_2_CARDS_CARD = 2;  
 
     /**
-     * numero di carte speciali (non hanno colore)
+     * numero di carte speciali (non hanno colore), aggiungi 4 carte
      */
     private final static int NUMBER_ADD_4_CARDS_CARD = 4;
 
     /**
-     * numero di carte speciali (non hanno colore)
+     * numero di carte speciali (non hanno colore), cambia colore
      */
     private final static int NUMBER_CHANGE_COLOR_CARD = 4;
 
@@ -61,9 +49,6 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
     {
         //creo il Deck generico
         deck = new ArrayList<Card>();
-
-        //riempio il Deck con le carte
-        fillDeck();
     }
 
     /** 
@@ -79,7 +64,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
     /**
      * metodo per riempire il Deck con tutti i tipi di carte del gioco
      */
-    private void fillDeck()
+    public void fillDeck()
     {
         //aggiungo al Deck le carte numerate di tutti i colore
         addNumberCardsToDeck();
@@ -116,88 +101,32 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
      */
     private void addNumberCardsToDeck()
     {
-        /*
-         * 19 carte ( da 1 a 9 (x2 volte) e uno 0 ) rosse
-         * 19 carte ( da 1 a 9 (x2 volte) e uno 0 ) verdi
-         * 19 carte ( da 1 a 9 (x2 volte) e uno 0 ) blu
-         * 19 carte ( da 1 a 9 (x2 volte) e uno 0 ) gialle
-         */
+        //carte red
+        addNumberCardsToDeck("red");
 
-        //carte rosse
+        //carte green
+        addNumberCardsToDeck("green");
+
+        //carte yellow
+        addNumberCardsToDeck("yellow");
+
+        //carte blue
+        addNumberCardsToDeck("blue");
+    }
+
+    /**
+     * metodo per aggiungere al Deck le carte CardNumber del colore passato come parametro
+     */
+    private void addNumberCardsToDeck(String color)
+    {
+        //per tutte le volte che devo aggiungere una carta CardNumber
         for(int i = 0; i < NUMBER_CARD_NUMBERED; i++)
         {
             //creo una CardNumber
             Card card = new CardNumber();
 
             //metto il colore rosso alla Card
-            card.setColor("rosso");
-
-            //se i >= 10 
-            if(i >= 10)
-            {
-                //aggiungo i-9 così da inserire al posto di 10 1, al posto di 11 2, e così via
-                card.setNumber(i - 9);
-            }
-            else    //i < 10 (da 0 1 9)
-                card.setNumber(i);   //aggiugno da 0 a 9
-
-            //aggiungo la Card al Deck
-            deck.add(card);
-        }
-
-
-        //carte verdi
-        for(int i = 0; i < NUMBER_CARD_NUMBERED; i++)
-        {
-            //creo una CardNumber
-            Card card = new CardNumber();
-
-            //metto il colore verde alla Card
-            card.setColor("verde");
-
-            //se i >= 10 
-            if(i >= 10)
-            {
-                //aggiungo i-9 così da inserire al posto di 10 1, al posto di 11 2, e così via
-                card.setNumber(i - 9);
-            }
-            else    //i < 10 (da 0 1 9)
-                card.setNumber(i);   //aggiugno da 0 a 9
-
-            //aggiungo la Card al Deck
-            deck.add(card);
-        }
-
-        //carte gialle
-        for(int i = 0; i < NUMBER_CARD_NUMBERED; i++)
-        {
-            //creo una CardNumber
-            Card card = new CardNumber();
-
-            //metto il colore giallo alla Card
-            card.setColor("giallo");
-
-            //se i >= 10 
-            if(i >= 10)
-            {
-                //aggiungo i-9 così da inserire al posto di 10 1, al posto di 11 2, e così via
-                card.setNumber(i - 9);
-            }
-            else    //i < 10 (da 0 1 9)
-                card.setNumber(i);   //aggiugno da 0 a 9
-
-            //aggiungo la Card al Deck
-            deck.add(card);
-        }
-
-        //carte blu
-        for(int i = 0; i < NUMBER_CARD_NUMBERED; i++)
-        {
-            //creo una CardNumber
-            Card card = new CardNumber();
-
-            //metto il colore blu alla Card
-            card.setColor("blu");
+            card.setColor(color);
 
             //se i >= 10 
             if(i >= 10)
@@ -212,226 +141,124 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             deck.add(card);
         }
     }
+
 
     /**
      * metodo per aggiungere al Deck le carte cambia giro di tutti i colori
      */
     private void addChangeTurnCardsToDeck()
     {
-        /*
-         * 2 carte cambia giro rosse
-         * 2 carte cambia giro verdi
-         * 2 carte cambia giro blu
-         * 2 carte cambia giro gialle
-         */
+        //carte red
+        addChangeTurnCardsToDeck("red");
 
-        //carte rosse
-        for(int i = 0; i < NUMBER_CARD_CHANGE_TURN; i++)
-        {
-            //creo una CardNumber
-            Card card = new CardChangeTurn();
+        //carte green
+        addChangeTurnCardsToDeck("green");
 
-            //metto il colore rosso alla Card
-            card.setColor("rosso");
+        //carte yellow
+        addChangeTurnCardsToDeck("yellow");
 
-            //aggiungo la Card al Deck
-            deck.add(card);
-        }
-
-
-        //carte verdi
-        for(int i = 0; i < NUMBER_CARD_CHANGE_TURN; i++)
-        {
-            //creo una CardNumber
-            Card card = new CardChangeTurn();
-
-            //metto il colore verde alla Card
-            card.setColor("verde");
-
-            //aggiungo la Card al Deck
-            deck.add(card);
-        }
-
-        //carte gialle
-        for(int i = 0; i < NUMBER_CARD_CHANGE_TURN; i++)
-        {
-            //creo una CardNumber
-            Card card = new CardChangeTurn();
-
-            //metto il colore giallo alla Card
-            card.setColor("giallo");
-
-            //aggiungo la Card al Deck
-            deck.add(card);
-        }
-
-        //carte blu
-        for(int i = 0; i < NUMBER_CARD_CHANGE_TURN; i++)
-        {
-            //creo una CardNumber
-            Card card = new CardChangeTurn();
-
-            //metto il colore blu alla Card
-            card.setColor("blu");
-
-            //aggiungo la Card al Deck
-            deck.add(card);
-        }
+        //carte blue
+        addChangeTurnCardsToDeck("blue");
     }
 
     /**
-     * metodo per aggiungere al Deck le carte cambia colore
+     * metodo per aggiungere al Deck le carte CardChangeTurn del colore passato come parametro
      */
-    private void addChangeColorCardsToDeck()
+    private void addChangeTurnCardsToDeck(String color)
     {
-        /*
-         * 4 carte cambia colore
-         */
-
-        for(int i = 0; i < NUMBER_CHANGE_COLOR_CARD; i++)
+        //per tutte le volte che devo aggiungere una carta CardChangeTurn
+        for(int i = 0; i < NUMBER_CARD_CHANGE_TURN; i++)
         {
-            //creo una CardChangeColor
-            Card card = new CardChangeColor();
+            //creo una CardChangeTurn
+            Card card = new CardChangeTurn();
 
-            //metto il colore rosso alla Card
-            card.setColor("rosso");
+            //metto il colore alla Card
+            card.setColor(color);
 
             //aggiungo la Card al Deck
             deck.add(card);
         }
     }
+
+
 
     /**
      * metodo per aggiungere al Deck le carte blocca di tutti i colori
      */
     private void addBlockCardsToDeck()
     {
-        /*
-         * 2 carte blocca rosse
-         * 2 carte blocca verdi
-         * 2 carte blocca blu
-         * 2 carte blocca gialle
-         */
+        //carte red
+        addBlockCardsToDeck("red");
 
-        //carte rosse
+        //carte green
+        addBlockCardsToDeck("green");
+
+        //carte yellow
+        addBlockCardsToDeck("yellow");
+
+        //carte blue
+        addBlockCardsToDeck("blue");
+    }
+
+    /**
+     * metodo per aggiungere al Deck le carte CardBlock del colore passato come parametro
+     */
+    private void addBlockCardsToDeck(String color)
+    {
+        //per tutte le volte che devo aggiungere una carta CardBlock
         for(int i = 0; i < NUMBER_BLOCK_CARD; i++)
         {
-            //creo una CardNumber
+            //creo una CardBlock
             Card card = new CardBlock();
 
-            //metto il colore rosso alla Card
-            card.setColor("rosso");
-
-            //aggiungo la Card al Deck
-            deck.add(card);
-        }
-
-
-        //carte verdi
-        for(int i = 0; i < NUMBER_BLOCK_CARD; i++)
-        {
-            //creo una CardNumber
-            Card card = new CardBlock();
-
-            //metto il colore verde alla Card
-            card.setColor("verde");
-
-            //aggiungo la Card al Deck
-            deck.add(card);
-        }
-
-        //carte gialle
-        for(int i = 0; i < NUMBER_BLOCK_CARD; i++)
-        {
-            //creo una CardNumber
-            Card card = new CardBlock();
-
-            //metto il colore giallo alla Card
-            card.setColor("giallo");
-
-            //aggiungo la Card al Deck
-            deck.add(card);
-        }
-
-        //carte blu
-        for(int i = 0; i < NUMBER_BLOCK_CARD; i++)
-        {
-            //creo una CardNumber
-            Card card = new CardBlock();
-
-            //metto il colore blu alla Card
-            card.setColor("blu");
+            //metto il colore alla Card
+            card.setColor(color);
 
             //aggiungo la Card al Deck
             deck.add(card);
         }
     }
+
+
 
     /**
      * metodo per aggiungere al Deck le carte aggiungi 2 carte di tutti i colori
      */
     private void add_Add2Cards_CardsToDeck()
     {
-        /*
-         * 2 carte aggiugni 2 carte rosse
-         * 2 carte aggiugni 2 carte verdi
-         * 2 carte aggiugni 2 carte blu
-         * 2 carte aggiugni 2 carte gialle
-         */
+        //carte red
+        add_Add2Cards_CardsToDeck("red");
 
-        //carte rosse
+        //carte green
+        add_Add2Cards_CardsToDeck("green");
+
+        //carte yellow
+        add_Add2Cards_CardsToDeck("yellow");
+
+        //carte blue
+        add_Add2Cards_CardsToDeck("blue");
+    }
+
+    /**
+     * metodo per aggiungere al Deck le carte Add2Cards del colore passato come parametro
+     */
+    private void add_Add2Cards_CardsToDeck(String color)
+    {
+        //per tutte le volte che devo aggiungere una carta Add2Cards
         for(int i = 0; i < NUMBER_ADD_2_CARDS_CARD; i++)
         {
-            //creo una CardNumber
+            //creo una CardAdd2Cards
             Card card = new CardAdd2Cards();
 
-            //metto il colore rosso alla Card
-            card.setColor("rosso");
-
-            //aggiungo la Card al Deck
-            deck.add(card);
-        }
-
-
-        //carte verdi
-        for(int i = 0; i < NUMBER_ADD_2_CARDS_CARD; i++)
-        {
-            //creo una CardNumber
-            Card card = new CardAdd2Cards();
-
-            //metto il colore verde alla Card
-            card.setColor("verde");
-
-            //aggiungo la Card al Deck
-            deck.add(card);
-        }
-
-        //carte gialle
-        for(int i = 0; i < NUMBER_ADD_2_CARDS_CARD; i++)
-        {
-            //creo una CardNumber
-            Card card = new CardAdd2Cards();
-
-            //metto il colore giallo alla Card
-            card.setColor("giallo");
-
-            //aggiungo la Card al Deck
-            deck.add(card);
-        }
-
-        //carte blu
-        for(int i = 0; i < NUMBER_ADD_2_CARDS_CARD; i++)
-        {
-            //creo una CardNumber
-            Card card = new CardAdd2Cards();
-
-            //metto il colore blu alla Card
-            card.setColor("blu");
+            //metto il colore alla Card
+            card.setColor(color);
 
             //aggiungo la Card al Deck
             deck.add(card);
         }
     }
+
+
 
     /**
      * metodo per aggiungere al Deck le carte aggiungi 4 carte
@@ -447,28 +274,62 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             //creo una CardChangeColor
             Card card = new CardAdd4Cards();
 
-            //metto il colore rosso alla Card
-            card.setColor("rosso");
+            //aggiungo la Card al Deck
+            deck.add(card);
+        }
+    }
+
+
+
+    /**
+     * metodo per aggiungere al Deck le carte cambia colore
+     */
+    private void addChangeColorCardsToDeck()
+    {
+        //per tutte le volte che devo aggiungere una carta CardChangeColor
+        for(int i = 0; i < NUMBER_CHANGE_COLOR_CARD; i++)
+        {
+            //creo una CardChangeColor
+            Card card = new CardChangeColor();
 
             //aggiungo la Card al Deck
             deck.add(card);
         }
     }
 
+
+
+
     /**
      * metodo per ripopolare il Deck vuoto con le carte nel Deck degli scarti
      * 
      * @param DiscardDeck nuovo Deck da mescolare e usare
      */
-    public void repopulateDeck(List<Card> DiscardDeck)
+    public void repopulateDeck(List<Card> discardDeck)
     {
         /*
          * richiamato solo quando non ci sono più carte quindi Deck.size() = 0 --> già controllato nel metodo che richiama questo metodo
          *
-         * metto le carte degli scarti tranne l'ultima che rimane sul tavolo
+         * metto le carte degli scarti, tranne l'ultima che rimane sul tavolo, nel mazzo
         */
         
-        //.............
+        //scorro le carte scartate tranne l'ultima che rimarrà all'interno del mazzo degli scarti
+        for(int i = 0; i < deck.size() - 1; i++)
+        {
+            //tolgo la carta dal mazzo degli scarti (discardDeck) e la metto nel mazzo da gioco (deck)
+            deck.add(discardDeck.remove(i));
+        }
+
+        /*
+         * mazzo degli scarti con solo l'ultima carta e mazzo da gioco rifatto
+        */
+
+        //mescolo il nuovo Deck in ordine casuale
+        Collections.shuffle(deck);
+        Collections.shuffle(deck);
+        Collections.shuffle(deck);
+        Collections.shuffle(deck);
+        Collections.shuffle(deck);
     }
 
 
@@ -516,19 +377,67 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
     //INIZIO METODI PER MAZZO DEGLI UTENTI (carte che ha in mano)
 
     /**
-     * metodo che ordina le carte in mano dell'utente per colore (rosso, blu, verde, giallo, carte speciali)
+     * metodo che ordina le carte in mano dell'utente per colore (red, blue, green, yellow, carte speciali)
      */
     public void sortCardsByColor()
     {
+        //creo un mazzo temporaneo
+        List<Card> lst = new ArrayList<Card>();
+
         //metto le carte rosse
+        lst.addAll(pickCardsByColor(deck, "red"));
 
         //metto le carte blu
+        lst.addAll(pickCardsByColor(deck, "blue"));
 
         //metto le carte verdi
+        lst.addAll(pickCardsByColor(deck, "green"));
 
         //metto le carte gialle
+        lst.addAll(pickCardsByColor(deck, "yellow"));
 
         //metto le carte speciali
+        //le carti rimanenti nel mazzo sono tutte speciali quindi le inserisco nella lista senza controlli
+        for (Card card : deck)
+        {
+            //aggiugno la carta alla lista
+            lst.add(card);
+
+            //rimuovo la carta dal mazzo così da fare meno controlli dopo
+            deck.remove(card);
+        }
+
+        //il nuovo mazzo diventa la lista appena creata
+        deck = lst;
+    }
+
+    /**
+     * metodo che prende tutte le carte di un colore specifico (yellow, green, red, blue)
+     * @param lst lista di carte da cui prendere le carte
+     * @param color colore della carta da prendere
+     * @return lista contentente le carte di quel colore
+     */
+    private List<Card> pickCardsByColor(List<Card> lst, String color)
+    {
+        //creo un mazzo temporaneo
+        List<Card> tmp = new ArrayList<Card>();
+
+        //per ogni carta nella lista
+        for (Card card : lst)
+        {
+            //controllo il colore
+            if(card.getColor().equals(color))
+            {
+                //inserisco nella lista tmp la carta
+                tmp.add(card);
+
+                //elimino la carta dalla lista lst
+                lst.remove(card);
+            }    
+        }
+
+        //ritorno le carte con quel colore
+        return tmp;
     }
 
     /**
@@ -536,9 +445,81 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
      */
     public void sortCardsByNumber()
     {
-        //ordino i numeri
+        //creo un mazzo temporaneo
+        List<Card> lst = new ArrayList<Card>();
 
-        //metto le carte senza numero e speciali
+        //metto gli 0
+        lst.addAll(pickCardsByNumber(deck, 0));
+
+        //metto gli 1
+        lst.addAll(pickCardsByNumber(deck, 1));
+
+        //metto gli 2
+        lst.addAll(pickCardsByNumber(deck, 2));
+
+        //metto gli 3
+        lst.addAll(pickCardsByNumber(deck, 3));
+
+        //metto gli 4
+        lst.addAll(pickCardsByNumber(deck, 4));
+
+        //metto gli 5
+        lst.addAll(pickCardsByNumber(deck, 5));
+
+        //metto gli 6
+        lst.addAll(pickCardsByNumber(deck, 6));
+
+        //metto gli 7
+        lst.addAll(pickCardsByNumber(deck, 7));
+
+        //metto gli 8
+        lst.addAll(pickCardsByNumber(deck, 8));
+
+        //metto gli 9
+        lst.addAll(pickCardsByNumber(deck, 9));
+
+        //metto le carte senza numero e speciali speciali
+        //le carti rimanenti nel mazzo sono tutte senza numero e speciali quindi le inserisco nella lista senza controlli
+        for (Card card : deck)
+        {
+            //aggiugno la carta alla lista
+            lst.add(card);
+
+            //rimuovo la carta dal mazzo così da fare meno controlli dopo
+            deck.remove(card);
+        }
+
+        //il nuovo mazzo diventa la lista appena creata
+        deck = lst;
+    }
+
+    /**
+     * metodo che prende tutte le carte di un numero specifico (1 -> 9) 
+     * @param lst lista di carte da cui prendere le carte
+     * @param number numero della carta da prendere
+     * @return lista contentente le carte di quel numero
+     */
+    private List<Card> pickCardsByNumber(List<Card> lst, int number)
+    {
+        //creo un mazzo temporaneo
+        List<Card> tmp = new ArrayList<Card>();
+
+        //per ogni carta nella lista
+        for (Card card : lst)
+        {
+            //controllo il numero
+            if(card.getNumber() == number)
+            {
+                //inserisco nella lista tmp la carta
+                tmp.add(card);
+
+                //elimino la carta dalla lista lst
+                lst.remove(card);
+            }    
+        }
+
+        //ritorno le carte con quel numero
+        return tmp;
     }
 
     //FINE METODI PER MAZZO DEGLI UTENTI (carte che ha in mano)

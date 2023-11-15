@@ -22,7 +22,7 @@ public class ThreadClient extends Thread {
 
     public ThreadClient(User u) throws UnknownHostException, IOException {
         this.user = u;
-        // creo la socket che per il client
+        // creo la socket per il client
         Socket socket = new Socket(this.user.IP, this.user.port);
         this.communication = new Communication(socket);
     }

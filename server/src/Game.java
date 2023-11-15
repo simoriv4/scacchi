@@ -44,12 +44,16 @@ public class Game
         // metto in ascolto il server
         while (true) {
             Socket clientSocket = serverSocket.accept(); // Bloccante, aspetta una connessione
-            System.out.println("Nuova connessione da: " + clientSocket.getInetAddress().getHostAddress());
+            //System.out.println("Nuova connessione da: " + clientSocket.getInetAddress().getHostAddress());
 
             // Crea un oggetto di comunicazione per gestire la connessione con il client
             Communication communication = new Communication(clientSocket);
 
-            ThreadClient client1= new ThreadClient(new User());  // NEW USER() E' TEMPORANEO--> BISOGNA PASSARE IL CLIENT CORRISPONDENTE
+            // UTENTE TEST!!!
+            User tmp = new User();
+            tmp.port = 666;
+
+            ThreadClient client1= new ThreadClient(tmp);  // NEW USER() E' TEMPORANEO--> BISOGNA PASSARE IL CLIENT CORRISPONDENTE
              // avvio il thread per la gestione della comunicazione con il client
             client1.start();
         

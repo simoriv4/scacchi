@@ -18,11 +18,12 @@ import java.net.URISyntaxException;
 import java.awt.event.*;
 
 public class gamepage extends JFrame {
-    private final String rootName = "client";
-    private final String COVER_CARD_PATH = rootName + "\\src\\assets\\card-back.png";
-    private final String UNO_PATH = rootName + "\\src\\assets\\logo.png";
-    private final String BACKGROUND_IMAGE_PATH = rootName + "\\src\\assets\\backgrounds\\bgG.png";
-    private final String MUTE_PATH = rootName + "\\src\\assets\\mute.png";
+    // private final String rootName = "client";
+    private final String COVER_CARD_PATH = "src\\assets\\card-back.png";
+    private final String UNO_PATH = "src\\assets\\logo.png";
+    private final String BACKGROUND_IMAGE_PATH = "src\\assets\\backgrounds\\bgG.png";
+    private final String MUTE_PATH = "src\\assets\\mute.png";
+    private final String MUSIC_PATH = "audio\\UNO_track.wav";
 
     private final String ROULES_COMBOBOX = "Regolamento";
     private final String QUIT_COMBOBOX = "Esci";
@@ -84,7 +85,7 @@ public class gamepage extends JFrame {
         this.server = new Server();
         // salvo le informazioni dell'utente
         this.user = user;
-        // this.socket = new Socket(this.server.IP, this.server.port);
+        this.socket = new Socket(this.server.IP, this.server.port);
         this.comunication = new Communication(this.socket);
 
         // avvio il sottofondo musicale
@@ -237,7 +238,7 @@ public class gamepage extends JFrame {
             this.clip = AudioSystem.getClip();
 
             // apro il file audio
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(rootName + "/audio/UNO_track.wav"));
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(MUSIC_PATH));
             clip.open(audioStream);
 
             // riproduco l'audio in loop

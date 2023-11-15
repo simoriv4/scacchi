@@ -17,10 +17,10 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 public class homepage extends JFrame {
-    private final String rootName = "client";
-    private final String UNO_PATH = rootName + "\\src\\assets\\logo.png";
-    private final String BACKGROUND_IMAGE_PATH = rootName + "\\src\\assets\\backgrounds\\wallpaper.png";
-    private final String SONG_PATH = rootName + "\\audio\\UNO_track.wav";
+    // private final String rootName = "client";
+    private final String UNO_PATH = "src\\assets\\logo.png";
+    private final String BACKGROUND_IMAGE_PATH = "src\\assets\\backgrounds\\wallpaper.png";
+    private final String SONG_PATH = "audio\\UNO_track.wav";
 
     // lista comandi
     private final String start = "start";

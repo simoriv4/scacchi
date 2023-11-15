@@ -49,7 +49,7 @@ public class homepage extends JFrame {
     // private Boolean isListening;
     private User user;
 
-    private Comunication comunication;
+    private Communication comunication;
 
     private Server server;
 
@@ -65,7 +65,7 @@ public class homepage extends JFrame {
         // creo una connessione TCP con il server
        // this.socket = new Socket(this.server.IP, this.server.port);
 
-        this.comunication = new Comunication(socket);
+        this.comunication = new Communication(socket);
         // avvio il sottofondo musicale
         this.playMusic();
         // imposto il titolo al frame

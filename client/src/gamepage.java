@@ -73,7 +73,7 @@ public class gamepage extends JFrame {
     private User user;
     private Server server;
 
-    final Comunication comunication;
+    final Communication comunication;
 
     // Streams
     // private BufferedReader inStream;
@@ -85,7 +85,7 @@ public class gamepage extends JFrame {
         // salvo le informazioni dell'utente
         this.user = user;
         // this.socket = new Socket(this.server.IP, this.server.port);
-        this.comunication = new Comunication(this.socket);
+        this.comunication = new Communication(this.socket);
 
         // avvio il sottofondo musicale
         this.playMusic();

@@ -25,13 +25,16 @@ class Message {
     String username;
     String message;
 
+    Boolean isUno;
+
     /**
      * costruttore parametrico
      * 
      * @param command
      * @param message
      */
-    public Message(String command, String username, String message) {
+    public Message( Boolean isUno,String command, String username, String message) {
+        this.isUno = isUno;
         this.command = command;
         this.username = username;
         this.message = message;
@@ -41,6 +44,7 @@ class Message {
      * costruttore non parametrico
      */
     public Message() {
+        this.isUno = false;
         this.command = "";
         this.message = "";
         this.username = "username";
@@ -65,6 +69,8 @@ class Message {
         root.appendChild(serializeCommand(d));
         root.appendChild(serializeUsername(d));
         root.appendChild(serializeMessage(d));
+        root.appendChild(serializeIsUno(d));
+
 
         // aggiungo la root al documento
         d.appendChild(root);
@@ -80,6 +86,15 @@ class Message {
         return xmlString;
     }
 
+    /**
+     * creo il nodo da aggiungere alla root
+     * @param d
+     * @return il nodo creato
+     */
+    public Node serializeIsUno(Document d) {
+        Node isUno = d.createElement("isUno");
+        return isUno;
+    }
     /**
      * creo il nodo da aggiungere alla root
      * @param d
@@ -128,6 +143,17 @@ class Message {
         this.command = this.unserializeCommand(d);
         this.message = this.unserializeMessage(d);
         this.username = this.unserializeUsername(d);
+        this.isUno = this.unserializeIsUno(d);
+
+    }
+    /**
+     * funzione che converte il tag XML command in stringa
+     * @param d
+     * @return il contenuto del tag XML command
+     */
+    public Boolean unserializeIsUno(Document d) {
+        NodeList nl = d.getElementsByTagName("command");
+        return Boolean.parseBoolean(nl.item(0).getTextContent());
     }
     /**
      * funzione che converte il tag XML command in stringa
@@ -138,6 +164,7 @@ class Message {
         NodeList nl = d.getElementsByTagName("command");
         return nl.item(0).getTextContent();
     }
+    
 
     /**
      * funzione che converte il tag XML message in stringa

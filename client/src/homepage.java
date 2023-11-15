@@ -10,14 +10,11 @@ import org.xml.sax.SAXException;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class homepage extends JFrame {
     private final String rootName = "client";
@@ -82,7 +79,7 @@ public class homepage extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         this.backgroundImage = ImageIO.read(new File(BACKGROUND_IMAGE_PATH));
-        this.resizeBufferedImage(this.backgroundImage, (int) (screenWidth * 0.4), (int) (screenHeight * 0.4));
+        //this.resizeBufferedImage(this.backgroundImage, (int) (screenWidth * 0.4), (int) (screenHeight * 0.4));
         // inizializzo una label che contiene l'immagine del titolo
         this.UNO_Label = new JLabel();
         // creo l'oggetto immagine
@@ -138,7 +135,7 @@ public class homepage extends JFrame {
                     // quando premo il pulsante GIOCA mando una richiesta al server di aggiungere il
                     // client ad una nuova partita-->se non ci sono altri client rimane in attesa
                     // setto il messaggio da inviare
-                    message = new Message(start, username.getText(), "");
+                    message = new Message(false, start, username.getText(), "");
                     // invio il messaggio al server
                     this.comunication.sendMessage(message);
 
@@ -155,7 +152,7 @@ public class homepage extends JFrame {
                     jl.setBounds((int) (screenWidth * 0.4), (int) (screenHeight * 0.8), 300, 300);
                     overlayPanel.add(jl);
                     add(overlayPanel);
-                    
+
                     message.InitMessageFromStringXML(response);
 
                     if(message.message == CORRECT)
@@ -188,23 +185,6 @@ public class homepage extends JFrame {
         this.user = new User();
         this.user.userName =username;
 
-    }
-
-    /**
-     * funzione che rimane in ascolto fino a quando il server invia una risposta
-     * @return 
-     * @throws UnknownHostException
-     * @throws IOException
-     */
-    private String listening() throws UnknownHostException, IOException {
-        InputStreamReader streamReader = new InputStreamReader(this.socket.getInputStream());
-        BufferedReader reader = new BufferedReader(streamReader);
-
-        //Get the response message and print it to console
-        String responseMessage;
-        while ((responseMessage = reader.readLine()) != null) 
-        reader.close();
-        return responseMessage;
     }
 
     /**

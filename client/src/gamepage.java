@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.w3c.dom.events.MouseEvent;
 import org.xml.sax.SAXException;
 
 import java.awt.*;
@@ -17,13 +18,18 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.awt.*;
+import java.awt.event.*;
+
 
 public class gamepage extends JFrame {
     private final String rootName = "client";
     private final String COVER_CARD_PATH = rootName + "\\src\\assets\\card-back.png";
     private final String UNO_PATH = rootName + "\\src\\assets\\logo.png";
     private final String BACKGROUND_IMAGE_PATH = rootName + "\\src\\assets\\backgrounds\\bgG.png";
+    private final String MUTE_PATH = rootName + "\\src\\assets\\mute.png";
 
 
 
@@ -32,6 +38,8 @@ public class gamepage extends JFrame {
     private final String skip = "skip";
     private final String uno = "uno";
     private final String play = "play";
+    private final String draw = "draw";
+
 
 
     // messaggi di risposta
@@ -45,22 +53,24 @@ public class gamepage extends JFrame {
     private final static Integer WIDTH_UNO_IMAGE = 150;
     private final static Integer HEIGHT_UNO_IMAGE = 150;
 
-    private final static Integer WIDTH_CARDS= 150;
-    private final static Integer HEIGHT_CARDS = 200;
+    private final static Integer WIDTH_CARDS= 100;
+    private final static Integer HEIGHT_CARDS = 150;
 
 
 
-    public static Socket socket;
+    public Socket socket;
 
     private BufferedImage backgroundImage;
     private JButton playButton;
     private JButton quitButton;
     private JButton unoButton;
-    private JButton drawButton;
+    private JButton discardButton;
     private JButton skipButton;
     private JLabel UNO_Label;
     private JLabel deck_Label;
     private JLabel discarded_Label;
+    private JComboBox<String> combobox;
+
 
     private Message message;
     // private Boolean isListening;
@@ -68,16 +78,21 @@ public class gamepage extends JFrame {
 
     private Server server;
 
-
+    final Comunication comunication;
 
     // Streams
     // private BufferedReader inStream;
     // private PrintWriter outStream;
 
-    public gamepage() throws IOException, ParserConfigurationException, SAXException {
-
+    public gamepage(User user) throws IOException, ParserConfigurationException, SAXException {
         // ininzializzo le informazioni del server
         this.server = new Server();
+        // salvo le informazioni dell'utente
+        this.user = user;
+       //this.socket = new Socket(this.server.IP, this.server.port);
+       this.comunication = new Comunication(this.socket);
+
+
         // avvio il sottofondo musicale
         this.playMusic();
         // imposto il titolo al frame
@@ -97,7 +112,6 @@ public class gamepage extends JFrame {
         // inizializzo una label che contiene l'immagine del logo
         this.UNO_Label =  this.initImageLabel(this.UNO_Label, UNO_PATH, WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
         this.deck_Label =  this.initImageLabel(this.deck_Label, COVER_CARD_PATH, WIDTH_CARDS, HEIGHT_CARDS);
-
 
         // creo un pannello personalizzato per sovrapporre i componenti
         JPanel overlayPanel = new JPanel() {
@@ -120,6 +134,27 @@ public class gamepage extends JFrame {
         this.initDrawButton();
 
         
+        //menu a tendina
+        String[] opzioniMenu = {"","Esci", "Regolamento", "Disattiva/attiva audio"};
+        combobox = new JComboBox<>(opzioniMenu);
+        combobox.setPreferredSize(new Dimension(200, 40));
+        combobox.setFont(new Font("Arial", Font.PLAIN, 17));
+
+        combobox.setBounds((int) (screenWidth * 0.8), (int) (screenHeight * 0.1), 180, 30);
+
+        //regolamento
+        combobox.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                try {
+                    actionRules();
+                } catch (IOException | URISyntaxException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
 
         // this.initLabel();
 
@@ -133,10 +168,12 @@ public class gamepage extends JFrame {
         overlayPanel.add(this.UNO_Label);
         overlayPanel.add(this.deck_Label);
         overlayPanel.add(this.playButton);
-        overlayPanel.add(this.drawButton);
-        overlayPanel.add(this.quitButton);
+        overlayPanel.add(this.discardButton);
+        // overlayPanel.add(this.quitButton);
         overlayPanel.add(this.skipButton);
         overlayPanel.add(this.unoButton);
+        overlayPanel.add(combobox);
+
 
         add(overlayPanel);
 
@@ -145,19 +182,36 @@ public class gamepage extends JFrame {
         // imposta il frame a schermo intero
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
-    }
 
-    private String listening() throws UnknownHostException, IOException {
-        Socket s = new Socket(this.server.IP, this.server.port);
+        // controllo il mouse click sul mazzo girato--> per pescare la carta
+        this.deck_Label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                // quando viene cliccato il mazzo richiede al server di pescare la carta
 
-        InputStreamReader streamReader = new InputStreamReader(s.getInputStream());
-        BufferedReader reader = new BufferedReader(streamReader);
+                // invio il messaggio al server
+                try {
+                    comunication.sendMessage(message);
+                    // aspetto la risposta
+                    String response = comunication.listening();
+                    // <root_message>
+                    //     <command>response</command>
+                    //     <message>200</message>
+                    //     <username>username</username>
+                    // </root_message>
+                    // setto il messaggio da inviare
+                    message = new Message(draw, user.userName, "");
+                    message.InitMessageFromStringXML(response);
+                } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
 
-        //Get the response message and print it to console
-        String responseMessage;
-        while ((responseMessage = reader.readLine()) != null) 
-        reader.close();
-        return responseMessage;
+
+
+            }
+        });
+        
     }
 
     /**
@@ -169,10 +223,10 @@ public class gamepage extends JFrame {
     public void setPositions(int screenWidth, int screenHeight) {
         this.UNO_Label.setBounds(0, 0, WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
         this.deck_Label.setBounds((int) (screenWidth * 0.4), (int) (screenHeight * 0.4), WIDTH_CARDS, HEIGHT_CARDS);
-        this.playButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.4), 120, 30);
-        this.quitButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.5), 100, 30);
+        this.playButton.setBounds((int) (screenWidth * 0.60), (int) (screenHeight * 0.5), 120, 30);
+        this.quitButton.setBounds((int) (screenWidth * 0.9), (int) (screenHeight * 0.1), 100, 30);
         this.skipButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.6), 100, 30);
-        this.drawButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.7), 100, 30);
+        this.discardButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.7), 100, 30);
         this.unoButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.8), 100, 30);
 
     }
@@ -207,9 +261,6 @@ public class gamepage extends JFrame {
      */
     public void sendMessage(Message message) throws ParserConfigurationException, TransformerException {
         try {
-            // creo una connessione TCP con il server
-           Socket socket = new Socket(this.server.IP, this.server.port);
-
             OutputStream outputStream = socket.getOutputStream();
 
             // creo un oggetto OutputStreamWriter per inviare dati al server
@@ -219,8 +270,6 @@ public class gamepage extends JFrame {
             writer.write(message.serialize());
             writer.flush(); // scrivo e svuoto il buffer
 
-            // chiduo la connessione
-            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -284,11 +333,11 @@ public class gamepage extends JFrame {
     public void initDrawButton()
     {
         // inizializzo l'oggetto
-        this.drawButton = new JButton("Scarta");
+        this.discardButton = new JButton("Scarta");
 
-        this.drawButton.setBackground(new Color(0,162,174)); // sfondo azzuro
-        this.drawButton.setForeground(Color.WHITE); // testo bianco
-        this.drawButton.setFont(new Font("Arial", Font.BOLD, 14));
+        this.discardButton.setBackground(new Color(0,162,174)); // sfondo azzuro
+        this.discardButton.setForeground(Color.WHITE); // testo bianco
+        this.discardButton.setFont(new Font("Arial", Font.BOLD, 14));
     }
 
     /**
@@ -342,6 +391,17 @@ public class gamepage extends JFrame {
         Image newimg = image.getScaledInstance(width, height,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
         i = new ImageIcon(newimg);  // transform it back
         return i;
+    }
+
+    private void actionRules() throws IOException, URISyntaxException 
+    {
+        if ("Regolamento".equals(this.combobox.getSelectedItem())) 
+        {            
+            JFrame f= new JFrame("Regolamento");
+            f.setSize(800,600);
+
+            f.setVisible(true);
+        }
     }
 
 }

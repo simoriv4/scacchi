@@ -21,7 +21,7 @@ import java.net.UnknownHostException;
 
 public class homepage extends JFrame {
     private final String rootName = "client";
-    private final String UNO_PATH = rootName + "\\src\\assets\\card-back.png";
+    private final String UNO_PATH = rootName + "\\src\\assets\\logo.png";
     private final String BACKGROUND_IMAGE_PATH = rootName + "\\src\\assets\\backgrounds\\wallpaper.png";
     private final String SONG_PATH = rootName + "\\audio\\UNO_track.wav";
 
@@ -41,7 +41,7 @@ public class homepage extends JFrame {
 
 
 
-    public static Socket socket;
+    public Socket socket;
 
     private BufferedImage backgroundImage;
     private JTextField username;
@@ -52,6 +52,8 @@ public class homepage extends JFrame {
     // private Boolean isListening;
     private User user;
 
+    private Comunication comunication;
+
     private Server server;
 
 
@@ -61,9 +63,12 @@ public class homepage extends JFrame {
     // private PrintWriter outStream;
 
     public homepage() throws IOException, ParserConfigurationException, SAXException {
-
         // ininzializzo le informazioni del server
         this.server = new Server();
+        // creo una connessione TCP con il server
+       // this.socket = new Socket(this.server.IP, this.server.port);
+
+        this.comunication = new Comunication(socket);
         // avvio il sottofondo musicale
         this.playMusic();
         // imposto il titolo al frame
@@ -135,24 +140,31 @@ public class homepage extends JFrame {
                     // setto il messaggio da inviare
                     message = new Message(start, username.getText(), "");
                     // invio il messaggio al server
-                    sendMessage(message);
+                    this.comunication.sendMessage(message);
 
                     // aspetto la risposta
-                    String response = listening();
+                    String response = this.comunication.listening();
                     // <root_message>
                         // <command>response</command>
                         // <message>200</message>
                         // <username>username</username>
                     // </root_message>
+
+                    // fccio comparire messaggio di attesa
+                    JLabel jl = new JLabel("RICERCA PARTITA...");
+                    jl.setBounds((int) (screenWidth * 0.4), (int) (screenHeight * 0.8), 300, 300);
+                    overlayPanel.add(jl);
+                    add(overlayPanel);
+                    
                     message.InitMessageFromStringXML(response);
 
                     if(message.message == CORRECT)
                     {
                         // se risosta è positiva -> creo l'utente e passo alla seconda finestra
-                        this.initUser();
+                        this.initUser(username.getText());
                         setVisible(false);
                         // creo la gamepage
-                        gamepage gp = new gamepage();
+                        gamepage gp = new gamepage(user);
                     }
                     else{
                         // messaggio di errore
@@ -172,13 +184,20 @@ public class homepage extends JFrame {
         });
     }
 
-    private void initUser() {
+    private void initUser(String username) {
+        this.user = new User();
+        this.user.userName =username;
+
     }
 
+    /**
+     * funzione che rimane in ascolto fino a quando il server invia una risposta
+     * @return 
+     * @throws UnknownHostException
+     * @throws IOException
+     */
     private String listening() throws UnknownHostException, IOException {
-        Socket s = new Socket(this.server.IP, this.server.port);
-
-        InputStreamReader streamReader = new InputStreamReader(s.getInputStream());
+        InputStreamReader streamReader = new InputStreamReader(this.socket.getInputStream());
         BufferedReader reader = new BufferedReader(streamReader);
 
         //Get the response message and print it to console
@@ -230,8 +249,6 @@ public class homepage extends JFrame {
      */
     public void sendMessage(Message message) throws ParserConfigurationException, TransformerException {
         try {
-            // creo una connessione TCP con il server
-           Socket socket = new Socket(this.server.IP, this.server.port);
 
             OutputStream outputStream = socket.getOutputStream();
 

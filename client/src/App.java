@@ -16,6 +16,6 @@ public class App {
         //     e.printStackTrace();
         // }
 
-        gamepage gp = new gamepage();
+        gamepage gp = new gamepage(new User());
     }
 }

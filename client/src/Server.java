@@ -12,7 +12,7 @@ import org.xml.sax.SAXException;
 
 public class Server {
     // classe che contiene le informazioni del server--> caricate dal file xml
-    private final String rootName = "client2";
+    private final String rootName = "client";
 
     // costante nome file
     private final String XML_PATH = rootName + "/configServer.xml";

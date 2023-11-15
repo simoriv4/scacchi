@@ -7,10 +7,10 @@ import java.net.Socket;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-public class Comunication {
+public class Communication {
     
     private Socket socket;
-    public Comunication(Socket s)
+    public Communication(Socket s)
     {
         this.socket = s;
     }

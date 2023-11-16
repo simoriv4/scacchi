@@ -51,6 +51,25 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
         deck = new ArrayList<Card>();
     }
 
+    /**
+     * metodo per aggiungere una carta al Deck
+     * 
+     * @param card carta da aggiungere al deck
+     */
+    public void addCard(Card card)
+    {
+        deck.add(card);
+    }
+
+    /**
+     * metodo per ottenere la prima carta del mazzo
+     * @return prima carta del mazzo
+     */
+    public Card getCard()
+    {
+        return deck.remove(0);
+    }
+
     /** 
      * metodo per sapere quante carte rimangono nel Deck
      * 

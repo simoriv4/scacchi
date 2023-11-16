@@ -1,4 +1,5 @@
-public class User {
+public class User
+{
     public Integer port;
     // bolleana che permette di capire se sia il turno di questo utente
     public Boolean round;
@@ -9,6 +10,8 @@ public class User {
 
     public String IP;
     public String userName;
+
+    public Deck<Card> cards;
 
     /**
      * costruttore parametrico
@@ -26,6 +29,8 @@ public class User {
         this.IP = IP;
         this.userName = userName;
         this.isUno = isUno;
+
+        cards = new Deck<Card>();
     }
     /**
      * costruttore non parametrico
@@ -39,5 +44,13 @@ public class User {
         this.userName = "userName";
     }
 
-    
+    /**
+     * metodo per aggiungere una carta alle carte dell'utente
+     * 
+     * @param card carta da aggiungere alle carte dell'utente
+     */
+    public void addCard(Card card)
+    {
+        cards.addCard(card);
+    }
 }

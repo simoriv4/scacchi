@@ -39,25 +39,26 @@ public class Game
 
         //creo il mazzo degli scarti
         discardedCards = new Deck<Card>();
-        // inizializzo la socket del server
-        serverSocket = new ServerSocket(666);
-        // metto in ascolto il server
-        while (true) {
-            Socket clientSocket = serverSocket.accept(); // Bloccante, aspetta una connessione
-            //System.out.println("Nuova connessione da: " + clientSocket.getInetAddress().getHostAddress());
 
-            // Crea un oggetto di comunicazione per gestire la connessione con il client
-            Communication communication = new Communication(clientSocket);
+    //     // inizializzo la socket del server
+    //     serverSocket = new ServerSocket(666);
+    //     // metto in ascolto il server
+    //     // while (true) {
+    //         Socket clientSocket = serverSocket.accept(); // Bloccante, aspetta una connessione
+    //         //System.out.println("Nuova connessione da: " + clientSocket.getInetAddress().getHostAddress());
 
-            // UTENTE TEST!!!
-            User tmp = new User();
-            tmp.port = 666;
+    //         // Crea un oggetto di comunicazione per gestire la connessione con il client
+    //         // Communication communication = new Communication(clientSocket);
 
-            ThreadClient client1= new ThreadClient(tmp);  // NEW USER() E' TEMPORANEO--> BISOGNA PASSARE IL CLIENT CORRISPONDENTE
-             // avvio il thread per la gestione della comunicazione con il client
-            client1.start();
+    //         // UTENTE TEST!!!
+    //         User tmp = new User();
+    //         tmp.port = 666;
+
+    //         ThreadClient client1= new ThreadClient(tmp);  // NEW USER() E' TEMPORANEO--> BISOGNA PASSARE IL CLIENT CORRISPONDENTE
+    //          // avvio il thread per la gestione della comunicazione con il client
+    //         client1.start();
         
-    }
+    // // }
         
     }
 

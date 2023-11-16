@@ -29,20 +29,31 @@ public class ThreadClient extends Thread {
 
     public void run() {
         try {
-            // faccio rimanere in ascolto il thread alla porta del client
-            String message = this.communication.listening();
-            Message m = new Message();
-            // unserializzo la stringa XML nell'oggetto messaggio
-            m.InitMessageFromStringXML(message);
-            this.ControlOperation(m);
-            Message replyMessage = new Message(/* Contenuto della risposta */);
-            this.communication.sendMessage(replyMessage);
-
-            // // chiudo la connessione
-            // communication.terminateConnection();
+            while (true) {
+                // faccio rimanere in ascolto del messaggio dal client
+                String message = this.communication.listening();
+                Message m = new Message();
+                // unsrializzo la stringa XML nell'oggetto messaggio
+                m.InitMessageFromStringXML(message);
+                this.ControlOperation(m);
+                
+                
+                Message replyMessage = new Message(false, "replyCommand", "server", "Reply message");
+                this.communication.sendMessage(replyMessage);
+                
+                // if (message.equals("quit")) {
+                //     break;
+                // }
+            }
         } catch (IOException | ParserConfigurationException | TransformerException | SAXException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+        } finally {
+            try {
+                // Chiudi la connessione alla fine
+                communication.terminateConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

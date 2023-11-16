@@ -63,7 +63,7 @@ public class homepage extends JFrame {
         // ininzializzo le informazioni del server
         this.server = new Server();
         // creo una connessione TCP con il server
-       // this.socket = new Socket(this.server.IP, this.server.port);
+       this.socket = new Socket(this.server.IP, this.server.port);
 
         this.comunication = new Communication(socket);
         // avvio il sottofondo musicale

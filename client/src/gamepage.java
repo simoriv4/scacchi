@@ -31,11 +31,13 @@ public class gamepage extends JFrame {
     private final String MUSIC_ON_COMBOBOX = "Attiva audio";
 
     // lista comandi
-    private final String skip = "skip";
-    private final String uno = "uno";
-    private final String play = "play";
-    private final String draw = "draw";
-    private final String quit = "quit";
+    private final String SKIP = "skip";
+    private final String UNO = "uno";
+    private final String PLAY = "play";
+    private final String DRAW = "draw";
+    private final String QUIT = "quit";
+    private final static String SORT_BY_NUMBER = "sortByNumber";
+    private final static String SORT_BY_COLOR = "sortByColor"; 
 
 
     // messaggi di risposta
@@ -56,10 +58,13 @@ public class gamepage extends JFrame {
 
     private BufferedImage backgroundImage;
     private JButton playButton;
-    private JButton quitButton;
     private JButton unoButton;
     private JButton discardButton;
     private JButton skipButton;
+    private JButton sortbyNumberButton;
+    private JButton sortbyColorButton;
+    private JButton viewOneColorButton; // permette di vedere le carte di un solo colore
+    private JButton viewOneNumberButton; // permette di vedere le carte di uno specifico numero
     private JLabel UNO_Label;
     private JLabel deck_Label;
     private JLabel discarded_Label;
@@ -74,7 +79,7 @@ public class gamepage extends JFrame {
     private User user;
     private Server server;
 
-    final Communication comunication;
+    final Communication communication;
 
     // Streams
     // private BufferedReader inStream;
@@ -85,8 +90,8 @@ public class gamepage extends JFrame {
         this.server = new Server();
         // salvo le informazioni dell'utente
         this.user = user;
-        this.socket = new Socket(this.server.IP, this.server.port);
-        this.comunication = new Communication(this.socket);
+        // this.socket = new Socket(this.server.IP, this.server.port);
+        this.communication = new Communication(this.socket);
 
         // avvio il sottofondo musicale
         this.playMusic();
@@ -124,10 +129,12 @@ public class gamepage extends JFrame {
 
         // imposto la grafica del bottone
         this.initSkipButton();
-        this.initQuitButton();
         this.initPlayButton();
         this.initUnoButton();
         this.initDrawButton();
+        this.initSortByColorButton();
+        this.initSortByNumberButton();
+
 
         // istanzio un vettore con le opzioni della combobox
         String[] options = { "", QUIT_COMBOBOX, ROULES_COMBOBOX, MUSIC_OFF_COMBOBOX };
@@ -148,6 +155,8 @@ public class gamepage extends JFrame {
         overlayPanel.add(this.discardButton);
         // overlayPanel.add(this.quitButton);
         overlayPanel.add(this.skipButton);
+        overlayPanel.add(this.sortbyColorButton);
+        overlayPanel.add(this.sortbyNumberButton);
         overlayPanel.add(this.unoButton);
         overlayPanel.add(combobox);
 
@@ -166,16 +175,16 @@ public class gamepage extends JFrame {
 
                 // invio il messaggio al server
                 try {
-                    comunication.sendMessage(message);
+                    communication.sendMessage(message);
                     // aspetto la risposta
-                    String response = comunication.listening();
+                    String response = communication.listening();
                     // <root_message>
                     // <command>response</command>
                     // <message>200</message>
                     // <username>username</username>
                     // </root_message>
                     // setto il messaggio da inviare
-                    message = new Message(user.isUno, draw, user.userName, "");
+                    message = new Message(user.isUno, DRAW, user.userName, "");
                     message.InitMessageFromStringXML(response);
                 } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
                     // TODO Auto-generated catch block
@@ -187,6 +196,13 @@ public class gamepage extends JFrame {
 
     }
 
+    /**
+     * inizializza la combobox con le opzioni disponibili
+     * @param a
+     * @param overlayPanel
+     * @param screenWidth
+     * @param screenHeight
+     */
     public void initCombobox(String[] a, JPanel overlayPanel, Integer screenWidth, Integer screenHeight)
     {
         // coombobox
@@ -205,7 +221,7 @@ public class gamepage extends JFrame {
                 try {
                     // controllo quale opzione è stata selezionata
                     controlSelection(overlayPanel);
-                } catch (IOException | URISyntaxException ex) {
+                } catch (IOException | URISyntaxException | SAXException ex) {
                     ex.printStackTrace();
                 }
             }
@@ -222,11 +238,11 @@ public class gamepage extends JFrame {
         this.UNO_Label.setBounds(0, 0, WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
         this.deck_Label.setBounds((int) (screenWidth * 0.4), (int) (screenHeight * 0.4), WIDTH_CARDS, HEIGHT_CARDS);
         this.playButton.setBounds((int) (screenWidth * 0.60), (int) (screenHeight * 0.5), 120, 30);
-        this.quitButton.setBounds((int) (screenWidth * 0.9), (int) (screenHeight * 0.1), 100, 30);
         this.skipButton.setBounds((int) (screenWidth * 0.60), (int) (screenHeight * 0.6), 120, 30);
-        this.discardButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.7), 100, 30);
-        this.unoButton.setBounds((int) (screenWidth * 0.48), (int) (screenHeight * 0.8), 100, 30);
-
+        this.discardButton.setBounds((int) (screenWidth * 0.30), (int) (screenHeight * 0.4), 100, 30);
+        this.unoButton.setBounds((int) (screenWidth * 0.30), (int) (screenHeight * 0.5), 100, 30);
+        this.sortbyColorButton.setBounds((int) (screenWidth * 0.60), (int) (screenHeight * 0.4), 120, 30);
+        this.sortbyNumberButton.setBounds((int) (screenWidth * 0.60), (int) (screenHeight * 0.3), 120, 30);
     }
 
     /**
@@ -252,7 +268,7 @@ public class gamepage extends JFrame {
     }
 
     /**
-     * inizializzo l'oggetto bottone con la relativa grafica
+     * inizializzo l'oggetto bottone con la relativa grafica e funzionalità
      */
     public void initSkipButton() {
         // inizializzo l'oggetto
@@ -270,8 +286,8 @@ public class gamepage extends JFrame {
                 // il messaggio invia anche se è stato detto UNO--> il server controlla se è impostato correttamente
                 //                                                                              false e mazzo > 1
                 //                                                                              true e mazzo == 1
-                this.message = new Message(user.isUno, skip, user.userName, user.isUno.toString());
-                    this.comunication.sendMessage(message);
+                this.message = new Message(user.isUno, SKIP, user.userName, user.isUno.toString());
+                this.communication.sendMessage(message);
             } catch (IOException | ParserConfigurationException | TransformerException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -280,26 +296,54 @@ public class gamepage extends JFrame {
     }
 
     /**
-     * inizializzo l'oggetto bottone con la relativa grafica
+     * inizializzo l'oggetto bottone con la relativa grafica e funzionalità
      */
-    public void initQuitButton() {
-        // inizializzo l'oggetto
-        this.quitButton = new JButton("Esci");
+    private void initSortByNumberButton() {
+         // inizializzo l'oggetto
+        this.sortbyNumberButton = new JButton("Riordina numero");
 
-        this.quitButton.setBackground(new Color(255, 0, 0)); // sfondo rosso
-        this.quitButton.setForeground(Color.WHITE); // testo bianco
-        this.quitButton.setFont(new Font("Arial", Font.BOLD, 14));
+        this.sortbyNumberButton.setBackground(new Color(0, 162, 174)); // sfondo azzuro
+        this.sortbyNumberButton.setForeground(Color.WHITE); // testo bianco
+        this.sortbyNumberButton.setFont(new Font("Arial", Font.BOLD, 10));
 
         // assegno l'azione da svolgere quando cliccato
-        this.skipButton.addActionListener(e -> {
+        this.sortbyNumberButton.addActionListener(e -> {
             try {
 
                 // manda il messaggio 
                 // il messaggio invia anche se è stato detto UNO--> il server controlla se è impostato correttamente
                 //                                                                              false e mazzo > 1
                 //                                                                              true e mazzo == 1
-                this.message = new Message(user.isUno, quit, user.userName, "");
-                    this.comunication.sendMessage(message);
+                this.message = new Message(user.isUno, SORT_BY_NUMBER, user.userName, user.isUno.toString());
+                this.communication.sendMessage(message);
+            } catch (IOException | ParserConfigurationException | TransformerException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        });
+
+    }
+    /**
+     * inizializzo l'oggetto bottone con la relativa grafica e funzionalità
+     */
+    private void initSortByColorButton() {
+        // inizializzo l'oggetto
+        this.sortbyColorButton = new JButton("Riordina colore");
+
+        this.sortbyColorButton.setBackground(new Color(0, 162, 174)); // sfondo azzuro
+        this.sortbyColorButton.setForeground(Color.WHITE); // testo bianco
+        this.sortbyColorButton.setFont(new Font("Arial", Font.BOLD, 10));
+
+        // assegno l'azione da svolgere quando cliccato
+        this.sortbyColorButton.addActionListener(e -> {
+            try {
+
+                // manda il messaggio 
+                // il messaggio invia anche se è stato detto UNO--> il server controlla se è impostato correttamente
+                //                                                                              false e mazzo > 1
+                //                                                                              true e mazzo == 1
+                this.message = new Message(user.isUno, SORT_BY_COLOR, user.userName, user.isUno.toString());
+                this.communication.sendMessage(message);
             } catch (IOException | ParserConfigurationException | TransformerException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -307,8 +351,9 @@ public class gamepage extends JFrame {
         });
     }
 
+
     /**
-     * inizializzo l'oggetto bottone con la relativa grafica
+     * inizializzo l'oggetto bottone con la relativa grafica e funzionalità
      */
     public void initUnoButton() {
         // inizializzo l'oggetto
@@ -317,10 +362,26 @@ public class gamepage extends JFrame {
         this.unoButton.setBackground(new Color(255, 196, 0)); // sfondo giallo
         this.unoButton.setForeground(Color.WHITE); // testo bianco
         this.unoButton.setFont(new Font("Arial", Font.BOLD, 14));
+
+        // assegno l'azione da svolgere quando cliccato
+        this.playButton.addActionListener(e -> {
+            try {
+
+                // manda il messaggio 
+                // il messaggio invia anche se è stato detto UNO--> il server controlla se è impostato correttamente
+                //                                                                              false e mazzo > 1
+                //                                                                              true e mazzo == 1
+                this.message = new Message(user.isUno, PLAY, user.userName, user.isUno.toString());
+                this.communication.sendMessage(message);
+            } catch (IOException | ParserConfigurationException | TransformerException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        });
     }
 
     /**
-     * inizializzo l'oggetto bottone con la relativa grafica
+     * inizializzo l'oggetto bottone con la relativa grafica e funzionalità
      */
     public void initPlayButton() {
         // inizializzo l'oggetto
@@ -329,10 +390,28 @@ public class gamepage extends JFrame {
         this.playButton.setBackground(new Color(0, 174, 46)); // sfondo verde
         this.playButton.setForeground(Color.WHITE); // testo bianco
         this.playButton.setFont(new Font("Arial", Font.BOLD, 14));
+
+        // assegno l'azione da svolgere quando cliccato
+        this.playButton.addActionListener(e -> {
+            try {
+
+                // manda il messaggio 
+                // il messaggio invia anche se è stato detto UNO--> il server controlla se è impostato correttamente
+                //                                                                              false e mazzo > 1
+                //                                                                              true e mazzo == 1
+                this.message = new Message(user.isUno, PLAY, user.userName, user.isUno.toString());
+                this.communication.sendMessage(message);
+            } catch (IOException | ParserConfigurationException | TransformerException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        });
+
+
     }
 
     /**
-     * inizializzo l'oggetto bottone con la relativa grafica
+     * inizializzo l'oggetto bottone con la relativa grafica e funzionalità
      */
     public void initDrawButton() {
         // inizializzo l'oggetto
@@ -396,7 +475,7 @@ public class gamepage extends JFrame {
         return i;
     }
 
-    public void controlSelection(JPanel overlauPanel) throws IOException, URISyntaxException {
+    public void controlSelection(JPanel overlauPanel) throws IOException, URISyntaxException, SAXException {
         String selected = this.combobox.getSelectedItem().toString();
         switch (selected) {
             case ROULES_COMBOBOX:
@@ -431,6 +510,32 @@ public class gamepage extends JFrame {
                 overlauPanel.add(this.combobox);
                 remove(overlauPanel);
                 add(overlauPanel);
+                break;
+            case QUIT_COMBOBOX:
+                try {
+                    if(user.round)
+                    {
+                        // manda il messaggio 
+                        // il messaggio invia anche se è stato detto UNO--> il server controlla se è impostato correttamente
+                        //                                                                              false e mazzo > 1
+                        //                                                                              true e mazzo == 1
+                        this.message = new Message(user.isUno, QUIT, user.userName, "");
+                        this.communication.sendMessage(message);
+                        // aspetto la risposta
+                        String reply = this.communication.listening();
+                        // unserializzo il messaggio
+                        this.message.InitMessageFromStringXML(reply);
+                        if(this.message.command == CORRECT)
+                        {
+                            // porta sulla homepage
+                            setVisible(false);
+                            homepage h = new homepage();
+                        }
+                    }
+                } catch (IOException | ParserConfigurationException | TransformerException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
                 break;
         }
 

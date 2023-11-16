@@ -1,18 +1,18 @@
 public class User {
-    public Boolean turno;
-    public Boolean vinto;
+    public Boolean round;
+    public Boolean win;
     public Boolean isUno;
     public String userName;
 
     /**
      * costruttore parametrico
-     * @param turno
-     * @param vinto
+     * @param round
+     * @param win
      * @param userName
      */
-    public User(Boolean turno, Boolean vinto, Boolean isUno, String userName) {
-        this.turno = turno;
-        this.vinto = vinto;
+    public User(Boolean round, Boolean win, Boolean isUno, String userName) {
+        this.round = round;
+        this.win = win;
         this.userName = userName;
         this.isUno = isUno;
     }
@@ -20,8 +20,8 @@ public class User {
      * costruttore non parametrico
      */
     public User() {
-        this.turno = false;
-        this.vinto = false;
+        this.round = false;
+        this.win = false;
         this.isUno = false;
         this.userName = "userName";
     }

@@ -23,7 +23,7 @@ public class homepage extends JFrame {
     private final String SONG_PATH = "audio\\UNO_track.wav";
 
     // lista comandi
-    private final String start = "start";
+    private final String START = "start";
 
     // messaggi di risposta
     private final static String CORRECT = "200";
@@ -48,6 +48,7 @@ public class homepage extends JFrame {
     private Message message;
     // private Boolean isListening;
     private User user;
+    private Clip clip;
 
     private Communication comunication;
 
@@ -135,7 +136,7 @@ public class homepage extends JFrame {
                     // quando premo il pulsante GIOCA mando una richiesta al server di aggiungere il
                     // client ad una nuova partita-->se non ci sono altri client rimane in attesa
                     // setto il messaggio da inviare
-                    message = new Message(false, start, username.getText(), "");
+                    message = new Message(false, START, username.getText(), "");
                     // invio il messaggio al server
                     this.comunication.sendMessage(message);
 
@@ -163,6 +164,7 @@ public class homepage extends JFrame {
                         this.initUser(username.getText());
 
                         setVisible(false);
+                        this.clip.stop();
                         // creo la gamepage
                         gamepage gp = new gamepage(user);
                     }
@@ -208,7 +210,7 @@ public class homepage extends JFrame {
     public void playMusic() {
         try {
             // creo un oggetto Clip per riprodurre il file audio
-            Clip clip = AudioSystem.getClip();
+            this.clip = AudioSystem.getClip();
 
             // apro il file audio
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(SONG_PATH));

@@ -23,10 +23,21 @@ public class Game {
     private final static String ERROR_SKIP = "409";
     private final static String ERROR_EXIT = "500";
 
+    // lista comandi
+    private final String SKIP = "skip";
+    private final String UNO = "uno";
+    private final String PLAY = "play";
+    private final String DRAW = "draw";
+    private final String QUIT = "quit";
+    private final String INIT_DECK = "init";
+    private final String START = "start";
+    private final static String SORT_BY_NUMBER = "sortByNumber";
+    private final static String SORT_BY_COLOR = "sortByColor"; 
+
     // attributi
     public Deck<Card> deck;
     public Deck<Card> discardedCards;
-    private ArrayList<User> users;
+    private Users users;
     private ServerSocket serverSocket;
     private Message message;
 
@@ -46,48 +57,82 @@ public class Game {
         deck.fillDeck();
 
         // crea gli utenti
-        users = new ArrayList<>();
+        users = new Users();
 
         // creo il mazzo degli scarti
         discardedCards = new Deck<Card>();
 
         // inizializzo la socket del server
         serverSocket = new ServerSocket(666);
-        // metto in ascolto il server
-        Socket clientSocket = serverSocket.accept(); // Bloccante, aspetta una connessione
-        // System.out.println("Nuova connessione da: " +
-        // clientSocket.getInetAddress().getHostAddress());
+        while(true){
+            // metto in ascolto il server
+            Socket clientSocket = serverSocket.accept(); // Bloccante, aspetta una connessione
+            // System.out.println("Nuova connessione da: " +
+            // clientSocket.getInetAddress().getHostAddress());
 
-        // Crea un oggetto di comunicazione per gestire la connessione con il client
-        Communication communication = new Communication(clientSocket);
-        String message_client = communication.listening();
-        System.out.println(message_client);
-        this.message = new Message();
-        this.message.InitMessageFromStringXML(message_client);
-        Boolean isAvailable = true;
-        // controllo che non ci siano utenti con quel nome
-        for (User u : this.users) {
-            if(u.userName.equals(this.message.message))
-            {
-                isAvailable = false;
-                // mando messaggio di errore--> esiste già
-                // inizializzo l'oggetto messaggio
-                this.message = new Message(false, ERROR_USERNAME, "","Username non disponibile" );
+            // Crea un oggetto di comunicazione per gestire la connessione con il client
+            Communication communication = new Communication(clientSocket);
+            String message_client = communication.listening();
+            System.out.println(message_client);
+            this.message = new Message();
+            this.message.InitMessageFromStringXML(message_client);
+
+            // prendo l'utente con quel username
+            User u = this.users.findUserByUsername(this.message.username);
+                    
+            switch (this.message.command) {
+                case START:
+                    Boolean isAvailable = true;
+                    // controllo che non ci siano utenti con quel nome
+                    if(this.users.findUserByUsername(this.message.username)!= null)
+                    {
+                        isAvailable = false;
+                        // mando messaggio di errore--> esiste già
+                        // inizializzo l'oggetto messaggio
+                        this.message = new Message(false, ERROR_USERNAME, "","Username non disponibile" );
+                    }
+                    if(isAvailable)
+                    {
+                        // // creo l'utente e lo aggiungo alla lista
+                        User u2 = new User(clientSocket.getPort(), "127.0.0.1", false, false, false, this.message.username);
+                        this.users.addUser(u2);   
+                        // inizializzo messaggio di risposta     
+                        this.message = new Message(u2.isUno, CORRECT, u2.userName,"Username disponibile");
+                        // avvio il thread per quel client
+                        // ThreadClient tc =new ThreadClient(u);
+                        // tc.start();
+                    }
+                    //  invio messaggio di risposta
+                    communication.sendMessage(this.message);
+                    
+                    break;
+                case QUIT:
+                    // // prendo l'utente con quel username
+                    // User u = this.users.findUserByUsername(this.message.username);
+                    if(u != null)
+                        this.message = new Message(u.isUno, CORRECT, u.userName,"Rimozione dalla partita" );
+                    else
+                        this.message = new Message(false, ERROR_EXIT, "","Errore rimozione dalla partita" );
+
+                    communication.sendMessage(this.message);
+                    break;
+                case SKIP:
+                    break;
+                case UNO:
+                    break;
+                case PLAY:
+                    break;
+                case DRAW:
+                    break;
+                case INIT_DECK:
+                    break;
+                case SORT_BY_COLOR:
+                    break;      
+                case SORT_BY_NUMBER:
+                    break;                                                      
             }
+            
         }
-        if(isAvailable)
-        {
-            // creo l'utente e lo aggiungo alla lista
-            User u = new User(clientSocket.getPort(), "127.0.0.1", false, false, false, this.message.message);
-            this.users.add(u);   
-            // inizializzo messaggio di risposta     
-            this.message = new Message(u.isUno, CORRECT, u.userName,"Username disponibile");
-            // avvio il thread per quel client
-            // ThreadClient tc =new ThreadClient(u);
-            // tc.start();
-        }
-        //  invio messaggio di risposta
-        communication.sendMessage(this.message);
     }
 
     /**
@@ -97,7 +142,7 @@ public class Game {
         // per il numero di carte che devo dare a ogni User
         for (int i = 0; i < NUMBER_CARDS_FOR_USER; i++) {
             // per ogni User
-            for (User user : users) {
+            for (User user : users.users) {
                 // aggiungo alle carte dell'utente la prima carta del mazzo
                 user.addCard(deck.getCard());
             }

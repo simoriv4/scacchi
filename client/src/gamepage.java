@@ -95,6 +95,7 @@ public class gamepage extends JFrame {
     private final String DRAW = "draw";
     private final String QUIT = "quit";
     private final String INIT_DECK = "init";
+    private final String START = "start";
     private final static String SORT_BY_NUMBER = "sortByNumber";
     private final static String SORT_BY_COLOR = "sortByColor"; 
 
@@ -190,7 +191,7 @@ public class gamepage extends JFrame {
         overlayPanel.setLayout(null);
 
         // richiedo carte
-        // overlayPanel= this.initDeck(overlayPanel);
+        overlayPanel= this.initDeck(overlayPanel);
 
         // imposto la grafica del bottone
         this.initSkipButton();
@@ -281,6 +282,14 @@ public class gamepage extends JFrame {
         // scorro le carte e le aggiungo all'overlay panel
         for(int i= 0; i<this.user.deck.getSizeDeck(); i++)
         {
+            // switch (this.user.deck.deck.get(i).type) {
+            //     case value:
+                    
+            //         break;
+            
+            //     default:
+            //         break;
+            // }
             JLabel card= new JLabel();
             card = this.initImageLabel(card, COVER_CARD_PATH, WIDTH_CARDS, HEIGHT_CARDS);
             // setto la posizione
@@ -641,12 +650,17 @@ public class gamepage extends JFrame {
                         String reply = this.communication.listening();
                         // unserializzo il messaggio
                         this.message.InitMessageFromStringXML(reply);
-                        if(this.message.command == CORRECT)
+                        if(this.message.command.equals(CORRECT))
                         {
                             // porta sulla homepage
                             setVisible(false);
+                            this.clip.stop();
                             homepage h = new homepage();
                         }
+                    }
+                    else{
+                        // messaggio di errore
+                        JOptionPane.showMessageDialog(this, "Attendi il tuo turno!", "Errore", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (IOException | ParserConfigurationException | TransformerException e1) {
                     // TODO Auto-generated catch block

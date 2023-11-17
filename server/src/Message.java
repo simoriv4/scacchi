@@ -86,13 +86,14 @@ class Message {
         return xmlString;
     }
 
-    /**
+/**
      * creo il nodo da aggiungere alla root
      * @param d
      * @return il nodo creato
      */
     public Node serializeIsUno(Document d) {
         Node isUno = d.createElement("isUno");
+        isUno.setTextContent(this.isUno.toString());
         return isUno;
     }
     /**
@@ -102,6 +103,7 @@ class Message {
      */
     public Node serializeMessage(Document d) {
         Node message = d.createElement("message");
+        message.setTextContent(this.message);
         return message;
     }
     /**
@@ -111,6 +113,7 @@ class Message {
      */
     public Node serializeUsername(Document d) {
         Node username = d.createElement("username");
+        username.setTextContent(this.username);
         return username;
     }
 
@@ -121,6 +124,7 @@ class Message {
      */
     public Node serializeCommand(Document d) {
         Node command = d.createElement("command");
+        command.setTextContent(this.command);
         return command;
     }
 
@@ -160,7 +164,7 @@ class Message {
      * @param d
      * @return il contenuto del tag XML command
      */
-    public String unserializeCommand(Document d) {
+    public String   unserializeCommand(Document d) {
         NodeList nl = d.getElementsByTagName("command");
         return nl.item(0).getTextContent();
     }

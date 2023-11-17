@@ -146,7 +146,7 @@ public class gamepage extends JFrame {
         this.server = new Server();
         // salvo le informazioni dell'utente
         this.user = user;
-        // this.socket = new Socket(this.server.IP, this.server.port);
+        this.socket = new Socket(this.server.IP, this.server.port);
         this.communication = new Communication(this.socket);
         
         // avvio il sottofondo musicale

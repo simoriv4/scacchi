@@ -139,8 +139,6 @@ public class homepage extends JFrame {
                     // invio il messaggio al server
                     this.comunication.sendMessage(message);
 
-                    // aspetto la risposta
-                    String response = this.comunication.listening();
                     // <root_message>
                         // <command>reply</command>
                         // <message>200</message>
@@ -154,10 +152,12 @@ public class homepage extends JFrame {
                     jl.setBounds((int) (screenWidth * 0.4), (int) (screenHeight * 0.8), 300, 300);
                     overlayPanel.add(jl);
                     add(overlayPanel);
+                    // aspetto la risposta
+                    String response = this.comunication.listening();
 
                     message.InitMessageFromStringXML(response);
 
-                    if(message.command == CORRECT)
+                    if(message.command.equals(CORRECT))
                     {
                         // se risosta è positiva -> creo l'utente e passo alla seconda finestra
                         this.initUser(username.getText());
@@ -221,31 +221,6 @@ public class homepage extends JFrame {
             clip.start();
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
-    }
-
-    /**
-     * funzione che invia al server un messaggio
-     * @param message
-     * @throws TransformerException
-     * @throws ParserConfigurationException
-     */
-    public void sendMessage(Message message) throws ParserConfigurationException, TransformerException {
-        try {
-
-            OutputStream outputStream = socket.getOutputStream();
-
-            // creo un oggetto OutputStreamWriter per inviare dati al server
-            OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-
-            // invio il messaggio al server
-            writer.write(message.serialize());
-            writer.flush(); // scrivo e svuoto il buffer
-
-            // chiduo la connessione
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

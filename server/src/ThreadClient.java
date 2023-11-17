@@ -16,19 +16,22 @@ public class ThreadClient extends Thread {
     private final String play = "play";
     private final String draw = "draw";
     private final String quit = "quit";
+    private final String start = "start";
 
     private Communication communication;
     private User user;
+    private Socket socket;
 
     public ThreadClient(User u) throws UnknownHostException, IOException {
         this.user = u;
         // creo la socket per il client
-        Socket socket = new Socket(this.user.IP, this.user.port);
+        this.socket = new Socket(this.user.IP, this.user.port);
         this.communication = new Communication(socket);
     }
 
     public void run() {
         try {
+            // cicla fino a quando non viene chiusa la connessione con quel client
             while (true) {
                 // faccio rimanere in ascolto del messaggio dal client
                 String message = this.communication.listening();
@@ -65,6 +68,9 @@ public class ThreadClient extends Thread {
      */
     public void ControlOperation(Message message) {
         switch (message.command) {
+            case start:
+                System.out.println("entrato");
+                break;
             case skip:
 
                 break;

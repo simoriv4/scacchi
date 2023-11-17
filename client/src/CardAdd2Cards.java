@@ -11,6 +11,8 @@ public class CardAdd2Cards implements Card
     //attributi della CardAdd2Cards
     public String color;
 
+    public String type;
+
     /**
      * costruttore parametrico della CardAdd2Cards
      * 
@@ -20,6 +22,7 @@ public class CardAdd2Cards implements Card
     {
         //assegno i valori passati come parametro agli attributi della CardAdd2Cards
         this.color = color;
+        this.type = "";
     }
 
     /**
@@ -86,7 +89,9 @@ public class CardAdd2Cards implements Card
         Element element = (Element) item;
 
         NamedNodeMap attributes = element.getAttributes();
+
+        this.type = attributes.item(0).getTextContent();
         // assegno il valore al colore
-        this.color = attributes.item(0).getTextContent();
+        this.color = attributes.item(1).getTextContent();
     }
 }

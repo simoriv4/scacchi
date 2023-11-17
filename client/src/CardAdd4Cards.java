@@ -9,6 +9,8 @@ public class CardAdd4Cards implements Card
 {
     //attributi della CardAdd4Cards
     public String newColor;
+    public String type;
+
 
     /**
      * costruttore non parametrico della CardAdd4Cards
@@ -19,6 +21,7 @@ public class CardAdd4Cards implements Card
     {
         //assegno valori di default agli attributi della CardAdd4Cards
         newColor = "";
+        this.type = "";
     }
 
     @Override
@@ -64,7 +67,9 @@ public class CardAdd4Cards implements Card
         Element element = (Element) item;
 
         NamedNodeMap attributes = element.getAttributes();
+
+        this.type = attributes.item(0).getTextContent();
         // assegno il valore al colore
-        this.newColor = attributes.item(0).getTextContent();
+        this.newColor = attributes.item(1).getTextContent();
     }
 }

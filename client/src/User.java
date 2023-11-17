@@ -4,6 +4,8 @@ public class User {
     public Boolean isUno;
     public String userName;
 
+    public Deck<Card> deck;
+
     /**
      * costruttore parametrico
      * @param round
@@ -25,6 +27,8 @@ public class User {
         this.isUno = false;
         this.userName = "userName";
     }
+
+
 
     
 }

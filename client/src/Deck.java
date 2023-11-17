@@ -434,35 +434,6 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
     }
 
     /**
-     * metodo che prende tutte le carte di un colore specifico (yellow, green, red, blue)
-     * @param lst lista di carte da cui prendere le carte
-     * @param color colore della carta da prendere
-     * @return lista contentente le carte di quel colore
-     */
-    private List<Card> pickCardsByColor(List<Card> lst, String color)
-    {
-        //creo un mazzo temporaneo
-        List<Card> tmp = new ArrayList<Card>();
-
-        //per ogni carta nella lista
-        for (Card card : lst)
-        {
-            //controllo il colore
-            if(card.getColor().equals(color))
-            {
-                //inserisco nella lista tmp la carta
-                tmp.add(card);
-
-                //elimino la carta dalla lista lst
-                lst.remove(card);
-            }    
-        }
-
-        //ritorno le carte con quel colore
-        return tmp;
-    }
-
-    /**
      * metodo che ordina le carte in mano dell'utente per numero (1 --> 9, carte senza numero e speciali)
      * @throws TransformerException
      * @throws ParserConfigurationException
@@ -496,7 +467,7 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
      * @throws SAXException
      * @throws ParserConfigurationException
      */
-    private void unserializeDeck(String message) throws SAXException, IOException, ParserConfigurationException {
+    public void unserializeDeck(String message) throws SAXException, IOException, ParserConfigurationException {
         // istanzio il documento per creare la stringa XML
         DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
         DocumentBuilder b = f.newDocumentBuilder();
@@ -578,35 +549,6 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
                     break;
             }
         }
-    }
-
-    /**
-     * metodo che prende tutte le carte di un numero specifico (1 -> 9) 
-     * @param lst lista di carte da cui prendere le carte
-     * @param number numero della carta da prendere
-     * @return lista contentente le carte di quel numero
-     */
-    private List<Card> pickCardsByNumber(List<Card> lst, int number)
-    {
-        //creo un mazzo temporaneo
-        List<Card> tmp = new ArrayList<Card>();
-
-        //per ogni carta nella lista
-        for (Card card : lst)
-        {
-            //controllo il numero
-            if(card.getNumber() == number)
-            {
-                //inserisco nella lista tmp la carta
-                tmp.add(card);
-
-                //elimino la carta dalla lista lst
-                lst.remove(card);
-            }    
-        }
-
-        //ritorno le carte con quel numero
-        return tmp;
     }
 
     //FINE METODI PER MAZZO DEGLI UTENTI (carte che ha in mano)

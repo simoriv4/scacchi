@@ -9,6 +9,8 @@ public class CardBlock implements Card
 {
     //attributi della CardBlock
     public String color;
+    public String type;
+
 
     /**
      * costruttore parametrico della CardBlock
@@ -19,6 +21,7 @@ public class CardBlock implements Card
     {
         //assegno i valori passati come parametro agli attributi della CardBlock
         this.color = color;
+        this.type = "";
     }
 
     /**
@@ -85,7 +88,9 @@ public class CardBlock implements Card
         Element element = (Element) item;
 
         NamedNodeMap attributes = element.getAttributes();
+
+        this.type = attributes.item(0).getTextContent();
         // assegno il valore al colore
-        this.color = attributes.item(0).getTextContent();
+        this.color = attributes.item(1).getTextContent();
     }
 }

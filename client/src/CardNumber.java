@@ -10,6 +10,8 @@ public class CardNumber implements Card
     //attributi della CardNumber
     public String color;
     public int number;
+    public String type;
+
 
     /**
      * costruttore parametrico della CardNumber
@@ -111,9 +113,10 @@ public class CardNumber implements Card
         Element element = (Element) item;
 
         NamedNodeMap attributes = element.getAttributes();
+        this.type = attributes.item(0).getTextContent();
         // assegno il valore al colore
-        this.color = attributes.item(0).getTextContent();
+        this.color = attributes.item(1).getTextContent();
         // assegno il valore al numero
-        this.number = Integer.parseInt(attributes.item(1).getTextContent());
+        this.number = Integer.parseInt(attributes.item(2).getTextContent());
     }
 }

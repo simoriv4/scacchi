@@ -8,6 +8,8 @@ import org.w3c.dom.Node;
 public class CardChangeColor implements Card {
     // attributi della CardChangeColor
     public String newColor;
+    public String type;
+
 
     /**
      * costruttore non parametrico della CardChangeColor
@@ -17,6 +19,7 @@ public class CardChangeColor implements Card {
     public CardChangeColor() {
         // assegno valori di default agli attributi della CardChangeColor
         newColor = "";
+        this.type = "";
     }
 
     @Override
@@ -58,7 +61,9 @@ public class CardChangeColor implements Card {
         Element element = (Element) item;
 
         NamedNodeMap attributes = element.getAttributes();
+
+        this.type = attributes.item(0).getTextContent();
         // assegno il valore al colore
-        this.newColor = attributes.item(0).getTextContent();
+        this.newColor = attributes.item(1).getTextContent();
     }
 }

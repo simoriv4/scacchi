@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.awt.event.*;
 
@@ -24,6 +23,65 @@ public class gamepage extends JFrame {
     private final String BACKGROUND_IMAGE_PATH = "src\\assets\\backgrounds\\bgG.png";
     private final String MUTE_PATH = "src\\assets\\mute.png";
     private final String MUSIC_PATH = "audio\\UNO_track.wav";
+
+    // percorsi carte
+    private final String REVERSE_B_PATH = "src\\assets\\cards-front\\_B.png";
+    private final String REVERSE_Y_PATH = "src\\assets\\cards-front\\_Y.png";
+    private final String REVERSE_G_PATH = "src\\assets\\cards-front\\_G.png";
+    private final String REVERSE_R_PATH = "src\\assets\\cards-front\\_R.png";
+    private final String ZERO_B_PATH = "src\\assets\\cards-front\\0B.png";
+    private final String ZERO_Y_PATH = "src\\assets\\cards-front\\0Y.png";
+    private final String ZERO_G_PATH = "src\\assets\\cards-front\\0G.png";
+    private final String ZERO_R_PATH = "src\\assets\\cards-front\\0R.png";
+    private final String ONE_B_PATH = "src\\assets\\cards-front\\1B.png";
+    private final String ONE_Y_PATH = "src\\assets\\cards-front\\1Y.png";
+    private final String ONE_G_PATH = "src\\assets\\cards-front\\1G.png";
+    private final String ONE_R_PATH = "src\\assets\\cards-front\\1R.png";
+    private final String TWO_B_PATH = "src\\assets\\cards-front\\2B.png";
+    private final String TWO_Y_PATH = "src\\assets\\cards-front\\2Y.png";
+    private final String TWO_G_PATH = "src\\assets\\cards-front\\2G.png";
+    private final String TWO_R_PATH = "src\\assets\\cards-front\\2R.png";
+    private final String THREE_B_PATH = "src\\assets\\cards-front\\3B.png";
+    private final String THREE_Y_PATH = "src\\assets\\cards-front\\3Y.png";
+    private final String THREE_G_PATH = "src\\assets\\cards-front\\3G.png";
+    private final String THREE_R_PATH = "src\\assets\\cards-front\\3R.png";
+    private final String FOUR_B_PATH = "src\\assets\\cards-front\\4B.png";
+    private final String FOUR_Y_PATH = "src\\assets\\cards-front\\4Y.png";
+    private final String FOUR_G_PATH = "src\\assets\\cards-front\\4G.png";
+    private final String FOUR_R_PATH = "src\\assets\\cards-front\\4R.png";
+    private final String FIVE_B_PATH = "src\\assets\\cards-front\\5B.png";
+    private final String FIVE_Y_PATH = "src\\assets\\cards-front\\5Y.png";
+    private final String FIVE_G_PATH = "src\\assets\\cards-front\\5G.png";
+    private final String FIVE_R_PATH = "src\\assets\\cards-front\\5R.png";
+    private final String SIX_B_PATH = "src\\assets\\cards-front\\6B.png";
+    private final String SIX_Y_PATH = "src\\assets\\cards-front\\6Y.png";
+    private final String SIX_G_PATH = "src\\assets\\cards-front\\6G.png";
+    private final String SIX_R_PATH = "src\\assets\\cards-front\\6R.png";
+    private final String SEVEN_B_PATH = "src\\assets\\cards-front\\7B.png";
+    private final String SEVEN_Y_PATH = "src\\assets\\cards-front\\7Y.png";
+    private final String SEVEN_G_PATH = "src\\assets\\cards-front\\7G.png";
+    private final String SEVEN_R_PATH = "src\\assets\\cards-front\\7R.png";
+    private final String EIGHT_B_PATH = "src\\assets\\cards-front\\8B.png";
+    private final String EIGHT_Y_PATH = "src\\assets\\cards-front\\8Y.png";
+    private final String EIGHT_G_PATH = "src\\assets\\cards-front\\8G.png";
+    private final String EIGHT_R_PATH = "src\\assets\\cards-front\\8R.png";
+    private final String NINE_B_PATH = "src\\assets\\cards-front\\9B.png";
+    private final String NINE_Y_PATH = "src\\assets\\cards-front\\9Y.png";
+    private final String NINE_G_PATH = "src\\assets\\cards-front\\9G.png";
+    private final String NINE_R_PATH = "src\\assets\\cards-front\\9R.png";
+    private final String ADD_TWO_CARDS_B_PATH = "src\\assets\\cards-front\\D2B.png";
+    private final String ADD_TWO_CARDS_Y_PATH = "src\\assets\\cards-front\\D2Y.png";
+    private final String ADD_TWO_CARDS_G_PATH = "src\\assets\\cards-front\\D2G.png";
+    private final String ADD_TWO_CARDS_R_PATH = "src\\assets\\cards-front\\D2R.png";
+    private final String SKIP_B_PATH = "src\\assets\\cards-front\\skipB.png";
+    private final String SKIP_Y_PATH = "src\\assets\\cards-front\\skipY.png";
+    private final String SKIP_G_PATH = "src\\assets\\cards-front\\skipG.png";
+    private final String SKIP_R_PATH = "src\\assets\\cards-front\\skipR.png";
+    private final String ADD_FOUR_CARDS_PATH = "src\\assets\\cards-front\\D4W.png";
+    private final String CHANGE_COLOR_PATH = "src\\assets\\cards-front\\W.png";
+
+
+
 
     private final String ROULES_COMBOBOX = "Regolamento";
     private final String QUIT_COMBOBOX = "Esci";
@@ -36,6 +94,7 @@ public class gamepage extends JFrame {
     private final String PLAY = "play";
     private final String DRAW = "draw";
     private final String QUIT = "quit";
+    private final String INIT_DECK = "init";
     private final static String SORT_BY_NUMBER = "sortByNumber";
     private final static String SORT_BY_COLOR = "sortByColor"; 
 
@@ -59,12 +118,9 @@ public class gamepage extends JFrame {
     private BufferedImage backgroundImage;
     private JButton playButton;
     private JButton unoButton;
-    private JButton discardButton;
     private JButton skipButton;
     private JButton sortbyNumberButton;
     private JButton sortbyColorButton;
-    private JButton viewOneColorButton; // permette di vedere le carte di un solo colore
-    private JButton viewOneNumberButton; // permette di vedere le carte di uno specifico numero
     private JLabel UNO_Label;
     private JLabel deck_Label;
     private JLabel discarded_Label;
@@ -85,14 +141,14 @@ public class gamepage extends JFrame {
     // private BufferedReader inStream;
     // private PrintWriter outStream;
 
-    public gamepage(User user) throws IOException, ParserConfigurationException, SAXException {
+    public gamepage(User user) throws IOException, ParserConfigurationException, SAXException, TransformerException {
         // ininzializzo le informazioni del server
         this.server = new Server();
         // salvo le informazioni dell'utente
         this.user = user;
         // this.socket = new Socket(this.server.IP, this.server.port);
         this.communication = new Communication(this.socket);
-
+        
         // avvio il sottofondo musicale
         this.playMusic();
         // imposto il titolo al frame
@@ -114,6 +170,12 @@ public class gamepage extends JFrame {
         this.UNO_Label = this.initImageLabel(this.UNO_Label, UNO_PATH, WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
         this.deck_Label = this.initImageLabel(this.deck_Label, COVER_CARD_PATH, WIDTH_CARDS, HEIGHT_CARDS);
 
+        // unserializzo la carta
+        // Deck d = new Deck<>();
+        // d.unserializeDeck(card);
+        
+
+        // controllo il tipo di carta--> in base a quello cerco l'immagine corretta
         // creo un pannello personalizzato per sovrapporre i componenti
         JPanel overlayPanel = new JPanel() {
             @Override
@@ -127,11 +189,13 @@ public class gamepage extends JFrame {
         // imposto il layout manager su null per posizionare manualmente i componenti
         overlayPanel.setLayout(null);
 
+        // richiedo carte
+        // overlayPanel= this.initDeck(overlayPanel);
+
         // imposto la grafica del bottone
         this.initSkipButton();
         this.initPlayButton();
         this.initUnoButton();
-        this.initDrawButton();
         this.initSortByColorButton();
         this.initSortByNumberButton();
 
@@ -146,13 +210,13 @@ public class gamepage extends JFrame {
 
         // imposto la dimensione della label
         this.UNO_Label.setSize(WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
-        ;
+        
+        // richiedo al server quale sia la prima carta da mostrare tra quelle scartate
 
         // aggiungo i componenti al pannello di sovrapposizione
         overlayPanel.add(this.UNO_Label);
         overlayPanel.add(this.deck_Label);
         overlayPanel.add(this.playButton);
-        overlayPanel.add(this.discardButton);
         // overlayPanel.add(this.quitButton);
         overlayPanel.add(this.skipButton);
         overlayPanel.add(this.sortbyColorButton);
@@ -175,6 +239,7 @@ public class gamepage extends JFrame {
 
                 // invio il messaggio al server
                 try {
+                    message = new Message(user.isUno, DRAW, user.userName, "");
                     communication.sendMessage(message);
                     // aspetto la risposta
                     String response = communication.listening();
@@ -184,8 +249,12 @@ public class gamepage extends JFrame {
                     // <username>username</username>
                     // </root_message>
                     // setto il messaggio da inviare
-                    message = new Message(user.isUno, DRAW, user.userName, "");
                     message.InitMessageFromStringXML(response);
+                    Deck d = new Deck<>();
+                    // unserializzo il deck --> sarà un deck di length = 1--> corrisponde alla carta da pescare
+                    d.unserializeDeck(message.message);
+                    // aggiungo la carta al mazzo dello user
+                    user.deck.deck.add((Card) d.deck.get(0));                    
                 } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
@@ -193,7 +262,67 @@ public class gamepage extends JFrame {
 
             }
         });
+        
 
+    }
+
+    private JPanel initDeck(JPanel overlayPanel) throws IOException, ParserConfigurationException, TransformerException, SAXException {
+        message = new Message(user.isUno, INIT_DECK, user.userName, "");
+        this.communication.sendMessage(message);
+        // attendo la risposta
+        String reply = this.communication.listening();
+        // unserializzo il messaggio
+        message.InitMessageFromStringXML(reply);
+        // unserializzo il mazzo
+        this.user.deck.unserializeDeck(reply);
+
+        int x = (int) (screenWidth * 0.4);
+        int y = (int) (screenHeight * 0.9);
+        // scorro le carte e le aggiungo all'overlay panel
+        for(int i= 0; i<this.user.deck.getSizeDeck(); i++)
+        {
+            JLabel card= new JLabel();
+            card = this.initImageLabel(card, COVER_CARD_PATH, WIDTH_CARDS, HEIGHT_CARDS);
+            // setto la posizione
+            // la prima carta è sempre al centro--> poi si mette a x - n   e   x + n
+            // controllo quante carte
+            this.deck_Label.setBounds(x, y, WIDTH_CARDS, HEIGHT_CARDS);
+            // controllo il mouse click sul mazzo girato--> per pescare la carta
+            card.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                // quando viene cliccato il mazzo richiede al server di pescare la carta
+
+                // invio il messaggio al server
+                try {
+                    message = new Message(user.isUno, DRAW, user.userName, "");
+                    communication.sendMessage(message);
+                    // aspetto la risposta
+                    String response = communication.listening();
+                    // <root_message>
+                    // <command>response</command>
+                    // <message>200</message>
+                    // <username>username</username>
+                    // </root_message>
+                    // setto il messaggio da inviare
+                    message.InitMessageFromStringXML(response);
+                    Deck d = new Deck<>();
+                    // unserializzo il deck --> sarà un deck di length = 1--> corrisponde alla carta da pescare
+                    d.unserializeDeck(message.message);
+                    // aggiungo la carta al mazzo dello user
+                    user.deck.deck.add((Card) d.deck.get(0));                    
+                } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+
+            }
+        });
+            // aggiungi la carta al panel
+            overlayPanel.add(card);
+        }
+        return overlayPanel;
+        
     }
 
     /**
@@ -237,12 +366,11 @@ public class gamepage extends JFrame {
     public void setPositions(int screenWidth, int screenHeight) {
         this.UNO_Label.setBounds(0, 0, WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
         this.deck_Label.setBounds((int) (screenWidth * 0.4), (int) (screenHeight * 0.4), WIDTH_CARDS, HEIGHT_CARDS);
-        this.playButton.setBounds((int) (screenWidth * 0.60), (int) (screenHeight * 0.5), 120, 30);
+        this.playButton.setBounds((int) (screenWidth * 0.30), (int) (screenHeight * 0.4), 120, 30);
         this.skipButton.setBounds((int) (screenWidth * 0.60), (int) (screenHeight * 0.6), 120, 30);
-        this.discardButton.setBounds((int) (screenWidth * 0.30), (int) (screenHeight * 0.4), 100, 30);
-        this.unoButton.setBounds((int) (screenWidth * 0.30), (int) (screenHeight * 0.5), 100, 30);
+        this.unoButton.setBounds((int) (screenWidth * 0.30), (int) (screenHeight * 0.5), 120, 30);
         this.sortbyColorButton.setBounds((int) (screenWidth * 0.60), (int) (screenHeight * 0.4), 120, 30);
-        this.sortbyNumberButton.setBounds((int) (screenWidth * 0.60), (int) (screenHeight * 0.3), 120, 30);
+        this.sortbyNumberButton.setBounds((int) (screenWidth * 0.60), (int) (screenHeight * 0.5), 120, 30);
     }
 
     /**
@@ -357,7 +485,7 @@ public class gamepage extends JFrame {
      */
     public void initUnoButton() {
         // inizializzo l'oggetto
-        this.unoButton = new JButton("UNO");
+        this.unoButton = new JButton("UNO!");
 
         this.unoButton.setBackground(new Color(255, 196, 0)); // sfondo giallo
         this.unoButton.setForeground(Color.WHITE); // testo bianco
@@ -371,7 +499,7 @@ public class gamepage extends JFrame {
                 // il messaggio invia anche se è stato detto UNO--> il server controlla se è impostato correttamente
                 //                                                                              false e mazzo > 1
                 //                                                                              true e mazzo == 1
-                this.message = new Message(user.isUno, PLAY, user.userName, user.isUno.toString());
+                this.message = new Message(user.isUno, UNO, user.userName, user.isUno.toString());
                 this.communication.sendMessage(message);
             } catch (IOException | ParserConfigurationException | TransformerException e1) {
                 // TODO Auto-generated catch block
@@ -408,18 +536,6 @@ public class gamepage extends JFrame {
         });
 
 
-    }
-
-    /**
-     * inizializzo l'oggetto bottone con la relativa grafica e funzionalità
-     */
-    public void initDrawButton() {
-        // inizializzo l'oggetto
-        this.discardButton = new JButton("Scarta");
-
-        this.discardButton.setBackground(new Color(0, 162, 174)); // sfondo azzuro
-        this.discardButton.setForeground(Color.WHITE); // testo bianco
-        this.discardButton.setFont(new Font("Arial", Font.BOLD, 14));
     }
 
     /**

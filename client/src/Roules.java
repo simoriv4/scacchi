@@ -21,10 +21,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 public class Roules extends JFrame{
-    private final String rootName = "client";
 
-    private final String BACKGROUND_IMAGE_PATH = rootName + "\\src\\assets\\backgrounds\\bgY.png";
-    private final String ROULES_TITLE_PATH = rootName + "\\src\\assets\\roules-title.png";
+    private final String BACKGROUND_IMAGE_PATH = "src\\assets\\backgrounds\\bgY.png";
+    private final String ROULES_TITLE_PATH = "src\\assets\\roules-title.png";
 
     private final String URL_ROULES = "https://www.giochibambiniragazzi.it/giochi-da-tavolo/regole-carte-uno-regolamento-ufficiale-come-si-gioca/";
 

@@ -142,10 +142,12 @@ public class homepage extends JFrame {
                     // aspetto la risposta
                     String response = this.comunication.listening();
                     // <root_message>
-                        // <command>response</command>
+                        // <command>reply</command>
                         // <message>200</message>
                         // <username>username</username>
                     // </root_message>
+
+                    // passo la prima carta da visualizzare alla gamepage
 
                     // fccio comparire messaggio di attesa
                     JLabel jl = new JLabel("RICERCA PARTITA...");
@@ -155,10 +157,11 @@ public class homepage extends JFrame {
 
                     message.InitMessageFromStringXML(response);
 
-                    if(message.message == CORRECT)
+                    if(message.command == CORRECT)
                     {
                         // se risosta è positiva -> creo l'utente e passo alla seconda finestra
                         this.initUser(username.getText());
+
                         setVisible(false);
                         // creo la gamepage
                         gamepage gp = new gamepage(user);

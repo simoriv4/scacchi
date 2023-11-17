@@ -1,10 +1,11 @@
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.xml.sax.SAXException;
 
 public class App {  
-    public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
+    public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, TransformerException {
         // carico le info del server(ip e port)
        // Server s = new Server();
         // homepage homepage;

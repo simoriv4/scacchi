@@ -123,14 +123,32 @@ public class Game {
                 case PLAY:
                     break;
                 case DRAW:
+                    // pesco la carta dal mazzo
+                    Card c = this.deck.getCard();
+                    if(c != null)
+                    {
+                        Deck tmp = new Deck<>();
+                        // la aggiungo nel nuovo mazzo per serializzarla
+                        tmp.addCard(c);
+                        // serializzo il mazzo
+                        String serialized_deck = tmp.serializeDeck();
+                        // inizializzo il messaggio
+                        this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck);
+                    }
+                    else{
+                        // ripopolo il mazzo
+                        //this.message = new Message(u.isUno, CORRECT, u.userName, );
+                    }
+                    
+                    communication.sendMessage(this.message);
                     break;
                 case INIT_DECK:
                     // creo il mazzo di carte da dare all'utente
                     Deck userDeck = this.deck.initUserDeck();
                     // serializzo il mazzo
-                    String serialized_deck = userDeck.serializeDeck();
+                    String serialized_deck2 = userDeck.serializeDeck();
                     // inizializzo il messaggio
-                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck);
+                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck2);
                     communication.sendMessage(this.message);
                     break;
                 case SORT_BY_COLOR:

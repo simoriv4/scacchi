@@ -105,7 +105,7 @@ public class gamepage extends JFrame {
     private User user;
     private Server server;
 
-    final Communication communication;
+    public final Communication communication;
 
     // Streams
     // private BufferedReader inStream;
@@ -203,29 +203,31 @@ public class gamepage extends JFrame {
 
         // controllo il mouse click sul mazzo girato--> per pescare la carta
         this.deck_Label.addMouseListener(new MouseAdapter() {
+            //private Communication communication = new Communication(socket);
+
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 // quando viene cliccato il mazzo richiede al server di pescare la carta
-
+                System.out.println("cliccato");
                 // invio il messaggio al server
                 try {
-                    message = new Message(user.isUno, DRAW, user.userName, "");
+                    Message message = new Message(user.isUno, DRAW, user.userName, "");
                     communication.sendMessage(message);
                     // aspetto la risposta
                     String response = communication.listening();
-                    // <root_message>
-                    // <command>response</command>
-                    // <message>200</message>
-                    // <username>username</username>
-                    // </root_message>
-                    // setto il messaggio da inviare
-                    message.InitMessageFromStringXML(response);
-                    Deck d = new Deck<>();
-                    // unserializzo il deck --> sarà un deck di length = 1--> corrisponde alla carta da pescare
-                    d.unserializeDeck(message.message);
-                    // aggiungo la carta al mazzo dello user
-                    user.deck.deck.add((Card) d.deck.get(0));                    
-                } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
+                //     // <root_message>
+                //     // <command>response</command>
+                //     // <message>200</message>
+                //     // <username>username</username>
+                //     // </root_message>
+                //     // setto il messaggio da inviare
+                //     message.InitMessageFromStringXML(response);
+                //     Deck d = new Deck<>();
+                //     // unserializzo il deck --> sarà un deck di length = 1--> corrisponde alla carta da pescare
+                //     d.unserializeDeck(message.message);
+                //     // aggiungo la carta al mazzo dello user
+                //     user.deck.deck.add((Card) d.deck.get(0));
+                } catch (IOException | ParserConfigurationException | TransformerException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }

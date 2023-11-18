@@ -7,6 +7,8 @@ import org.w3c.dom.Node;
  */
 public class CardBlock implements Card
 {
+    private final static String CARD_BLOCK = "CardBlock";
+
     //attributi della CardBlock
     public String color;
     public String type;
@@ -21,7 +23,7 @@ public class CardBlock implements Card
     {
         //assegno i valori passati come parametro agli attributi della CardBlock
         this.color = color;
-        this.type = "";
+        this.type = CARD_BLOCK;
     }
 
     /**
@@ -33,6 +35,7 @@ public class CardBlock implements Card
     {
         //assegno valori di default agli attributi della CardBlock
         color = "";
+        type = CARD_BLOCK;
     }
 
     @Override
@@ -45,6 +48,11 @@ public class CardBlock implements Card
     public String getColor()
     {
         return color;
+    }
+    @Override
+    public String getType()
+    {
+        return this.type;
     }
 
     @Override

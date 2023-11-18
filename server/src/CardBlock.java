@@ -1,3 +1,7 @@
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 /**
  * classe che gestisce una Card blocca (color)
  */
@@ -5,6 +9,7 @@ public class CardBlock implements Card
 {
     //attributi della CardBlock
     public String color;
+    public String type;
 
     /**
      * costruttore parametrico della CardBlock
@@ -15,6 +20,8 @@ public class CardBlock implements Card
     {
         //assegno i valori passati come parametro agli attributi della CardBlock
         this.color = color;
+        this.type = "CardBlock";
+
     }
 
     /**
@@ -26,6 +33,7 @@ public class CardBlock implements Card
     {
         //assegno valori di default agli attributi della CardBlock
         color = "";
+        this.type = "CardAdd2Cards";
     }
 
     @Override
@@ -74,5 +82,37 @@ public class CardBlock implements Card
          * la carta ha solo il colore e quindi devo confrontare solo quello
          */
         return compareColor(color);
+    }
+
+    @Override
+    public Node serialize(Document d)
+    {
+        Element root = d.createElement("card");
+        root.appendChild(this.serializeType(d));
+        root.appendChild(this.serializeColor(d));
+        return root;
+    }
+
+    /**
+     * funzione che serializza in XML l'attributo type
+     * @param d
+     * @return il nodo
+     */
+    public Node serializeType(Document d)
+    {
+        Node type = d.createElement("type");
+        type.setTextContent(this.type);
+        return type;
+    }
+    /**
+     * funzione che serializza in XML l'attributo color
+     * @param d
+     * @return il nodo
+     */
+    public Node serializeColor(Document d)
+    {
+        Node color = d.createElement("color");
+        color.setTextContent(this.color);
+        return color;
     }
 }

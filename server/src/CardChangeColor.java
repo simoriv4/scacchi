@@ -1,9 +1,14 @@
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 /**
  * classe che gestisce una Card cambia color
  */
 public class CardChangeColor implements Card {
     // attributi della CardChangeColor
     public String newColor;
+    public String type;
 
     /**
      * costruttore non parametrico della CardChangeColor
@@ -13,6 +18,7 @@ public class CardChangeColor implements Card {
     public CardChangeColor() {
         // assegno valori di default agli attributi della CardChangeColor
         newColor = "";
+        type = "CardChangeColor";
     }
 
     @Override
@@ -35,6 +41,38 @@ public class CardChangeColor implements Card {
         return -1; // ritorno un valore di default perchè la CardChangeColor non ha un number
     }
 
+    @Override
+    public Node serialize(Document d)
+    {
+        Element root = d.createElement("card");
+        root.appendChild(this.serializeType(d));
+        root.appendChild(this.serializeNewColor(d));
+        return root;
+    }
+
+    /**
+     * funzione che serializza in XML l'attributo type
+     * @param d
+     * @return il nodo
+     */
+    public Node serializeType(Document d)
+    {
+        Node type = d.createElement("type");
+        type.setTextContent(this.type);
+        return type;
+    }
+    /**
+     * funzione che serializza in XML l'attributo type
+     * @param d
+     * @return il nodo
+     */
+    public Node serializeNewColor(Document d)
+    {
+        Node newColor = d.createElement("newColor");
+        newColor.setTextContent(this.newColor);
+        return newColor;
+    }
+
     /**
      * metodo per controllare se una carta è giocabile oppure no
      * @param color colore in cima al mazzo degli scarti
@@ -48,4 +86,5 @@ public class CardChangeColor implements Card {
          */
         return true;
     }
+    
 }

@@ -7,11 +7,12 @@ import org.w3c.dom.Node;
  */
 public class CardNumber implements Card
 {
+    private final static String CARD_NUMBER = "CardNumber";
+
     //attributi della CardNumber
     public String color;
     public int number;
     public String type;
-
 
     /**
      * costruttore parametrico della CardNumber
@@ -24,6 +25,7 @@ public class CardNumber implements Card
         //assegno i valori passati come parametro agli attributi della CardNumber
         this.color = color;
         this.number = number;
+        type = CARD_NUMBER;
     }
 
     /**
@@ -36,6 +38,7 @@ public class CardNumber implements Card
         //assegno valori di default agli attributi della CardNumber
         color = "";
         number = -1;
+        type = CARD_NUMBER;
     }
 
     @Override
@@ -48,6 +51,11 @@ public class CardNumber implements Card
     public String getColor()
     {
         return color;
+    }
+    @Override
+    public String getType()
+    {
+        return this.type;
     }
 
     @Override

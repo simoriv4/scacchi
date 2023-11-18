@@ -1,3 +1,7 @@
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 /**
  * classe che gestisce una Card che aggiunge 2 carte (color)
  */
@@ -5,6 +9,8 @@ public class CardAdd2Cards implements Card
 {
     //attributi della CardAdd2Cards
     public String color;
+    public String type;
+
 
     /**
      * costruttore parametrico della CardAdd2Cards
@@ -15,6 +21,7 @@ public class CardAdd2Cards implements Card
     {
         //assegno i valori passati come parametro agli attributi della CardAdd2Cards
         this.color = color;
+        this.type = "CardAdd2Cards";
     }
 
     /**
@@ -26,6 +33,7 @@ public class CardAdd2Cards implements Card
     {
         //assegno valori di default agli attributi della CardAdd2Cards
         color = "";
+        this.type = "CardAdd2Cards";
     }
 
     @Override
@@ -50,6 +58,38 @@ public class CardAdd2Cards implements Card
     public int getNumber()
     {
         return -1;  //ritorno un valore di default perchè la CardCambiaGiro non ha un number
+    }
+
+    @Override
+    public Node serialize(Document d)
+    {
+        Element root = d.createElement("card");
+        root.appendChild(this.serializeType(d));
+        root.appendChild(this.serializeColor(d));
+        return root;
+    }
+
+    /**
+     * funzione che serializza in XML l'attributo type
+     * @param d
+     * @return il nodo
+     */
+    public Node serializeType(Document d)
+    {
+        Node type = d.createElement("type");
+        type.setTextContent(this.type);
+        return type;
+    }
+    /**
+     * funzione che serializza in XML l'attributo type
+     * @param d
+     * @return il nodo
+     */
+    public Node serializeColor(Document d)
+    {
+        Node color = d.createElement("color");
+        color.setTextContent(this.color);
+        return color;
     }
     
     /**

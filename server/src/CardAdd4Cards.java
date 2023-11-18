@@ -1,3 +1,7 @@
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 /**
  * classe che gestisce una Card che aggiunge 4 carte e che cambia color
  */
@@ -5,6 +9,7 @@ public class CardAdd4Cards implements Card
 {
     //attributi della CardAdd4Cards
     public String newColor;
+    public String type;
 
     /**
      * costruttore non parametrico della CardAdd4Cards
@@ -15,6 +20,7 @@ public class CardAdd4Cards implements Card
     {
         //assegno valori di default agli attributi della CardAdd4Cards
         newColor = "";
+        this.type = "CardAdd4Cards";
     }
 
     @Override
@@ -53,5 +59,38 @@ public class CardAdd4Cards implements Card
          * la carta è una carta speciale e quindi è sempre giocabile
          */
         return true;
+    }
+
+        @Override
+    public Node serialize(Document d)
+    {
+        Element root = d.createElement("card");
+        root.appendChild(this.serializeType(d));
+        root.appendChild(this.serializeNewColor(d));
+        return root;
+    }
+
+    /**
+     * funzione che serializza in XML l'attributo type
+     * @param d
+     * @return il nodo
+     */
+    public Node serializeType(Document d)
+    {
+        Node type = d.createElement("type");
+        type.setTextContent(this.type);
+        return type;
+    }
+
+    /**
+     * funzione che serializza in XML l'attributo type
+     * @param d
+     * @return il nodo
+     */
+    public Node serializeNewColor(Document d)
+    {
+        Node newColor = d.createElement("newColor");
+        newColor.setTextContent(this.newColor);
+        return newColor;
     }
 }

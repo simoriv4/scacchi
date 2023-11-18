@@ -25,60 +25,16 @@ public class gamepage extends JFrame {
     private final String MUSIC_PATH = "audio\\UNO_track.wav";
 
     // percorsi carte
-    private final String REVERSE_B_PATH = "src\\assets\\cards-front\\_B.png";
-    private final String REVERSE_Y_PATH = "src\\assets\\cards-front\\_Y.png";
-    private final String REVERSE_G_PATH = "src\\assets\\cards-front\\_G.png";
-    private final String REVERSE_R_PATH = "src\\assets\\cards-front\\_R.png";
-    private final String ZERO_B_PATH = "src\\assets\\cards-front\\0B.png";
-    private final String ZERO_Y_PATH = "src\\assets\\cards-front\\0Y.png";
-    private final String ZERO_G_PATH = "src\\assets\\cards-front\\0G.png";
-    private final String ZERO_R_PATH = "src\\assets\\cards-front\\0R.png";
-    private final String ONE_B_PATH = "src\\assets\\cards-front\\1B.png";
-    private final String ONE_Y_PATH = "src\\assets\\cards-front\\1Y.png";
-    private final String ONE_G_PATH = "src\\assets\\cards-front\\1G.png";
-    private final String ONE_R_PATH = "src\\assets\\cards-front\\1R.png";
-    private final String TWO_B_PATH = "src\\assets\\cards-front\\2B.png";
-    private final String TWO_Y_PATH = "src\\assets\\cards-front\\2Y.png";
-    private final String TWO_G_PATH = "src\\assets\\cards-front\\2G.png";
-    private final String TWO_R_PATH = "src\\assets\\cards-front\\2R.png";
-    private final String THREE_B_PATH = "src\\assets\\cards-front\\3B.png";
-    private final String THREE_Y_PATH = "src\\assets\\cards-front\\3Y.png";
-    private final String THREE_G_PATH = "src\\assets\\cards-front\\3G.png";
-    private final String THREE_R_PATH = "src\\assets\\cards-front\\3R.png";
-    private final String FOUR_B_PATH = "src\\assets\\cards-front\\4B.png";
-    private final String FOUR_Y_PATH = "src\\assets\\cards-front\\4Y.png";
-    private final String FOUR_G_PATH = "src\\assets\\cards-front\\4G.png";
-    private final String FOUR_R_PATH = "src\\assets\\cards-front\\4R.png";
-    private final String FIVE_B_PATH = "src\\assets\\cards-front\\5B.png";
-    private final String FIVE_Y_PATH = "src\\assets\\cards-front\\5Y.png";
-    private final String FIVE_G_PATH = "src\\assets\\cards-front\\5G.png";
-    private final String FIVE_R_PATH = "src\\assets\\cards-front\\5R.png";
-    private final String SIX_B_PATH = "src\\assets\\cards-front\\6B.png";
-    private final String SIX_Y_PATH = "src\\assets\\cards-front\\6Y.png";
-    private final String SIX_G_PATH = "src\\assets\\cards-front\\6G.png";
-    private final String SIX_R_PATH = "src\\assets\\cards-front\\6R.png";
-    private final String SEVEN_B_PATH = "src\\assets\\cards-front\\7B.png";
-    private final String SEVEN_Y_PATH = "src\\assets\\cards-front\\7Y.png";
-    private final String SEVEN_G_PATH = "src\\assets\\cards-front\\7G.png";
-    private final String SEVEN_R_PATH = "src\\assets\\cards-front\\7R.png";
-    private final String EIGHT_B_PATH = "src\\assets\\cards-front\\8B.png";
-    private final String EIGHT_Y_PATH = "src\\assets\\cards-front\\8Y.png";
-    private final String EIGHT_G_PATH = "src\\assets\\cards-front\\8G.png";
-    private final String EIGHT_R_PATH = "src\\assets\\cards-front\\8R.png";
-    private final String NINE_B_PATH = "src\\assets\\cards-front\\9B.png";
-    private final String NINE_Y_PATH = "src\\assets\\cards-front\\9Y.png";
-    private final String NINE_G_PATH = "src\\assets\\cards-front\\9G.png";
-    private final String NINE_R_PATH = "src\\assets\\cards-front\\9R.png";
-    private final String ADD_TWO_CARDS_B_PATH = "src\\assets\\cards-front\\D2B.png";
-    private final String ADD_TWO_CARDS_Y_PATH = "src\\assets\\cards-front\\D2Y.png";
-    private final String ADD_TWO_CARDS_G_PATH = "src\\assets\\cards-front\\D2G.png";
-    private final String ADD_TWO_CARDS_R_PATH = "src\\assets\\cards-front\\D2R.png";
-    private final String SKIP_B_PATH = "src\\assets\\cards-front\\skipB.png";
-    private final String SKIP_Y_PATH = "src\\assets\\cards-front\\skipY.png";
-    private final String SKIP_G_PATH = "src\\assets\\cards-front\\skipG.png";
-    private final String SKIP_R_PATH = "src\\assets\\cards-front\\skipR.png";
-    private final String ADD_FOUR_CARDS_PATH = "src\\assets\\cards-front\\D4W.png";
-    private final String CHANGE_COLOR_PATH = "src\\assets\\cards-front\\W.png";
+
+    private final String CARDS_PATH = "src\\assets\\cards-front";
+    private final String ADD_2_CARDS_NAME = "D2";
+    private final String ADD_4_CARDS_NAME = "D4W";
+    private final String CHANGE_COLOR_NAME = "W";
+    private final String BLOCK_CARD_NAME = "skip";
+    private final String CHANGE_TURN_CARD_NAME = "_";
+
+
+
 
 
 
@@ -98,6 +54,19 @@ public class gamepage extends JFrame {
     private final String START = "start";
     private final static String SORT_BY_NUMBER = "sortByNumber";
     private final static String SORT_BY_COLOR = "sortByColor"; 
+
+    private final static String CARD_ADD_2_CARDS = "CardAdd2Cards";
+    private final static String CARD_ADD_4_CARDS = "CardAdd4Cards";
+    private final static String CARD_BLOCK = "CardBlock";
+    private final static String CARD_CHANGE_COLOR = "CardChangeColor";
+    private final static String CARD_CHANGE_TURN = "CardChangeTurn";
+    private final static String CARD_NUMBER = "CardNumber";
+
+    private final static String RED = "red";
+    private final static String YELLOW = "yellow";
+    private final static String BLUE = "blue";
+    private final static String GREEN = "green";
+
 
 
     // messaggi di risposta
@@ -268,70 +237,105 @@ public class gamepage extends JFrame {
     }
 
     private JPanel initDeck(JPanel overlayPanel) throws IOException, ParserConfigurationException, TransformerException, SAXException {
-        message = new Message(user.isUno, INIT_DECK, user.userName, "");
-        this.communication.sendMessage(message);
+        this.message = new Message(user.isUno, INIT_DECK, user.userName, "");
+        this.communication.sendMessage(this.message);
         // attendo la risposta
         String reply = this.communication.listening();
         // unserializzo il messaggio
-        message.InitMessageFromStringXML(reply);
+        this.message.InitMessageFromStringXML(reply);
+
         // unserializzo il mazzo
-        this.user.deck.unserializeDeck(reply);
+        this.user.deck.unserializeDeck(this.message.message);
 
         int x = (int) (screenWidth * 0.4);
-        int y = (int) (screenHeight * 0.9);
+        int y = (int) (screenHeight * 0.7);
         // scorro le carte e le aggiungo all'overlay panel
         for(int i= 0; i<this.user.deck.getSizeDeck(); i++)
         {
-            // switch (this.user.deck.deck.get(i).type) {
-            //     case value:
-                    
-            //         break;
-            
-            //     default:
-            //         break;
-            // }
             JLabel card= new JLabel();
-            card = this.initImageLabel(card, COVER_CARD_PATH, WIDTH_CARDS, HEIGHT_CARDS);
-            // setto la posizione
-            // la prima carta è sempre al centro--> poi si mette a x - n   e   x + n
-            // controllo quante carte
-            this.deck_Label.setBounds(x, y, WIDTH_CARDS, HEIGHT_CARDS);
-            // controllo il mouse click sul mazzo girato--> per pescare la carta
+            Card c = this.user.deck.deck.get(i);
+            String cardPath ="";
+            switch (c.getType()) {
+                case CARD_ADD_2_CARDS:
+                    cardPath = CARDS_PATH + "\\"+ ADD_2_CARDS_NAME + this.getColor(c)+ ".png";
+                    break;
+            
+                case CARD_ADD_4_CARDS:
+                    cardPath = CARDS_PATH + "\\" +ADD_4_CARDS_NAME+ ".png";
+                    break;
+
+                case CARD_BLOCK:
+                    cardPath = CARDS_PATH + "\\" + BLOCK_CARD_NAME + this.getColor(c)+ ".png";
+                    break;
+                case CARD_CHANGE_COLOR:
+                    cardPath = CARDS_PATH + "\\" + CHANGE_COLOR_NAME + ".png";
+                    break;
+                case CARD_CHANGE_TURN:
+                    cardPath = CARDS_PATH + "\\" +CHANGE_TURN_CARD_NAME + this.getColor(c)+ ".png";
+                    break;
+                case CARD_NUMBER:
+                    cardPath = CARDS_PATH + "\\" +c.getNumber() + this.getColor(c)+ ".png";
+                    break;
+            }
+            card = this.initImageLabel(card, cardPath, WIDTH_CARDS, HEIGHT_CARDS);
             card.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 // quando viene cliccato il mazzo richiede al server di pescare la carta
-
-                // invio il messaggio al server
-                try {
-                    message = new Message(user.isUno, DRAW, user.userName, "");
-                    communication.sendMessage(message);
-                    // aspetto la risposta
-                    String response = communication.listening();
-                    // <root_message>
-                    // <command>response</command>
-                    // <message>200</message>
-                    // <username>username</username>
-                    // </root_message>
-                    // setto il messaggio da inviare
-                    message.InitMessageFromStringXML(response);
-                    Deck d = new Deck<>();
-                    // unserializzo il deck --> sarà un deck di length = 1--> corrisponde alla carta da pescare
-                    d.unserializeDeck(message.message);
-                    // aggiungo la carta al mazzo dello user
-                    user.deck.deck.add((Card) d.deck.get(0));                    
-                } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-
+                //JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
+                System.out.println("cliccato");
             }
         });
+            // setto la posizione
+            // la prima carta è sempre al centro--> poi si mette a x - n   e   x + n
+            // setto posizione
+            card.setBounds(x, y, WIDTH_CARDS, HEIGHT_CARDS);
+            // aggiorno la x
+            x+=(WIDTH_CARDS+10);
+            // controllo il mouse click sul mazzo girato--> per pescare la carta
+            card.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    // quando viene cliccato il mazzo richiede al server di pescare la carta
+                    
+                    // invio il messaggio al server
+                    // try {
+                    //     message = new Message(user.isUno, DRAW, user.userName, "");
+                    //     communication.sendMessage(message);
+                    //     // aspetto la risposta
+                    //     String response = communication.listening();
+                    //     // aggiungo la carta al mazzo dello user
+                    // } catch (IOException | ParserConfigurationException | TransformerException e1) {
+                    //     // TODO Auto-generated catch block
+                    //     e1.printStackTrace();
+                    // }
+                }
+            });
             // aggiungi la carta al panel
             overlayPanel.add(card);
         }
         return overlayPanel;
         
+    }
+
+    /**
+     * funzione che ritorna la lettera corrispondente al colore della carta--> sarà usata per formare il nome della foto della carta
+     * @param c
+     * @return
+     */
+    public String getColor(Card c)
+    {
+        switch (c.getColor()) {
+            case RED:
+                return "R";        
+            case YELLOW:
+                return "Y";
+            case BLUE:
+                return "B";
+            case GREEN:
+                return "G";
+        }
+        return null;
     }
 
     /**

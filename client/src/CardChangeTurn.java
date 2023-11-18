@@ -7,6 +7,8 @@ import org.w3c.dom.Node;
  */
 public class CardChangeTurn implements Card
 {
+    private final static String CARD_CHANGE_TURN = "CardChangeTurn";
+
     //attributi della CardChangeTurn
     public String color;
     public String type;
@@ -21,7 +23,7 @@ public class CardChangeTurn implements Card
     {
         //assegno i valori passati come parametro agli attributi della CardChangeTurn
         this.color = color;
-        this.type = "";
+        this.type = CARD_CHANGE_TURN;
     }
 
     /**
@@ -33,6 +35,7 @@ public class CardChangeTurn implements Card
     {
         //assegno valori di default agli attributi della CardChangeTurn
         color = "";
+        type= CARD_CHANGE_TURN;
     }
 
     @Override
@@ -45,6 +48,11 @@ public class CardChangeTurn implements Card
     public String getColor()
     {
         return color;
+    }
+    @Override
+    public String getType()
+    {
+        return this.type;
     }
 
     @Override

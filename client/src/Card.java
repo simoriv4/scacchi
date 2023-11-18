@@ -1,3 +1,5 @@
+import org.w3c.dom.Node;
+
 /**
  * classe generica che contiene i metodi che deve avere ogni Card
  */
@@ -14,6 +16,12 @@ public interface Card
      * @return colore della carta
      */
     String getColor();
+    /**
+     * metodo per ottenere il tipo della carta
+     * @return
+     */
+    String getType();
+
     
     /**
      * metodo per impostare il numero della carta
@@ -34,4 +42,7 @@ public interface Card
      * @return true: carta giocabile --- false: carta non giocabile
      */
     boolean isPlayable(String color, int number);
+
+    void unserialize(Node node);
+
 }

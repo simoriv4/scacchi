@@ -1,6 +1,19 @@
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 /**
  * classe genertica di tipo Card (<E extends Card>) che contiene tutte le carte presenti in una partita
  */
@@ -36,6 +49,11 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
      * numero di carte speciali (non hanno colore), cambia colore
      */
     private final static int NUMBER_CHANGE_COLOR_CARD = 4;
+
+    /*
+     * numero di carte da distribuire all'inizio all'utente
+     */
+    private final static int MAX_CARD_USER = 7;
 
     //attributi della classe Deck
     public List<Card> deck;
@@ -159,6 +177,48 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
             //aggiungo la Card al Deck
             deck.add(card);
         }
+    }
+
+    /**
+     * metodo che crea il mazzo da dare all'utente appena entra in partita
+     * @return l'oggetto deck
+     */
+    public Deck<Card> initUserDeck()
+    {
+        Deck<Card> tmp = new Deck<>();
+        for(int i = 0; i < MAX_CARD_USER; i++)
+            tmp.addCard(getCard());
+        
+        return tmp;
+    }
+
+    public String serializeDeck() throws ParserConfigurationException, TransformerException
+    {
+        // istanzio il documento per creare la stringa XML
+        DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
+        DocumentBuilder b = f.newDocumentBuilder();
+        Document d = b.newDocument();
+
+        // creo la root dell'XML
+        Element root = d.createElement("root_message");
+        // aggiungo alla root i nodi 
+        for(Card c: this.deck)
+        {
+            root.appendChild(c.serialize(d));
+        }
+
+        // aggiungo la root al documento
+        d.appendChild(root);
+
+        // SALVA SU STRINGA
+        // Creare un oggetto Transformer per la trasformazione in stringa
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        StringWriter writer = new StringWriter();
+        transformer.transform(new DOMSource(d), new StreamResult(writer));
+        String xmlString = writer.toString();
+
+        return xmlString;
     }
 
 

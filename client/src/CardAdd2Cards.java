@@ -1,13 +1,22 @@
+import java.io.StringReader;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  * classe che gestisce una Card che aggiunge 2 carte (color)
  */
 public class CardAdd2Cards implements Card
 {
+    private final static String CARD_ADD_2_CARDS = "CardAdd2Cards";
+
     //attributi della CardAdd2Cards
     public String color;
 
@@ -22,7 +31,7 @@ public class CardAdd2Cards implements Card
     {
         //assegno i valori passati come parametro agli attributi della CardAdd2Cards
         this.color = color;
-        this.type = "";
+        this.type = CARD_ADD_2_CARDS;
     }
 
     /**
@@ -34,6 +43,7 @@ public class CardAdd2Cards implements Card
     {
         //assegno valori di default agli attributi della CardAdd2Cards
         color = "";
+        this.type = "CardAdd2Cards";
     }
 
     @Override
@@ -46,6 +56,11 @@ public class CardAdd2Cards implements Card
     public String getColor()
     {
         return color;
+    }
+    @Override
+    public String getType()
+    {
+        return this.type;
     }
 
     @Override
@@ -85,13 +100,18 @@ public class CardAdd2Cards implements Card
     }
 
     // unserializzo la carta passata
+    @Override
     public void unserialize(Node item) {
-        Element element = (Element) item;
+        // istanzio il documento per creare la stringa XML
+        // DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
+        // DocumentBuilder b = f.newDocumentBuilder();
+        // // creo un documento XML dalla stringa in formato XML passata
+        // Document d = b.parse(new InputSource(new StringReader(message)));
 
-        NamedNodeMap attributes = element.getAttributes();
-
-        this.type = attributes.item(0).getTextContent();
-        // assegno il valore al colore
-        this.color = attributes.item(1).getTextContent();
+        // // inizializzo gli attributi dell'oggetto Messaggio
+        // this.command = this.unserializeCommand(d);
+        // this.message = this.unserializeMessage(d);
+        // this.username = this.unserializeUsername(d);
+        // this.isUno = this.unserializeIsUno(d);
     }
 }

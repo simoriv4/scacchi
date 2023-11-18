@@ -99,7 +99,7 @@ public class Game {
                         // inizializzo messaggio di risposta     
                         this.message = new Message(u2.isUno, CORRECT, u2.userName,"Username disponibile");
                         // avvio il thread per quel client
-                        // ThreadClient tc =new ThreadClient(u);
+                        // ThreadClient tc =new ThreadClient(u2, serverSocket);
                         // tc.start();
                     }
                     //  invio messaggio di risposta
@@ -125,6 +125,13 @@ public class Game {
                 case DRAW:
                     break;
                 case INIT_DECK:
+                    // creo il mazzo di carte da dare all'utente
+                    Deck userDeck = this.deck.initUserDeck();
+                    // serializzo il mazzo
+                    String serialized_deck = userDeck.serializeDeck();
+                    // inizializzo il messaggio
+                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck);
+                    communication.sendMessage(this.message);
                     break;
                 case SORT_BY_COLOR:
                     break;      

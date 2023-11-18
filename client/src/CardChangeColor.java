@@ -6,11 +6,17 @@ import org.w3c.dom.Node;
  * classe che gestisce una Card cambia color
  */
 public class CardChangeColor implements Card {
+    private final static String CARD_CHANGE_COLOR = "CardChangeColor";
+
     // attributi della CardChangeColor
     public String newColor;
     public String type;
 
-
+    public CardChangeColor(String newColor) {
+        // assegno valori di default agli attributi della CardChangeColor
+        this.newColor = newColor;
+        this.type = CARD_CHANGE_COLOR;
+    }
     /**
      * costruttore non parametrico della CardChangeColor
      * 
@@ -19,7 +25,7 @@ public class CardChangeColor implements Card {
     public CardChangeColor() {
         // assegno valori di default agli attributi della CardChangeColor
         newColor = "";
-        this.type = "";
+        this.type = CARD_CHANGE_COLOR;
     }
 
     @Override
@@ -30,6 +36,11 @@ public class CardChangeColor implements Card {
     @Override
     public String getColor() {
         return ""; // ritorno un valore di default perchè la CardChangeColor non ha un color
+    }
+    @Override
+    public String getType()
+    {
+        return this.type;
     }
 
     @Override

@@ -1,3 +1,7 @@
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 /**
  * classe che gestisce una Card numerata (color e number)
  */
@@ -6,6 +10,7 @@ public class CardNumber implements Card
     //attributi della CardNumber
     public String color;
     public int number;
+    public String type;
 
     /**
      * costruttore parametrico della CardNumber
@@ -30,6 +35,7 @@ public class CardNumber implements Card
         //assegno valori di default agli attributi della CardNumber
         color = "";
         number = -1;
+        this.type = "CardNumber";
     }
 
     @Override
@@ -55,7 +61,49 @@ public class CardNumber implements Card
     {
         return number;
     }
+    @Override
+    public Node serialize(Document d)
+    {
+        Element root = d.createElement("card");
+        root.appendChild(this.serializeType(d));
+        root.appendChild(this.serializeColor(d));
+        root.appendChild(this.serializeNumber(d));
+        return root;
+    }
 
+    /**
+     * funzione che serializza in XML l'attributo type
+     * @param d
+     * @return il nodo
+     */
+    public Node serializeType(Document d)
+    {
+        Node type = d.createElement("type");
+        type.setTextContent(this.type);
+        return type;
+    }
+    /**
+     * funzione che serializza in XML l'attributo color
+     * @param d
+     * @return il nodo
+     */
+    public Node serializeColor(Document d)
+    {
+        Node color = d.createElement("color");
+        color.setTextContent(this.color);
+        return color;
+    }
+    /**
+     * funzione che serializza in XML l'attributo color
+     * @param d
+     * @return il nodo
+     */
+    public Node serializeNumber(Document d)
+    {
+        Node number = d.createElement("number");
+        number.setTextContent(String.valueOf(this.number));
+        return number;
+    }
     /**
      * metodo per confrontare il colore di quest carta con un colore
      * @param color colore con cui confrontare

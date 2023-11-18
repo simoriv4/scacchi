@@ -1,3 +1,7 @@
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 /**
  * classe che gestisce una Card cambia giro (color)
  */
@@ -5,6 +9,7 @@ public class CardChangeTurn implements Card
 {
     //attributi della CardChangeTurn
     public String color;
+    public String type;
 
     /**
      * costruttore parametrico della CardChangeTurn
@@ -26,6 +31,7 @@ public class CardChangeTurn implements Card
     {
         //assegno valori di default agli attributi della CardChangeTurn
         color = "";
+        this.type = "CardChangeTurn";
     }
 
     @Override
@@ -50,6 +56,38 @@ public class CardChangeTurn implements Card
     public int getNumber()
     {
         return -1;  //ritorno un valore di default perchè la CardChangeTurn non ha un number
+    }
+
+    @Override
+    public Node serialize(Document d)
+    {
+        Element root = d.createElement("card");
+        root.appendChild(this.serializeType(d));
+        root.appendChild(this.serializeColor(d));
+        return root;
+    }
+
+    /**
+     * funzione che serializza in XML l'attributo type
+     * @param d
+     * @return il nodo
+     */
+    public Node serializeType(Document d)
+    {
+        Node type = d.createElement("type");
+        type.setTextContent(this.type);
+        return type;
+    }
+    /**
+     * funzione che serializza in XML l'attributo color
+     * @param d
+     * @return il nodo
+     */
+    public Node serializeColor(Document d)
+    {
+        Node color = d.createElement("color");
+        color.setTextContent(this.color);
+        return color;
     }
     
     /**

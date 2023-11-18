@@ -1,3 +1,7 @@
+import javax.swing.text.Document;
+
+import org.w3c.dom.Node;
+
 /**
  * classe generica che contiene i metodi che deve avere ogni Card
  */
@@ -34,4 +38,6 @@ public interface Card
      * @return true: carta giocabile --- false: carta non giocabile
      */
     boolean isPlayable(String color, int number);
+
+    Node serialize(org.w3c.dom.Document d);
 }

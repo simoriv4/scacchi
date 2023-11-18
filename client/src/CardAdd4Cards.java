@@ -7,6 +7,8 @@ import org.w3c.dom.Node;
  */
 public class CardAdd4Cards implements Card
 {
+    private final static String CARD_ADD_4_CARDS = "CardAdd4Cards";
+
     //attributi della CardAdd4Cards
     public String newColor;
     public String type;
@@ -21,7 +23,14 @@ public class CardAdd4Cards implements Card
     {
         //assegno valori di default agli attributi della CardAdd4Cards
         newColor = "";
-        this.type = "";
+        this.type = CARD_ADD_4_CARDS ;
+    }
+
+    public CardAdd4Cards(String newColor)
+    {
+        //assegno valori di default agli attributi della CardAdd4Cards
+        this.newColor = newColor;
+        this.type = CARD_ADD_4_CARDS ;
     }
 
     @Override
@@ -34,6 +43,11 @@ public class CardAdd4Cards implements Card
     public String getColor()
     {
         return ""; //ritorno un valore di default perchè la CardCambiacolor non ha un color
+    }
+    @Override
+    public String getType()
+    {
+        return this.type;
     }
 
     @Override

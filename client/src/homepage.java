@@ -12,12 +12,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 public class homepage extends JFrame {
-    // private final String rootName = "client";
     private final String UNO_PATH = "src\\assets\\logo.png";
     private final String BACKGROUND_IMAGE_PATH = "src\\assets\\backgrounds\\wallpaper.png";
     private final String SONG_PATH = "audio\\UNO_track.wav";

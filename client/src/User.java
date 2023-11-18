@@ -17,6 +17,7 @@ public class User {
         this.win = win;
         this.userName = userName;
         this.isUno = isUno;
+        this.deck = new Deck<>();
     }
     /**
      * costruttore non parametrico
@@ -26,6 +27,7 @@ public class User {
         this.win = false;
         this.isUno = false;
         this.userName = "userName";
+        this.deck = new Deck<>();
     }
 
 

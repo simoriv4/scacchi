@@ -33,11 +33,23 @@ public class Users{
     {
         this.users.add(u);
     }
+    
     /**
      * funzione che rimuove un utente dalla lista passandogli l'oggetto utente
     */ 
     public void removeUser(User u)
     {
         this.users.remove(u);
+    }
+
+    /**
+     * metodo per ottenere l'utente dopo l'utente passato come parametro
+     * @param user utente attuale
+     * @return utente dopo l'utente passato come parametro 
+     */
+    public User getProxUser(User user)
+    {
+        //ritorno l'utente dopo l'utente passato come parametro
+        return users.get(users.indexOf(user)+1);
     }
 }

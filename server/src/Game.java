@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -80,7 +79,8 @@ public class Game {
             // prendo l'utente con quel username
             User u = this.users.findUserByUsername(this.message.username);
                     
-            switch (this.message.command) {
+            switch (this.message.command)
+            {
                 case START:
                     Boolean isAvailable = true;
                     // controllo che non ci siano utenti con quel nome
@@ -99,7 +99,7 @@ public class Game {
                         // inizializzo messaggio di risposta     
                         this.message = new Message(u2.isUno, CORRECT, u2.userName,"Username disponibile");
                         // avvio il thread per quel client
-                        // ThreadClient tc =new ThreadClient(u2, serverSocket);
+                        // ThreadClient tc =new ThreadClient(u);
                         // tc.start();
                     }
                     //  invio messaggio di risposta
@@ -117,44 +117,81 @@ public class Game {
                     communication.sendMessage(this.message);
                     break;
                 case SKIP:
-                    break;
+                    //prendo l'utente dopo l'utente che ha chiesto lo skip
+                    User user = users.getProxUser(u);
+
+                    //invio il messaggio
+                    this.message = new Message(user.isUno, CORRECT, user.userName,"E' il tuo turno" );
+                    communication.sendMessage(this.message);
                 case UNO:
-                    break;
-                case PLAY:
-                    break;
-                case DRAW:
-                    // pesco la carta dal mazzo
-                    Card c = this.deck.getCard();
-                    if(c != null)
+                    //controllo se l'utente è a una carta
+                    if(u.cards.getSizeDeck() == 1)
                     {
-                        Deck tmp = new Deck<>();
-                        // la aggiungo nel nuovo mazzo per serializzarla
-                        tmp.addCard(c);
-                        // serializzo il mazzo
-                        String serialized_deck = tmp.serializeDeck();
-                        // inizializzo il messaggio
-                        this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck);
+                        this.message = new Message(u.isUno, CORRECT, "", "");
                     }
-                    else{
-                        // ripopolo il mazzo
-                        //this.message = new Message(u.isUno, CORRECT, u.userName, );
+                    else
+                    {
+                        //l'utente pesca due carte
+                        drawCard(u);
+                        drawCard(u);
+
+                        //messaggio con le nuove carte dell'utente
+                        this.message = new Message(u.isUno, ERROR_UNO, "", u.cards.toString());
                     }
-                    
+
+                    //invio il messaggio
                     communication.sendMessage(this.message);
-                    break;
-                case INIT_DECK:
-                    // creo il mazzo di carte da dare all'utente
-                    Deck userDeck = this.deck.initUserDeck();
-                    // serializzo il mazzo
-                    String serialized_deck2 = userDeck.serializeDeck();
-                    // inizializzo il messaggio
-                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck2);
+                case PLAY:
+                    /*
+                     * DA GUARDARE
+                     */
+
+                    //prendo la carta giocata dall'utente
+                    Card cardPlayed = new Card(this.message.message);
+
+                    //controllo se la carta giocata è valida
+                    if(this.checkCardPlayed(cardPlayed))
+                    {
+                        this.message = new Message(u.isUno, CORRECT, "", "Carta giocata correttamente");
+                    }
+                    else
+                    {
+                        this.message = new Message(u.isUno, ERROR_CARD_PALYED, "","Carta giocata in modo errato" );
+                    }
+
+                    //invio il messaggio
                     communication.sendMessage(this.message);
-                    break;
+                case DRAW:
+                    //l'utente pesca la carta
+                    drawCard(u);
+
+                    //se il mazzo è finito
+                    if(deck.getSizeDeck() == 0)
+                    {
+                        //rimescolo il mazzo degli scarti
+                        deck.repopulateDeck(discardedCards.deck);
+                    }
+
+                    //invio le carte all'utente
+                    this.message = new Message(u.isUno, CORRECT, "", u.cards.toString());   //RIGUARDARE..........
+                    communication.sendMessage(this.message);
+
+                //case INIT_DECK:
+                    //break;
                 case SORT_BY_COLOR:
-                    break;      
+                    //ordino le carte dell'utente per numero
+                    u.sortCardsByColor();
+
+                    //invio le carte all'utente
+                    this.message = new Message(u.isUno, CORRECT, "", u.cards.toString());   //RIGUARDARE..........
+                    communication.sendMessage(this.message);       
                 case SORT_BY_NUMBER:
-                    break;                                                      
+                    //ordino le carte dell'utente per numero
+                    u.sortCardsByNumber();
+
+                    //invio le carte all'utente
+                    this.message = new Message(u.isUno, CORRECT, "", u.cards.toString());   //RIGUARDARE..........
+                    communication.sendMessage(this.message);                                              
             }
             
         }

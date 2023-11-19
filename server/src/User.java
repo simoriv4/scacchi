@@ -53,4 +53,20 @@ public class User
     {
         cards.addCard(card);
     }
+
+    /**
+     * metodo per ordinare le carte per colore
+     */
+    public void sortCardsByColor()
+    {
+        cards.sortCardsByColor();
+    }
+
+    /**
+     * metodo per ordinare le carte per numero
+     */
+    public void sortCardsByNumber()
+    {
+        cards.sortCardsByNumber();
+    }
 }

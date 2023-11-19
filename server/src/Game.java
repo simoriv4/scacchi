@@ -152,7 +152,11 @@ public class Game {
                     //controllo se la carta giocata è valida
                     if(this.checkCardPlayed(cardPlayed))
                     {
-                        this.message = new Message(u.isUno, CORRECT, "", "Carta giocata correttamente");
+                        //controllo se l'utente ha finito le carte
+                        if(u.cards.getSizeDeck() == 0)
+                            this.message = new Message(u.isUno, WINNER, u.userName, "Complimenti! Hai vinto");
+                        else
+                            this.message = new Message(u.isUno, CORRECT, "", "Carta giocata correttamente");
                     }
                     else
                     {

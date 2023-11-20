@@ -136,35 +136,36 @@ public class Game {
                         drawCard(u);
 
                         //messaggio con le nuove carte dell'utente
-                        this.message = new Message(u.isUno, ERROR_UNO, "", u.cards.toString());
+                        this.message = new Message(u.isUno, ERROR_SKIP, "", u.cards.toString());
                     }
 
                     //invio il messaggio
                     communication.sendMessage(this.message);
                 case PLAY:
-                    /*
-                     * DA GUARDARE
-                     */
+                    // /*
+                    //  * DA GUARDARE
+                    //  */
 
-                    //prendo la carta giocata dall'utente
-                    Card cardPlayed = new Card(this.message.message);
+                    // //prendo la carta giocata dall'utente
+                    // Card cardPlayed = new Card(this.message.message);
 
-                    //controllo se la carta giocata è valida
-                    if(this.checkCardPlayed(cardPlayed))
-                    {
-                        //controllo se l'utente ha finito le carte
-                        if(u.cards.getSizeDeck() == 0)
-                            this.message = new Message(u.isUno, WINNER, u.userName, "Complimenti! Hai vinto");
-                        else
-                            this.message = new Message(u.isUno, CORRECT, "", "Carta giocata correttamente");
-                    }
-                    else
-                    {
-                        this.message = new Message(u.isUno, ERROR_CARD_PALYED, "","Carta giocata in modo errato" );
-                    }
+                    // //controllo se la carta giocata è valida
+                    // if(this.checkCardPlayed(cardPlayed))
+                    // {
+                    //     //controllo se l'utente ha finito le carte
+                    //     if(u.cards.getSizeDeck() == 0)
+                    //         this.message = new Message(u.isUno, WINNER, u.userName, "Complimenti! Hai vinto");
+                    //     else
+                    //         this.message = new Message(u.isUno, CORRECT, "", "Carta giocata correttamente");
+                    // }
+                    // else
+                    // {
+                    //     this.message = new Message(u.isUno, ERROR_CARD_PALYED, "","Carta giocata in modo errato" );
+                    // }
 
-                    //invio il messaggio
-                    communication.sendMessage(this.message);
+                    // //invio il messaggio
+                    // communication.sendMessage(this.message);
+                    break;
                 case DRAW:
                     //l'utente pesca la carta
                     drawCard(u);
@@ -180,8 +181,17 @@ public class Game {
                     this.message = new Message(u.isUno, CORRECT, "", u.cards.toString());   //RIGUARDARE..........
                     communication.sendMessage(this.message);
 
-                //case INIT_DECK:
-                    //break;
+                case INIT_DECK:
+                    // creo il mazzo di carte da dare all'utente
+                    Deck userDeck = this.deck.initUserDeck();
+                    // serializzo il mazzo
+                    String serialized_deck = userDeck.serializeDeck();
+                    String serialized_deck2 = userDeck.serializeDeck();
+                    // inizializzo il messaggio
+                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck);
+                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck2);
+                    communication.sendMessage(this.message);
+                    break;
                 case SORT_BY_COLOR:
                     //ordino le carte dell'utente per numero
                     u.sortCardsByColor();

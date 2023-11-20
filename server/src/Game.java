@@ -94,7 +94,7 @@ public class Game {
                     if(isAvailable)
                     {
                         // // creo l'utente e lo aggiungo alla lista
-                        User u2 = new User(clientSocket.getPort(), "127.0.0.1", false, false, false, this.message.username);
+                        User u2 = new User(clientSocket.getPort(), "192.168.187.1", false, false, false, this.message.username);
                         this.users.addUser(u2);   
                         // inizializzo messaggio di risposta     
                         this.message = new Message(u2.isUno, CORRECT, u2.userName,"Username disponibile");

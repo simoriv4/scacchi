@@ -138,7 +138,7 @@ public class Game {
                         //messaggio con le nuove carte dell'utente
                         String serialized_deck = u.cards.serializeDeck();
                         // inizializzo il messaggio
-                        this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck);
+                        this.message = new Message(u.isUno, ERROR_UNO, u.userName, serialized_deck);
                     }
 
                     //invio il messaggio

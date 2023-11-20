@@ -55,6 +55,15 @@ public class User
     }
 
     /**
+     * metodo per rimuovere una carta dal mazzo dell'utente
+     * @param card carta da eliminare dal mazzo dell'utente
+     */
+    public void removeCard(Card card)
+    {
+        cards.deck.remove(card);
+    }
+
+    /**
      * metodo per ordinare le carte per colore
      */
     public void sortCardsByColor()

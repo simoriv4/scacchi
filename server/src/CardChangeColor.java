@@ -86,5 +86,4 @@ public class CardChangeColor implements Card {
          */
         return true;
     }
-    
 }

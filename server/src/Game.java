@@ -19,7 +19,7 @@ public class Game {
     private final static String ERROR_USERNAME = "400";
     private final static String ERROR_CARD_PALYED = "406";
     private final static String WINNER = "201";
-    private final static String ERROR_SKIP = "409";
+    private final static String ERROR_UNO = "409";
     private final static String ERROR_EXIT = "500";
 
     // lista comandi
@@ -94,7 +94,7 @@ public class Game {
                     if(isAvailable)
                     {
                         // // creo l'utente e lo aggiungo alla lista
-                        User u2 = new User(clientSocket.getPort(), "127.0.0.1", false, false, false, this.message.username);
+                        User u2 = new User(clientSocket.getPort(), "192.168.187.1", false, false, false, this.message.username);
                         this.users.addUser(u2);   
                         // inizializzo messaggio di risposta     
                         this.message = new Message(u2.isUno, CORRECT, u2.userName,"Username disponibile");
@@ -127,7 +127,7 @@ public class Game {
                     //controllo se l'utente è a una carta
                     if(u.cards.getSizeDeck() == 1)
                     {
-                        this.message = new Message(u.isUno, CORRECT, "", "");
+                        this.message = new Message(u.isUno, CORRECT, u.userName, "Complimenti! Sei a una carta");
                     }
                     else
                     {
@@ -136,35 +136,43 @@ public class Game {
                         drawCard(u);
 
                         //messaggio con le nuove carte dell'utente
-                        this.message = new Message(u.isUno, ERROR_SKIP, "", u.cards.toString());
+                        String serialized_deck = u.cards.serializeDeck();
+                        // inizializzo il messaggio
+                        this.message = new Message(u.isUno, ERROR_UNO, u.userName, serialized_deck);
                     }
 
                     //invio il messaggio
                     communication.sendMessage(this.message);
                 case PLAY:
-                    // /*
-                    //  * DA GUARDARE
-                    //  */
+                    //prendo la carta giocata dall'utente
+                    Card cardPlayed = Card.unserialize(this.message.message);
 
-                    // //prendo la carta giocata dall'utente
-                    // Card cardPlayed = new Card(this.message.message);
+                    //controllo se la carta giocata è valida
+                    if(this.checkCardPlayed(cardPlayed))
+                    {
+                        //controllo se l'utente ha finito le carte
+                        if(u.cards.getSizeDeck() == 0)
+                            this.message = new Message(u.isUno, WINNER, u.userName, "Complimenti! Hai vinto");
+                        else
+                        {
+                            //rimuovo la carta all'utente
+                            u.removeCard(cardPlayed);
 
-                    // //controllo se la carta giocata è valida
-                    // if(this.checkCardPlayed(cardPlayed))
-                    // {
-                    //     //controllo se l'utente ha finito le carte
-                    //     if(u.cards.getSizeDeck() == 0)
-                    //         this.message = new Message(u.isUno, WINNER, u.userName, "Complimenti! Hai vinto");
-                    //     else
-                    //         this.message = new Message(u.isUno, CORRECT, "", "Carta giocata correttamente");
-                    // }
-                    // else
-                    // {
-                    //     this.message = new Message(u.isUno, ERROR_CARD_PALYED, "","Carta giocata in modo errato" );
-                    // }
+                            //aggiungo la carta agli scarti
+                            discardedCards.addCard(cardPlayed);
 
-                    // //invio il messaggio
-                    // communication.sendMessage(this.message);
+                            String serialized_deck = u.cards.serializeDeck();
+                            // inizializzo il messaggio
+                            this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck);
+                        }
+                    }
+                    else
+                    {
+                        this.message = new Message(u.isUno, ERROR_CARD_PALYED, "","Carta giocata in modo errato" );
+                    }
+
+                    //invio il messaggio
+                    communication.sendMessage(this.message);
                     break;
                 case DRAW:
                     //l'utente pesca la carta
@@ -177,35 +185,39 @@ public class Game {
                         deck.repopulateDeck(discardedCards.deck);
                     }
 
+                    String serialized_deck4 = u.cards.serializeDeck();
+                    // inizializzo il messaggio
+                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck4);
                     //invio le carte all'utente
-                    this.message = new Message(u.isUno, CORRECT, "", u.cards.toString());   //RIGUARDARE..........
                     communication.sendMessage(this.message);
-
+                    break;
                 case INIT_DECK:
                     // creo il mazzo di carte da dare all'utente
-                    Deck userDeck = this.deck.initUserDeck();
+                    Deck<Card> userDeck = this.deck.initUserDeck();
                     // serializzo il mazzo
                     String serialized_deck = userDeck.serializeDeck();
-                    String serialized_deck2 = userDeck.serializeDeck();
                     // inizializzo il messaggio
                     this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck);
-                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck2);
                     communication.sendMessage(this.message);
                     break;
                 case SORT_BY_COLOR:
+                    //ordino le carte dell'utente per colore
+                    u.sortCardsByColor();
+
+                    //invio le carte all'utente
+                    String serialized_deck2 = u.cards.serializeDeck();
+                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck2);
+                    communication.sendMessage(this.message);
+                    break;   
+                case SORT_BY_NUMBER:
                     //ordino le carte dell'utente per numero
                     u.sortCardsByColor();
 
                     //invio le carte all'utente
-                    this.message = new Message(u.isUno, CORRECT, "", u.cards.toString());   //RIGUARDARE..........
-                    communication.sendMessage(this.message);       
-                case SORT_BY_NUMBER:
-                    //ordino le carte dell'utente per numero
-                    u.sortCardsByNumber();
-
-                    //invio le carte all'utente
-                    this.message = new Message(u.isUno, CORRECT, "", u.cards.toString());   //RIGUARDARE..........
-                    communication.sendMessage(this.message);                                              
+                    String serialized_deck3 = u.cards.serializeDeck();
+                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck3);
+                    communication.sendMessage(this.message);
+                    break;                                         
             }
             
         }

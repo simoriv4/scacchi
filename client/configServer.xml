@@ -1,4 +1,4 @@
 <server>
-    <IP>127.0.0.1</IP>
+    <IP>192.168.5.1</IP>
     <port>666</port>
 </server>

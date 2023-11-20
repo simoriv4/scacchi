@@ -96,6 +96,7 @@ public class gamepage extends JFrame {
     private JLabel discarded_Label;
     private JComboBox<String> combobox;
     private Clip clip;
+    private JPanel overlayPanel;
 
     private Integer screenWidth;
     private Integer screenHeight;
@@ -104,6 +105,7 @@ public class gamepage extends JFrame {
     private Message message;
     private User user;
     private Server server;
+    private String played_card;
 
     public final Communication communication;
 
@@ -147,7 +149,7 @@ public class gamepage extends JFrame {
 
         // controllo il tipo di carta--> in base a quello cerco l'immagine corretta
         // creo un pannello personalizzato per sovrapporre i componenti
-        JPanel overlayPanel = new JPanel() {
+        this.overlayPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -159,8 +161,14 @@ public class gamepage extends JFrame {
         // imposto il layout manager su null per posizionare manualmente i componenti
         overlayPanel.setLayout(null);
 
+
+
         // richiedo carte
-        overlayPanel= this.initDeck(overlayPanel);
+        this.message = new Message(user.isUno, INIT_DECK, user.userName, "");
+        this.communication.sendMessage(this.message);
+        // attendo la risposta
+        String reply = this.communication.listening();
+        overlayPanel= this.initDeck(overlayPanel, reply);
 
         // imposto la grafica del bottone
         this.initSkipButton();
@@ -194,13 +202,6 @@ public class gamepage extends JFrame {
         overlayPanel.add(this.unoButton);
         overlayPanel.add(combobox);
 
-        add(overlayPanel);
-
-        // this.frame.add(panel);
-        // imposta il frame a schermo intero
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setVisible(true);
-
         // controllo il mouse click sul mazzo girato--> per pescare la carta
         this.deck_Label.addMouseListener(new MouseAdapter() {
             //private Communication communication = new Communication(socket);
@@ -215,34 +216,26 @@ public class gamepage extends JFrame {
                     communication.sendMessage(message);
                     // aspetto la risposta
                     String response = communication.listening();
-                //     // <root_message>
-                //     // <command>response</command>
-                //     // <message>200</message>
-                //     // <username>username</username>
-                //     // </root_message>
-                //     // setto il messaggio da inviare
-                //     message.InitMessageFromStringXML(response);
-                //     Deck d = new Deck<>();
-                //     // unserializzo il deck --> sarà un deck di length = 1--> corrisponde alla carta da pescare
-                //     d.unserializeDeck(message.message);
-                //     // aggiungo la carta al mazzo dello user
-                //     user.deck.deck.add((Card) d.deck.get(0));
-                } catch (IOException | ParserConfigurationException | TransformerException e1) {
+                    JPanel overlayPanel = new JPanel();
+                    overlayPanel = initDeck(overlayPanel, reply);
+
+                } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
 
             }
         });
-        
+        add(overlayPanel);
+
+        // imposta il frame a schermo intero
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setVisible(true);
 
     }
 
-    private JPanel initDeck(JPanel overlayPanel) throws IOException, ParserConfigurationException, TransformerException, SAXException {
-        this.message = new Message(user.isUno, INIT_DECK, user.userName, "");
-        this.communication.sendMessage(this.message);
-        // attendo la risposta
-        String reply = this.communication.listening();
+    private JPanel initDeck(JPanel overlayPanel, String reply) throws IOException, ParserConfigurationException, TransformerException, SAXException {
+
         // unserializzo il messaggio
         this.message.InitMessageFromStringXML(reply);
 
@@ -280,14 +273,14 @@ public class gamepage extends JFrame {
                     break;
             }
             card = this.initImageLabel(card, cardPath, WIDTH_CARDS, HEIGHT_CARDS);
-            card.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                // quando viene cliccato il mazzo richiede al server di pescare la carta
-                //JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
-                System.out.println("cliccato");
-            }
-        });
+            // card.addMouseListener(new MouseAdapter() {
+            // @Override
+            // public void mouseClicked(java.awt.event.MouseEvent e) {
+            //     // quando viene cliccato il mazzo richiede al server di pescare la carta
+            //     //JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
+            //     System.out.println("cliccato");
+            // }
+            // });
             // setto la posizione
             // la prima carta è sempre al centro--> poi si mette a x - n   e   x + n
             // setto posizione
@@ -299,18 +292,7 @@ public class gamepage extends JFrame {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     // quando viene cliccato il mazzo richiede al server di pescare la carta
-                    
-                    // invio il messaggio al server
-                    // try {
-                    //     message = new Message(user.isUno, DRAW, user.userName, "");
-                    //     communication.sendMessage(message);
-                    //     // aspetto la risposta
-                    //     String response = communication.listening();
-                    //     // aggiungo la carta al mazzo dello user
-                    // } catch (IOException | ParserConfigurationException | TransformerException e1) {
-                    //     // TODO Auto-generated catch block
-                    //     e1.printStackTrace();
-                    // }
+                    System.out.println("1");
                 }
             });
             // aggiungi la carta al panel
@@ -431,7 +413,17 @@ public class gamepage extends JFrame {
                 //                                                                              true e mazzo == 1
                 this.message = new Message(user.isUno, SKIP, user.userName, user.isUno.toString());
                 this.communication.sendMessage(message);
-            } catch (IOException | ParserConfigurationException | TransformerException e1) {
+                // aspetto la risposta
+                String reply = this.communication.listening();
+                // unserializzo il messaggio
+                this.message.InitMessageFromStringXML(reply);
+                // controllo il codice di errore
+                if(this.message.command != CORRECT)
+                    // messaggio di errore
+                    JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
+
+
+            } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
@@ -459,7 +451,23 @@ public class gamepage extends JFrame {
                 //                                                                              true e mazzo == 1
                 this.message = new Message(user.isUno, SORT_BY_NUMBER, user.userName, user.isUno.toString());
                 this.communication.sendMessage(message);
-            } catch (IOException | ParserConfigurationException | TransformerException e1) {
+
+                // aspetto la risposta
+                String reply = this.communication.listening();
+                // unserializzo il messaggio
+                this.message.InitMessageFromStringXML(reply);
+                // controllo il codice di errore
+                if(this.message.command == CORRECT)
+                {
+                    this.overlayPanel = initDeck(overlayPanel, reply);
+                    remove(overlayPanel);
+                    add(this.overlayPanel);
+                }
+                else
+                    // messaggio di errore
+                    JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
+
+            } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
@@ -487,7 +495,23 @@ public class gamepage extends JFrame {
                 //                                                                              true e mazzo == 1
                 this.message = new Message(user.isUno, SORT_BY_COLOR, user.userName, user.isUno.toString());
                 this.communication.sendMessage(message);
-            } catch (IOException | ParserConfigurationException | TransformerException e1) {
+
+                // aspetto la risposta
+                String reply = this.communication.listening();
+                // unserializzo il messaggio
+                this.message.InitMessageFromStringXML(reply);
+                // controllo il codice di errore
+                if(this.message.command == CORRECT)
+                {
+                    this.overlayPanel = initDeck(overlayPanel, reply);
+                    remove(overlayPanel);
+                    add(this.overlayPanel);
+                }
+                else
+                    // messaggio di errore
+                    JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
+
+            } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
@@ -516,7 +540,24 @@ public class gamepage extends JFrame {
                 //                                                                              true e mazzo == 1
                 this.message = new Message(user.isUno, UNO, user.userName, user.isUno.toString());
                 this.communication.sendMessage(message);
-            } catch (IOException | ParserConfigurationException | TransformerException e1) {
+                // aspetto la risposta
+                String reply = this.communication.listening();
+                // unserializzo il messaggio
+                this.message.InitMessageFromStringXML(reply);
+                // controllo il codice di errore
+                if(this.message.command == CORRECT)
+                {
+                    this.overlayPanel = initDeck(overlayPanel, reply);
+                    remove(overlayPanel);
+                    add(this.overlayPanel);
+
+                    JOptionPane.showMessageDialog(this, "Non hai una sola carta!", "Errore", JOptionPane.ERROR_MESSAGE);
+                }
+                else
+                    // messaggio di errore
+                    JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
+
+            } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
@@ -542,9 +583,26 @@ public class gamepage extends JFrame {
                 // il messaggio invia anche se è stato detto UNO--> il server controlla se è impostato correttamente
                 //                                                                              false e mazzo > 1
                 //                                                                              true e mazzo == 1
-                this.message = new Message(user.isUno, PLAY, user.userName, user.isUno.toString());
+                this.message = new Message(user.isUno, PLAY, user.userName, this.played_card);
                 this.communication.sendMessage(message);
-            } catch (IOException | ParserConfigurationException | TransformerException e1) {
+                
+                // aspetto la risposta
+                String reply = this.communication.listening();
+                // unserializzo il messaggio
+                this.message.InitMessageFromStringXML(reply);
+                // controllo il codice di errore
+                if(this.message.command == CORRECT)
+                {
+                    this.overlayPanel = initDeck(overlayPanel, reply);
+                    remove(overlayPanel);
+                    add(this.overlayPanel);
+                }
+                else
+                    // messaggio di errore
+                    JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
+
+                
+            } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }

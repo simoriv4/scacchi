@@ -103,18 +103,4 @@ public class CardAdd4Cards implements Card
         newColor.setTextContent(this.newColor);
         return newColor;
     }
-
-    /**
-     * metodo per unserializzare una carta CardsAdd2Cards da un Element
-     * 
-     * @param cardPlayed elemento da cui prendere la carta
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
-     */
-    static public Card unserialize(String cardPlayed) throws ParserConfigurationException, SAXException, IOException
-    {
-        //la carta è speciale. non ha colore e numero
-        return new CardAdd4Cards();
-    }
 }

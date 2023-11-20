@@ -91,18 +91,4 @@ public class CardChangeColor implements Card {
          */
         return true;
     }
-    
-    /**
-     * metodo per unserializzare una carta CardsAdd2Cards da un Element
-     * 
-     * @param cardPlayed elemento da cui prendere la carta
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
-     */
-    static public Card unserialize(String cardPlayed) throws ParserConfigurationException, SAXException, IOException
-    {
-        //la carta è speciale. non ha colore e numero
-        return new CardChangeColor();
-    }
 }

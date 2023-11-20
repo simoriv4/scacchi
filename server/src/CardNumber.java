@@ -159,34 +159,4 @@ public class CardNumber implements Card
         //nessuno dei due confronti è risultato vero
         return false;   //carta non giocabile
     }
-
-    /**
-     * metodo per unserializzare una carta CardsAdd2Cards da un Element
-     * 
-     * @param cardPlayed elemento da cui prendere la carta
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
-     */
-    static public Card unserialize(String cardPlayed) throws ParserConfigurationException, SAXException, IOException
-    {
-        // istanzio il documento per creare la stringa XML
-        DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
-        DocumentBuilder b = f.newDocumentBuilder();
-        // creo un documento XML dalla stringa in formato XML passata
-        Document d = b.parse(new InputSource(new StringReader(cardPlayed)));
-
-        // prendo tutte le carte del mazzo
-        NodeList cards = d.getElementsByTagName("card");
-
-        Element e = (Element) cards.item(0);
-
-        CardNumber c = new CardNumber();
-
-        //prendo il colore e il numero della carta dall'elemento
-        c.color = e.getElementsByTagName("color").item(0).getTextContent();
-        c.number = Integer.parseInt(e.getElementsByTagName("number").item(0).getTextContent());
-
-        return c;
-    }
 }

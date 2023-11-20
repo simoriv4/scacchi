@@ -127,7 +127,7 @@ public class Game {
                     //controllo se l'utente è a una carta
                     if(u.cards.getSizeDeck() == 1)
                     {
-                        this.message = new Message(u.isUno, CORRECT, "", "");
+                        this.message = new Message(u.isUno, CORRECT, u.userName, "Complimenti! Sei a una carta");
                     }
                     else
                     {
@@ -136,7 +136,9 @@ public class Game {
                         drawCard(u);
 
                         //messaggio con le nuove carte dell'utente
-                        this.message = new Message(u.isUno, ERROR_UNO, "", u.cards.toString());
+                        String serialized_deck = u.cards.serializeDeck();
+                        // inizializzo il messaggio
+                        this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck);
                     }
 
                     //invio il messaggio
@@ -152,7 +154,17 @@ public class Game {
                         if(u.cards.getSizeDeck() == 0)
                             this.message = new Message(u.isUno, WINNER, u.userName, "Complimenti! Hai vinto");
                         else
-                            this.message = new Message(u.isUno, CORRECT, u.userName, "Carta giocata correttamente");
+                        {
+                            //rimuovo la carta all'utente
+                            u.removeCard(cardPlayed);
+
+                            //aggiungo la carta agli scarti
+                            discardedCards.addCard(cardPlayed);
+
+                            String serialized_deck = u.cards.serializeDeck();
+                            // inizializzo il messaggio
+                            this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck);
+                        }
                     }
                     else
                     {

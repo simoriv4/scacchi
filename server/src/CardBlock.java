@@ -125,33 +125,4 @@ public class CardBlock implements Card
         color.setTextContent(this.color);
         return color;
     }
-
-    /**
-     * metodo per unserializzare una carta CardsAdd2Cards da un Element
-     * 
-     * @param cardPlayed elemento da cui prendere la carta
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
-     */
-    static public Card unserialize(String cardPlayed) throws ParserConfigurationException, SAXException, IOException
-    {
-        // istanzio il documento per creare la stringa XML
-        DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
-        DocumentBuilder b = f.newDocumentBuilder();
-        // creo un documento XML dalla stringa in formato XML passata
-        Document d = b.parse(new InputSource(new StringReader(cardPlayed)));
-
-        // prendo tutte le carte del mazzo
-        NodeList cards = d.getElementsByTagName("card");
-
-        Element e = (Element) cards.item(0);
-
-        CardBlock c = new CardBlock();
-
-        //prendo il colore della carta dall'elemento
-        c.color = e.getElementsByTagName("color").item(0).getTextContent();
-
-        return c;
-    }
 }

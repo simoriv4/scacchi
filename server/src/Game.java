@@ -181,7 +181,7 @@ public class Game {
                     break;
                 case INIT_DECK:
                     // creo il mazzo di carte da dare all'utente
-                    Deck userDeck = this.deck.initUserDeck();
+                    Deck<Card> userDeck = this.deck.initUserDeck();
                     // serializzo il mazzo
                     String serialized_deck = userDeck.serializeDeck();
                     // inizializzo il messaggio

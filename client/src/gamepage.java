@@ -122,7 +122,7 @@ public class gamepage extends JFrame {
         this.communication = new Communication(this.socket);
         
         // avvio il sottofondo musicale
-        this.playMusic();
+        //this.playMusic();
         // imposto il titolo al frame
         setTitle("gamepage");
 
@@ -211,11 +211,12 @@ public class gamepage extends JFrame {
                 // quando viene cliccato il mazzo richiede al server di pescare la carta
                 System.out.println("cliccato");
                 // invio il messaggio al server
-                try {
+                try
+                {
                     Message message = new Message(user.isUno, DRAW, user.userName, "");
                     communication.sendMessage(message);
                     // aspetto la risposta
-                    String response = communication.listening();
+                    String reply = communication.listening();
                     JPanel overlayPanel = new JPanel();
                     overlayPanel = initDeck(overlayPanel, reply);
 

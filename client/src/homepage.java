@@ -65,7 +65,7 @@ public class homepage extends JFrame {
 
         this.comunication = new Communication(socket);
         // avvio il sottofondo musicale
-        this.playMusic();
+        //this.playMusic();
         // imposto il titolo al frame
         setTitle("homepage");
 
@@ -161,7 +161,7 @@ public class homepage extends JFrame {
                         this.initUser(username.getText());
 
                         setVisible(false);
-                        this.clip.stop();
+                        //this.clip.stop();
                         // creo la gamepage
                         gamepage gp = new gamepage(user);
                     }

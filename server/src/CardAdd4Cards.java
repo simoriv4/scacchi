@@ -1,6 +1,16 @@
+import java.io.IOException;
+import java.io.StringReader;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * classe che gestisce una Card che aggiunge 4 carte e che cambia color
@@ -92,5 +102,19 @@ public class CardAdd4Cards implements Card
         Node newColor = d.createElement("newColor");
         newColor.setTextContent(this.newColor);
         return newColor;
+    }
+
+    /**
+     * metodo per unserializzare una carta CardsAdd2Cards da un Element
+     * 
+     * @param cardPlayed elemento da cui prendere la carta
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     */
+    static public Card unserialize(String cardPlayed) throws ParserConfigurationException, SAXException, IOException
+    {
+        //la carta è speciale. non ha colore e numero
+        return new CardAdd4Cards();
     }
 }

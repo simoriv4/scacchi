@@ -1,6 +1,11 @@
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  * classe che gestisce una Card cambia color
@@ -87,4 +92,17 @@ public class CardChangeColor implements Card {
         return true;
     }
     
+    /**
+     * metodo per unserializzare una carta CardsAdd2Cards da un Element
+     * 
+     * @param cardPlayed elemento da cui prendere la carta
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     */
+    static public Card unserialize(String cardPlayed) throws ParserConfigurationException, SAXException, IOException
+    {
+        //la carta è speciale. non ha colore e numero
+        return new CardChangeColor();
+    }
 }

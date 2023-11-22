@@ -103,7 +103,7 @@ public class Game {
                         this.users.addUser(u2);   
                         // controllo che sia connesso almeno un altro client
                         StartGameThread sgt = new StartGameThread(u2, communication, this);
-                        sgt.start();    
+                        sgt.start(); 
                     }
                     //  invio messaggio di risposta
                     // communication.sendMessage(this.message);

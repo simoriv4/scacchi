@@ -33,12 +33,6 @@ public class gamepage extends JFrame {
     private final String BLOCK_CARD_NAME = "skip";
     private final String CHANGE_TURN_CARD_NAME = "_";
 
-
-
-
-
-
-
     private final String ROULES_COMBOBOX = "Regolamento";
     private final String QUIT_COMBOBOX = "Esci";
     private final String MUSIC_OFF_COMBOBOX = "Disattiva audio";
@@ -53,7 +47,7 @@ public class gamepage extends JFrame {
     private final String INIT_DECK = "init";
     private final String START = "start";
     private final static String SORT_BY_NUMBER = "sortByNumber";
-    private final static String SORT_BY_COLOR = "sortByColor"; 
+    private final static String SORT_BY_COLOR = "sortByColor";
 
     private final static String CARD_ADD_2_CARDS = "CardAdd2Cards";
     private final static String CARD_ADD_4_CARDS = "CardAdd4Cards";
@@ -66,8 +60,6 @@ public class gamepage extends JFrame {
     private final static String YELLOW = "yellow";
     private final static String BLUE = "blue";
     private final static String GREEN = "green";
-
-
 
     // messaggi di risposta
     private final static String CORRECT = "200";
@@ -91,9 +83,9 @@ public class gamepage extends JFrame {
     private JButton skipButton;
     private JButton sortbyNumberButton;
     private JButton sortbyColorButton;
-    private JLabel UNO_Label;
-    private JLabel deck_Label;
-    private JLabel discarded_Label;
+    private MyLabel UNO_Label;
+    private MyLabel deck_Label;
+    private MyLabel discarded_Label;
     private JComboBox<String> combobox;
     private Clip clip;
     private JPanel overlayPanel;
@@ -101,11 +93,11 @@ public class gamepage extends JFrame {
     private Integer screenWidth;
     private Integer screenHeight;
 
-
     private Message message;
     private User user;
     private Server server;
-    private String played_card;
+    private Card played_card;
+    public Integer selected_card;
 
     public final Communication communication;
 
@@ -120,9 +112,9 @@ public class gamepage extends JFrame {
         this.user = user;
         this.socket = new Socket(this.server.IP, this.server.port);
         this.communication = new Communication(this.socket);
-        
+
         // avvio il sottofondo musicale
-        //this.playMusic();
+        this.playMusic();
         // imposto il titolo al frame
         setTitle("gamepage");
 
@@ -145,7 +137,6 @@ public class gamepage extends JFrame {
         // unserializzo la carta
         // Deck d = new Deck<>();
         // d.unserializeDeck(card);
-        
 
         // controllo il tipo di carta--> in base a quello cerco l'immagine corretta
         // creo un pannello personalizzato per sovrapporre i componenti
@@ -161,14 +152,12 @@ public class gamepage extends JFrame {
         // imposto il layout manager su null per posizionare manualmente i componenti
         overlayPanel.setLayout(null);
 
-
-
         // richiedo carte
-        this.message = new Message(user.isUno, INIT_DECK, user.userName, "");
+        this.message = new Message(user.isUno, INIT_DECK, user.userName, "", "");
         this.communication.sendMessage(this.message);
         // attendo la risposta
         String reply = this.communication.listening();
-        overlayPanel= this.initDeck(overlayPanel, reply);
+        overlayPanel = this.initDeck(overlayPanel, reply);
 
         // imposto la grafica del bottone
         this.initSkipButton();
@@ -176,7 +165,6 @@ public class gamepage extends JFrame {
         this.initUnoButton();
         this.initSortByColorButton();
         this.initSortByNumberButton();
-
 
         // istanzio un vettore con le opzioni della combobox
         String[] options = { "", QUIT_COMBOBOX, ROULES_COMBOBOX, MUSIC_OFF_COMBOBOX };
@@ -188,7 +176,7 @@ public class gamepage extends JFrame {
 
         // imposto la dimensione della label
         this.UNO_Label.setSize(WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
-        
+
         // richiedo al server quale sia la prima carta da mostrare tra quelle scartate
 
         // aggiungo i componenti al pannello di sovrapposizione
@@ -204,16 +192,15 @@ public class gamepage extends JFrame {
 
         // controllo il mouse click sul mazzo girato--> per pescare la carta
         this.deck_Label.addMouseListener(new MouseAdapter() {
-            //private Communication communication = new Communication(socket);
+            // private Communication communication = new Communication(socket);
 
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 // quando viene cliccato il mazzo richiede al server di pescare la carta
                 System.out.println("cliccato");
                 // invio il messaggio al server
-                try
-                {
-                    Message message = new Message(user.isUno, DRAW, user.userName, "");
+                try {
+                    Message message = new Message(user.isUno, DRAW, user.userName, "", "");
                     communication.sendMessage(message);
                     // aspetto la risposta
                     String reply = communication.listening();
@@ -235,7 +222,8 @@ public class gamepage extends JFrame {
 
     }
 
-    private JPanel initDeck(JPanel overlayPanel, String reply) throws IOException, ParserConfigurationException, TransformerException, SAXException {
+    private JPanel initDeck(JPanel overlayPanel, String reply)
+            throws IOException, ParserConfigurationException, TransformerException, SAXException {
 
         // unserializzo il messaggio
         this.message.InitMessageFromStringXML(reply);
@@ -246,73 +234,61 @@ public class gamepage extends JFrame {
         int x = (int) (screenWidth * 0.4);
         int y = (int) (screenHeight * 0.7);
         // scorro le carte e le aggiungo all'overlay panel
-        for(int i= 0; i<this.user.deck.getSizeDeck(); i++)
-        {
-            JLabel card= new JLabel();
+        for (int i = 0; i < this.user.deck.getSizeDeck(); i++) {
+            MyLabel card = new MyLabel();
             Card c = this.user.deck.deck.get(i);
-            String cardPath ="";
+            String cardPath = "";
             switch (c.getType()) {
                 case CARD_ADD_2_CARDS:
-                    cardPath = CARDS_PATH + "\\"+ ADD_2_CARDS_NAME + this.getColor(c)+ ".png";
+                    cardPath = CARDS_PATH + "\\" + ADD_2_CARDS_NAME + this.getColor(c) + ".png";
                     break;
-            
+
                 case CARD_ADD_4_CARDS:
-                    cardPath = CARDS_PATH + "\\" +ADD_4_CARDS_NAME+ ".png";
+                    cardPath = CARDS_PATH + "\\" + ADD_4_CARDS_NAME + ".png";
                     break;
 
                 case CARD_BLOCK:
-                    cardPath = CARDS_PATH + "\\" + BLOCK_CARD_NAME + this.getColor(c)+ ".png";
+                    cardPath = CARDS_PATH + "\\" + BLOCK_CARD_NAME + this.getColor(c) + ".png";
                     break;
                 case CARD_CHANGE_COLOR:
                     cardPath = CARDS_PATH + "\\" + CHANGE_COLOR_NAME + ".png";
                     break;
                 case CARD_CHANGE_TURN:
-                    cardPath = CARDS_PATH + "\\" +CHANGE_TURN_CARD_NAME + this.getColor(c)+ ".png";
+                    cardPath = CARDS_PATH + "\\" + CHANGE_TURN_CARD_NAME + this.getColor(c) + ".png";
                     break;
                 case CARD_NUMBER:
-                    cardPath = CARDS_PATH + "\\" +c.getNumber() + this.getColor(c)+ ".png";
+                    cardPath = CARDS_PATH + "\\" + c.getNumber() + this.getColor(c) + ".png";
                     break;
             }
             card = this.initImageLabel(card, cardPath, WIDTH_CARDS, HEIGHT_CARDS);
-            // card.addMouseListener(new MouseAdapter() {
-            // @Override
-            // public void mouseClicked(java.awt.event.MouseEvent e) {
-            //     // quando viene cliccato il mazzo richiede al server di pescare la carta
-            //     //JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
-            //     System.out.println("cliccato");
-            // }
-            // });
+            // assegno l'indice alla carta
+            card.index = i;
+
+            card.addMouseListener(new LabelAdapter(card, this));
             // setto la posizione
-            // la prima carta è sempre al centro--> poi si mette a x - n   e   x + n
+            // la prima carta è sempre al centro--> poi si mette a x - n e x + n
             // setto posizione
             card.setBounds(x, y, WIDTH_CARDS, HEIGHT_CARDS);
             // aggiorno la x
-            x+=(WIDTH_CARDS+10);
-            // controllo il mouse click sul mazzo girato--> per pescare la carta
-            card.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    // quando viene cliccato il mazzo richiede al server di pescare la carta
-                    System.out.println("1");
-                }
-            });
+            x += (WIDTH_CARDS + 10);
             // aggiungi la carta al panel
             overlayPanel.add(card);
         }
         return overlayPanel;
-        
+
     }
 
     /**
-     * funzione che ritorna la lettera corrispondente al colore della carta--> sarà usata per formare il nome della foto della carta
+     * funzione che ritorna la lettera corrispondente al colore della carta--> sarà
+     * usata per formare il nome della foto della carta
+     * 
      * @param c
      * @return
      */
-    public String getColor(Card c)
-    {
+    public String getColor(Card c) {
         switch (c.getColor()) {
             case RED:
-                return "R";        
+                return "R";
             case YELLOW:
                 return "Y";
             case BLUE:
@@ -325,13 +301,13 @@ public class gamepage extends JFrame {
 
     /**
      * inizializza la combobox con le opzioni disponibili
+     * 
      * @param a
      * @param overlayPanel
      * @param screenWidth
      * @param screenHeight
      */
-    public void initCombobox(String[] a, JPanel overlayPanel, Integer screenWidth, Integer screenHeight)
-    {
+    public void initCombobox(String[] a, JPanel overlayPanel, Integer screenWidth, Integer screenHeight) {
         // coombobox
         String[] options = a;
         this.combobox = new JComboBox<>(options);
@@ -408,21 +384,70 @@ public class gamepage extends JFrame {
         this.skipButton.addActionListener(e -> {
             try {
 
-                // manda il messaggio 
-                // il messaggio invia anche se è stato detto UNO--> il server controlla se è impostato correttamente
-                //                                                                              false e mazzo > 1
-                //                                                                              true e mazzo == 1
-                this.message = new Message(user.isUno, SKIP, user.userName, user.isUno.toString());
+                // manda il messaggio
+                // il messaggio invia anche se è stato detto UNO--> il server controlla se è
+                // impostato correttamente
+                // false e mazzo > 1
+                // true e mazzo == 1
+                this.message = new Message(user.isUno, SKIP, user.userName, user.isUno.toString(), "");
                 this.communication.sendMessage(message);
                 // aspetto la risposta
                 String reply = this.communication.listening();
                 // unserializzo il messaggio
                 this.message.InitMessageFromStringXML(reply);
                 // controllo il codice di errore
-                if(this.message.command != CORRECT)
+                if (this.message.command != CORRECT)
                     // messaggio di errore
                     JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
+                else {
+                    // rimane in ascolto fino a che non è il suo turno
+                    while (!user.round) {
+                        // leggo il messaggio del server
+                        String server_message = this.communication.listening();
+                        // unserializzo il messaggio
+                        this.message.InitMessageFromStringXML(server_message);
+                        // se è stata passata una carta scartata
+                        if (!this.message.discarderdCard.isEmpty()) {
+                            int x = (int) (screenWidth * 0.5);
+                            int y = (int) (screenHeight * 0.4);
+                            // scorro le carte e le aggiungo all'overlay panel
+                            for (int i = 0; i < this.user.deck.getSizeDeck(); i++) {
+                                MyLabel card = new MyLabel();
+                                Card c = this.user.deck.deck.get(i);
+                                String cardPath = "";
+                                switch (c.getType()) {
+                                    case CARD_ADD_2_CARDS:
+                                        cardPath = CARDS_PATH + "\\" + ADD_2_CARDS_NAME + this.getColor(c) + ".png";
+                                        break;
 
+                                    case CARD_ADD_4_CARDS:
+                                        cardPath = CARDS_PATH + "\\" + ADD_4_CARDS_NAME + ".png";
+                                        break;
+
+                                    case CARD_BLOCK:
+                                        cardPath = CARDS_PATH + "\\" + BLOCK_CARD_NAME + this.getColor(c) + ".png";
+                                        break;
+                                    case CARD_CHANGE_COLOR:
+                                        cardPath = CARDS_PATH + "\\" + CHANGE_COLOR_NAME + ".png";
+                                        break;
+                                    case CARD_CHANGE_TURN:
+                                        cardPath = CARDS_PATH + "\\" + CHANGE_TURN_CARD_NAME + this.getColor(c)
+                                                + ".png";
+                                        break;
+                                    case CARD_NUMBER:
+                                        cardPath = CARDS_PATH + "\\" + c.getNumber() + this.getColor(c) + ".png";
+                                        break;
+                                }
+                                card = this.initImageLabel(card, cardPath, WIDTH_CARDS, HEIGHT_CARDS);
+                                card.setBounds(x, y, WIDTH_CARDS, HEIGHT_CARDS);
+
+                                this.overlayPanel.add(card);
+                                add(this.overlayPanel);
+                            }
+                        }
+
+                    }
+                }
 
             } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
                 // TODO Auto-generated catch block
@@ -435,7 +460,7 @@ public class gamepage extends JFrame {
      * inizializzo l'oggetto bottone con la relativa grafica e funzionalità
      */
     private void initSortByNumberButton() {
-         // inizializzo l'oggetto
+        // inizializzo l'oggetto
         this.sortbyNumberButton = new JButton("Riordina numero");
 
         this.sortbyNumberButton.setBackground(new Color(0, 162, 174)); // sfondo azzuro
@@ -446,11 +471,12 @@ public class gamepage extends JFrame {
         this.sortbyNumberButton.addActionListener(e -> {
             try {
 
-                // manda il messaggio 
-                // il messaggio invia anche se è stato detto UNO--> il server controlla se è impostato correttamente
-                //                                                                              false e mazzo > 1
-                //                                                                              true e mazzo == 1
-                this.message = new Message(user.isUno, SORT_BY_NUMBER, user.userName, user.isUno.toString());
+                // manda il messaggio
+                // il messaggio invia anche se è stato detto UNO--> il server controlla se è
+                // impostato correttamente
+                // false e mazzo > 1
+                // true e mazzo == 1
+                this.message = new Message(user.isUno, SORT_BY_NUMBER, user.userName, user.isUno.toString(), "");
                 this.communication.sendMessage(message);
 
                 // aspetto la risposta
@@ -458,13 +484,11 @@ public class gamepage extends JFrame {
                 // unserializzo il messaggio
                 this.message.InitMessageFromStringXML(reply);
                 // controllo il codice di errore
-                if(this.message.command == CORRECT)
-                {
+                if (this.message.command == CORRECT) {
                     this.overlayPanel = initDeck(overlayPanel, reply);
                     remove(overlayPanel);
                     add(this.overlayPanel);
-                }
-                else
+                } else
                     // messaggio di errore
                     JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
 
@@ -475,6 +499,7 @@ public class gamepage extends JFrame {
         });
 
     }
+
     /**
      * inizializzo l'oggetto bottone con la relativa grafica e funzionalità
      */
@@ -490,11 +515,12 @@ public class gamepage extends JFrame {
         this.sortbyColorButton.addActionListener(e -> {
             try {
 
-                // manda il messaggio 
-                // il messaggio invia anche se è stato detto UNO--> il server controlla se è impostato correttamente
-                //                                                                              false e mazzo > 1
-                //                                                                              true e mazzo == 1
-                this.message = new Message(user.isUno, SORT_BY_COLOR, user.userName, user.isUno.toString());
+                // manda il messaggio
+                // il messaggio invia anche se è stato detto UNO--> il server controlla se è
+                // impostato correttamente
+                // false e mazzo > 1
+                // true e mazzo == 1
+                this.message = new Message(user.isUno, SORT_BY_COLOR, user.userName, user.isUno.toString(), "");
                 this.communication.sendMessage(message);
 
                 // aspetto la risposta
@@ -502,13 +528,11 @@ public class gamepage extends JFrame {
                 // unserializzo il messaggio
                 this.message.InitMessageFromStringXML(reply);
                 // controllo il codice di errore
-                if(this.message.command == CORRECT)
-                {
+                if (this.message.command == CORRECT) {
                     this.overlayPanel = initDeck(overlayPanel, reply);
                     remove(overlayPanel);
                     add(this.overlayPanel);
-                }
-                else
+                } else
                     // messaggio di errore
                     JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
 
@@ -518,7 +542,6 @@ public class gamepage extends JFrame {
             }
         });
     }
-
 
     /**
      * inizializzo l'oggetto bottone con la relativa grafica e funzionalità
@@ -532,29 +555,28 @@ public class gamepage extends JFrame {
         this.unoButton.setFont(new Font("Arial", Font.BOLD, 14));
 
         // assegno l'azione da svolgere quando cliccato
-        this.playButton.addActionListener(e -> {
+        this.unoButton.addActionListener(e -> {
             try {
 
-                // manda il messaggio 
-                // il messaggio invia anche se è stato detto UNO--> il server controlla se è impostato correttamente
-                //                                                                              false e mazzo > 1
-                //                                                                              true e mazzo == 1
-                this.message = new Message(user.isUno, UNO, user.userName, user.isUno.toString());
+                // manda il messaggio
+                // il messaggio invia anche se è stato detto UNO--> il server controlla se è
+                // impostato correttamente
+                // false e mazzo > 1
+                // true e mazzo == 1
+                this.message = new Message(user.isUno, UNO, user.userName, user.isUno.toString(), "");
                 this.communication.sendMessage(message);
                 // aspetto la risposta
                 String reply = this.communication.listening();
                 // unserializzo il messaggio
                 this.message.InitMessageFromStringXML(reply);
                 // controllo il codice di errore
-                if(this.message.command == CORRECT)
-                {
+                if (this.message.command == CORRECT) {
                     this.overlayPanel = initDeck(overlayPanel, reply);
                     remove(overlayPanel);
                     add(this.overlayPanel);
 
                     JOptionPane.showMessageDialog(this, "Non hai una sola carta!", "Errore", JOptionPane.ERROR_MESSAGE);
-                }
-                else
+                } else
                     // messaggio di errore
                     JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
 
@@ -579,36 +601,33 @@ public class gamepage extends JFrame {
         // assegno l'azione da svolgere quando cliccato
         this.playButton.addActionListener(e -> {
             try {
-
-                // manda il messaggio 
-                // il messaggio invia anche se è stato detto UNO--> il server controlla se è impostato correttamente
-                //                                                                              false e mazzo > 1
-                //                                                                              true e mazzo == 1
-                this.message = new Message(user.isUno, PLAY, user.userName, this.played_card);
+                // manda il messaggio
+                // il messaggio invia anche se è stato detto UNO--> il server controlla se è
+                // impostato correttamente
+                // false e mazzo > 1
+                // true e mazzo == 1
+                this.played_card = this.user.deck.deck.get(selected_card);
+                this.message = new Message(user.isUno, PLAY, user.userName, this.played_card.serializeToString(), "");
                 this.communication.sendMessage(message);
-                
+
                 // aspetto la risposta
                 String reply = this.communication.listening();
                 // unserializzo il messaggio
                 this.message.InitMessageFromStringXML(reply);
                 // controllo il codice di errore
-                if(this.message.command == CORRECT)
-                {
+                if (this.message.command == CORRECT) {
                     this.overlayPanel = initDeck(overlayPanel, reply);
                     remove(overlayPanel);
                     add(this.overlayPanel);
-                }
-                else
+                } else
                     // messaggio di errore
                     JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
 
-                
             } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });
-
 
     }
 
@@ -620,9 +639,9 @@ public class gamepage extends JFrame {
      * @return una JLabel con l'immagine passata
      * @throws IOException
      */
-    public JLabel initImageLabel(JLabel label, String imagePath, Integer width, Integer height) throws IOException {
+    public MyLabel initImageLabel(MyLabel label, String imagePath, Integer width, Integer height) throws IOException {
         // inizializzo una label che contiene l'immagine del logo
-        label = new JLabel();
+        label = new MyLabel();
         // creo l'oggetto immagine
         ImageIcon imageIcon = new ImageIcon(ImageIO.read(new File(imagePath)));
         imageIcon = this.initImageIcon(imageIcon, width, height);
@@ -703,29 +722,28 @@ public class gamepage extends JFrame {
                 break;
             case QUIT_COMBOBOX:
                 try {
-                    if(user.round)
-                    {
-                        // manda il messaggio 
-                        // il messaggio invia anche se è stato detto UNO--> il server controlla se è impostato correttamente
-                        //                                                                              false e mazzo > 1
-                        //                                                                              true e mazzo == 1
-                        this.message = new Message(user.isUno, QUIT, user.userName, "");
+                    if (user.round) {
+                        // manda il messaggio
+                        // il messaggio invia anche se è stato detto UNO--> il server controlla se è
+                        // impostato correttamente
+                        // false e mazzo > 1
+                        // true e mazzo == 1
+                        this.message = new Message(user.isUno, QUIT, user.userName, "", "");
                         this.communication.sendMessage(message);
                         // aspetto la risposta
                         String reply = this.communication.listening();
                         // unserializzo il messaggio
                         this.message.InitMessageFromStringXML(reply);
-                        if(this.message.command.equals(CORRECT))
-                        {
+                        if (this.message.command.equals(CORRECT)) {
                             // porta sulla homepage
                             setVisible(false);
                             this.clip.stop();
                             homepage h = new homepage();
                         }
-                    }
-                    else{
+                    } else {
                         // messaggio di errore
-                        JOptionPane.showMessageDialog(this, "Attendi il tuo turno!", "Errore", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Attendi il tuo turno!", "Errore",
+                                JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (IOException | ParserConfigurationException | TransformerException e1) {
                     // TODO Auto-generated catch block

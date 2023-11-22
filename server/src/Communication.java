@@ -9,7 +9,7 @@ import javax.xml.transform.TransformerException;
 
 public class Communication {
     
-    private Socket socket;
+    public Socket socket;
     public Communication(Socket s)
     {
         this.socket = s;

@@ -2,9 +2,12 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
@@ -32,13 +35,15 @@ public class Game {
     private final String START = "start";
     private final static String SORT_BY_NUMBER = "sortByNumber";
     private final static String SORT_BY_COLOR = "sortByColor"; 
+    private final static String DISCARDED_CARD = "discarded_card";
 
     // attributi
     public Deck<Card> deck;
     public Deck<Card> discardedCards;
-    private Users users;
+    public Users users;
     private ServerSocket serverSocket;
     private Message message;
+    private Card discaredCard;
 
     /**
      * costruttore non parametrico del Game
@@ -65,9 +70,7 @@ public class Game {
         serverSocket = new ServerSocket(666);
         while(true){
             // metto in ascolto il server
-            Socket clientSocket = serverSocket.accept(); // Bloccante, aspetta una connessione
-            // System.out.println("Nuova connessione da: " +
-            // clientSocket.getInetAddress().getHostAddress());
+            Socket clientSocket = serverSocket.accept(); // bloccante--> aspetta una connessione
 
             // Crea un oggetto di comunicazione per gestire la connessione con il client
             Communication communication = new Communication(clientSocket);
@@ -89,30 +92,30 @@ public class Game {
                         isAvailable = false;
                         // mando messaggio di errore--> esiste già
                         // inizializzo l'oggetto messaggio
-                        this.message = new Message(false, ERROR_USERNAME, "","Username non disponibile" );
+                        this.message = new Message(false, ERROR_USERNAME, "","Username non disponibile" , "");
+                        //  invio messaggio di risposta
+                        communication.sendMessage(this.message);
                     }
                     if(isAvailable)
                     {
                         // // creo l'utente e lo aggiungo alla lista
                         User u2 = new User(clientSocket.getPort(), clientSocket.getRemoteSocketAddress().toString(), false, false, false, this.message.username);
                         this.users.addUser(u2);   
-                        // inizializzo messaggio di risposta     
-                        this.message = new Message(u2.isUno, CORRECT, u2.userName,"Username disponibile");
-                        // avvio il thread per quel client
-                        // ThreadClient tc =new ThreadClient(u);
-                        // tc.start();
+                        // controllo che sia connesso almeno un altro client
+                        StartGameThread sgt = new StartGameThread(u2, communication, this);
+                        sgt.start();    
                     }
                     //  invio messaggio di risposta
-                    communication.sendMessage(this.message);
+                    // communication.sendMessage(this.message);
                     
                     break;
                 case QUIT:
                     // // prendo l'utente con quel username
                     // User u = this.users.findUserByUsername(this.message.username);
                     if(u != null)
-                        this.message = new Message(u.isUno, CORRECT, u.userName,"Rimozione dalla partita" );
+                        this.message = new Message(u.isUno, CORRECT, u.userName,"Rimozione dalla partita", "" );
                     else
-                        this.message = new Message(false, ERROR_EXIT, "","Errore rimozione dalla partita" );
+                        this.message = new Message(false, ERROR_EXIT, "","Errore rimozione dalla partita", "" );
 
                     communication.sendMessage(this.message);
                     break;
@@ -121,13 +124,16 @@ public class Game {
                     User user = users.getProxUser(u);
 
                     //invio il messaggio
-                    this.message = new Message(user.isUno, CORRECT, user.userName,"E' il tuo turno" );
+                    this.message = new Message(user.isUno, CORRECT, user.userName,"E' il tuo turno", "");
+                    // cambio la socket a cui comunicare
+                    communication = new Communication(new Socket(user.IP, user.port));
                     communication.sendMessage(this.message);
+                    break;
                 case UNO:
                     //controllo se l'utente è a una carta
                     if(u.cards.getSizeDeck() == 1)
                     {
-                        this.message = new Message(u.isUno, CORRECT, u.userName, "Complimenti! Sei a una carta");
+                        this.message = new Message(u.isUno, CORRECT, u.userName, "Complimenti! Sei a una carta", "");
                     }
                     else
                     {
@@ -138,21 +144,31 @@ public class Game {
                         //messaggio con le nuove carte dell'utente
                         String serialized_deck = u.cards.serializeDeck();
                         // inizializzo il messaggio
-                        this.message = new Message(u.isUno, ERROR_UNO, u.userName, serialized_deck);
+                        this.message = new Message(u.isUno, ERROR_UNO, u.userName, serialized_deck, "");
                     }
 
                     //invio il messaggio
                     communication.sendMessage(this.message);
+                    break;
                 case PLAY:
                     //prendo la carta giocata dall'utente
                     Card cardPlayed = Card.unserialize(this.message.message);
 
+                    Deck deck_tmp = new Deck<>();
+                    deck_tmp.addCard(cardPlayed);
+
+                    // String cardSerialized = cardPlayed.serializeToString();
+                    // User tmp = this.users.findUserByUsername(this.message.username);
+                    // if(tmp.round)
+                    // {
+
+                    // }
                     //controllo se la carta giocata è valida
                     if(this.checkCardPlayed(cardPlayed))
                     {
                         //controllo se l'utente ha finito le carte
                         if(u.cards.getSizeDeck() == 0)
-                            this.message = new Message(u.isUno, WINNER, u.userName, "Complimenti! Hai vinto");
+                            this.message = new Message(u.isUno, WINNER, u.userName, "Complimenti! Hai vinto",  deck_tmp.serializeDeck());
                         else
                         {
                             //rimuovo la carta all'utente
@@ -163,16 +179,22 @@ public class Game {
 
                             String serialized_deck = u.cards.serializeDeck();
                             // inizializzo il messaggio
-                            this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck);
+                            this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck, deck_tmp.serializeDeck());
                         }
+                        // salvo la carta scartata
+                        this.discaredCard = cardPlayed;
+                        // invio a tutti i client la carta scartata
+                        this.message = new Message(u.isUno, DISCARDED_CARD, u.userName, "", deck_tmp.serializeDeck());
+                        this.users.sendToAllClient(this.message);
                     }
                     else
                     {
-                        this.message = new Message(u.isUno, ERROR_CARD_PALYED, "","Carta giocata in modo errato" );
+                        this.message = new Message(u.isUno, ERROR_CARD_PALYED, "","Carta giocata in modo errato", "");
                     }
 
                     //invio il messaggio
                     communication.sendMessage(this.message);
+
                     break;
                 case DRAW:
                     //l'utente pesca la carta
@@ -187,7 +209,7 @@ public class Game {
 
                     String serialized_deck4 = u.cards.serializeDeck();
                     // inizializzo il messaggio
-                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck4);
+                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck4, "");
                     //invio le carte all'utente
                     communication.sendMessage(this.message);
                     break;
@@ -204,7 +226,7 @@ public class Game {
                     // serializzo il mazzo
                     String serialized_deck = userDeck.serializeDeck();
                     // inizializzo il messaggio
-                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck);
+                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck, "");
                     communication.sendMessage(this.message);
                     break;
                 case SORT_BY_COLOR:
@@ -213,7 +235,7 @@ public class Game {
 
                     //invio le carte all'utente
                     String serialized_deck2 = u.cards.serializeDeck();
-                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck2);
+                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck2, "");
                     communication.sendMessage(this.message);
                     break;   
                 case SORT_BY_NUMBER:
@@ -222,13 +244,14 @@ public class Game {
 
                     //invio le carte all'utente
                     String serialized_deck3 = u.cards.serializeDeck();
-                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck3);
+                    this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck3, "");
                     communication.sendMessage(this.message);
                     break;                                         
-            }
-            
+            }            
         }
     }
+
+    
 
     /**
      * metodo per distribuire le carte all'inizio del gioco

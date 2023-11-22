@@ -4,6 +4,8 @@ import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,6 +57,8 @@ public interface Card
      * @return Node contenente la Card serializzata
      */
     Node serialize(org.w3c.dom.Document d);
+    String serializeToString() throws TransformerConfigurationException, TransformerException, ParserConfigurationException;
+
 
     /**
      * metodo per unserializzare una Card da una String xml

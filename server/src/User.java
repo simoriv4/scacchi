@@ -1,3 +1,10 @@
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 public class User
 {
     public Integer port;
@@ -77,5 +84,19 @@ public class User
     public void sortCardsByNumber()
     {
         cards.sortCardsByNumber();
+    }
+    /**
+     * funzione per inviare il messaggio all'utente
+     * @param m
+     * @throws UnknownHostException
+     * @throws IOException
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     */
+    public void sendMessage(Message m) throws UnknownHostException, IOException, ParserConfigurationException, TransformerException
+    {
+        // avvio la comunicazione
+        Communication c = new Communication(new Socket(this.IP, this.port));
+        c.sendMessage(m);
     }
 }

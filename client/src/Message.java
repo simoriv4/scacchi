@@ -24,20 +24,25 @@ class Message {
     String command;
     String username;
     String message;
+    String numberCardsRivals; // lista serializzata <u1><numberCard>3</numberCard></u1>
+    String discarderdCard;
 
     Boolean isUno;
 
     /**
      * costruttore parametrico
-     * 
+     * @param isUno
      * @param command
+     * @param username
      * @param message
+     * @param discaredCard
      */
-    public Message( Boolean isUno,String command, String username, String message) {
+    public Message(Boolean isUno,String command, String username, String message, String discaredCard) {
         this.isUno = isUno;
         this.command = command;
         this.username = username;
         this.message = message;
+        this.discarderdCard = discarderdCard;
     }
 
     /**
@@ -147,6 +152,8 @@ class Message {
         this.message = this.unserializeMessage(d);
         this.username = this.unserializeUsername(d);
         this.isUno = this.unserializeIsUno(d);
+        this.discarderdCard = this.unserializeDiscardedCard(d);
+
 
     }
     /**
@@ -157,6 +164,15 @@ class Message {
     public Boolean unserializeIsUno(Document d) {
         NodeList nl = d.getElementsByTagName("command");
         return Boolean.parseBoolean(nl.item(0).getTextContent());
+    }
+        /**
+     * funzione che converte il tag XML discardedCard in stringa
+     * @param d
+     * @return il contenuto del tag XML command
+     */
+    public String unserializeDiscardedCard(Document d) {
+        NodeList nl = d.getElementsByTagName("discardedCard");
+        return nl.item(0).getTextContent();
     }
     /**
      * funzione che converte il tag XML command in stringa

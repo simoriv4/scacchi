@@ -40,12 +40,12 @@ public class homepage extends JFrame {
     private BufferedImage backgroundImage;
     private JTextField username;
     private JButton playButton;
-    private JLabel messageLabel;
+    // private JLabel messageLabel;
     private JLabel UNO_Label;
     private Message message;
-    // private Boolean isListening;
     private User user;
     private Clip clip;
+    private JLabel find_message;
 
     private Communication comunication;
 
@@ -65,7 +65,7 @@ public class homepage extends JFrame {
 
         this.comunication = new Communication(socket);
         // avvio il sottofondo musicale
-        //this.playMusic();
+        this.playMusic();
         // imposto il titolo al frame
         setTitle("homepage");
 
@@ -97,7 +97,8 @@ public class homepage extends JFrame {
 
         // imposto il layout manager su null per posizionare manualmente i componenti
         overlayPanel.setLayout(null);
-
+        JLabel find_message = new JLabel("RICERCA PARTITA...");
+        this.initLabel("RICERCA PARTITA...");
         // imposto la grafica del bottone
         this.initButton();
 
@@ -113,6 +114,7 @@ public class homepage extends JFrame {
 
         // aggiungo i componenti al pannello di sovrapposizione
         overlayPanel.add(UNO_Label);
+        overlayPanel.add(find_message);
         // overlayPanel.add(messageLabel);
         overlayPanel.add(username);
         overlayPanel.add(playButton);
@@ -133,7 +135,7 @@ public class homepage extends JFrame {
                     // quando premo il pulsante GIOCA mando una richiesta al server di aggiungere il
                     // client ad una nuova partita-->se non ci sono altri client rimane in attesa
                     // setto il messaggio da inviare
-                    message = new Message(false, START, username.getText(), "");
+                    message = new Message(false, START, username.getText(), "", "");
                     // invio il messaggio al server
                     this.comunication.sendMessage(message);
 
@@ -145,11 +147,12 @@ public class homepage extends JFrame {
 
                     // passo la prima carta da visualizzare alla gamepage
 
-                    // fccio comparire messaggio di attesa
-                    JLabel jl = new JLabel("RICERCA PARTITA...");
-                    jl.setBounds((int) (screenWidth * 0.4), (int) (screenHeight * 0.8), 300, 300);
-                    overlayPanel.add(jl);
-                    add(overlayPanel);
+                    // faccio comparire messaggio di attesa
+                    JOptionPane.showMessageDialog(this, "RICERCA PARTITA....", "", JOptionPane.INFORMATION_MESSAGE);
+
+                    // jl.setBounds((int) (screenWidth * 0.4), (int) (screenHeight * 0.8), 300, 300);
+                    // overlayPanel.add(jl);
+                    // add(overlayPanel);
                     // aspetto la risposta
                     String response = this.comunication.listening();
 
@@ -161,7 +164,7 @@ public class homepage extends JFrame {
                         this.initUser(username.getText());
 
                         setVisible(false);
-                        //this.clip.stop();
+                        this.clip.stop();
                         // creo la gamepage
                         gamepage gp = new gamepage(user);
                     }
@@ -199,6 +202,8 @@ public class homepage extends JFrame {
         this.UNO_Label.setBounds((int) (screenWidth * 0.4), (int) (screenHeight * 0.1), WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
         this.username.setBounds((int) (screenWidth * 0.40), (int) (screenHeight * 0.4), 200, 40);
         this.playButton.setBounds((int) (screenWidth * 0.58), (int) (screenHeight * 0.4), 100, 30);
+        this.playButton.setBounds((int) (screenWidth * 0.58), (int) (screenHeight * 0.4), 100, 30);
+        this.find_message.setBounds((int) (screenWidth * 0.58), (int) (screenHeight * 0.7), 100, 30);
     }
 
     /**
@@ -239,13 +244,13 @@ public class homepage extends JFrame {
     /**
      * inizializzo l'oggetto label con la relativa grafica
      */
-    public void initLabel()
+    public void initLabel(String content)
     {
         // inizializzo l'oggetto
-        this.messageLabel = new JLabel("Inserisci il nome con il quale vuoi giocare:");
+        this.find_message = new JLabel(content);
         // imposto la grafica
-        this.messageLabel.setForeground(Color.WHITE);
-        this.messageLabel.setFont(new Font("Arial", Font.PLAIN, 16)); // Font di dimensione 16
+        this.find_message.setForeground(Color.WHITE);
+        this.find_message.setFont(new Font("Arial", Font.PLAIN, 16)); // Font di dimensione 16
     }
 
     /**

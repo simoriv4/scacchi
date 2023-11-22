@@ -24,20 +24,24 @@ class Message {
     String command;
     String username;
     String message;
-
+    String numberCardsRivals; // lista serializzata <u1><numberCard>3</numberCard></u1>
+    String discarderdCard;
     Boolean isUno;
 
     /**
      * costruttore parametrico
-     * 
+     * @param isUno
      * @param command
+     * @param username
      * @param message
+     * @param discaredCard
      */
-    public Message( Boolean isUno,String command, String username, String message) {
+    public Message(Boolean isUno,String command, String username, String message, String discaredCard) {
         this.isUno = isUno;
         this.command = command;
         this.username = username;
         this.message = message;
+        this.discarderdCard = discarderdCard;
     }
 
     /**
@@ -70,6 +74,8 @@ class Message {
         root.appendChild(serializeUsername(d));
         root.appendChild(serializeMessage(d));
         root.appendChild(serializeIsUno(d));
+        root.appendChild(serializeDiscardedCard(d));
+
 
 
         // aggiungo la root al documento
@@ -95,6 +101,16 @@ class Message {
         Node isUno = d.createElement("isUno");
         isUno.setTextContent(this.isUno.toString());
         return isUno;
+    }
+    /**
+     * creo il nodo da aggiungere alla root
+     * @param d
+     * @return il nodo creato
+     */
+    public Node serializeDiscardedCard(Document d) {
+        Node discardedCard = d.createElement("discardedCard");
+        discardedCard.setTextContent(this.isUno.toString());
+        return discardedCard;
     }
     /**
      * creo il nodo da aggiungere alla root

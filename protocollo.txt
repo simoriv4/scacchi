@@ -14,6 +14,7 @@ comandi client --> server:
     - start --> mandato dal client con il proprio username per iniziare la partita
                 - corretta --> 200
                 - sbagliata --> 400 con messaggio (manca nome o nome uguale a un'altro, .......)
+		- attesa per la partita troppo lunga--> 504
 
     - play --> giocata carta da parte del client, server la controlla
                 - corretta --> 200

@@ -1,4 +1,11 @@
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  * classe generica che contiene i metodi che deve avere ogni Card
@@ -43,6 +50,10 @@ public interface Card
      */
     boolean isPlayable(String color, int number);
 
-    void unserialize(Node node);
+    // void unserialize(Node node);
+
+    // void unserializeFromString(String card) throws SAXException, IOException, ParserConfigurationException;
+    String serializeToString() throws TransformerConfigurationException, TransformerException, ParserConfigurationException;
+
 
 }

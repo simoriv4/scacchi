@@ -17,6 +17,7 @@ public class User
 
     public String IP;
     public String userName;
+    public Socket socket;
 
     public Deck<Card> cards;
 
@@ -28,14 +29,18 @@ public class User
      * @param win
      * @param isUno
      * @param userName
+     * @throws IOException
+     * @throws UnknownHostException
      */
-    public User(Integer port, String IP, Boolean round, Boolean win, Boolean isUno, String userName) {
+    public User(Socket clientSocket, Boolean round, Boolean win, Boolean isUno, String userName) throws UnknownHostException, IOException {
         this.port = port;
         this.round = round;
         this.win = win;
         this.IP = IP;
         this.userName = userName;
         this.isUno = isUno;
+        // inizializzo la socket corrispondente all'untente
+        this.socket = clientSocket;
 
         cards = new Deck<Card>();
     }

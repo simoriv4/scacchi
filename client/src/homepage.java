@@ -47,7 +47,7 @@ public class homepage extends JFrame {
     private Clip clip;
     private JLabel find_message;
 
-    private Communication comunication;
+    private Communication communication;
 
     private Server server;
 
@@ -63,7 +63,7 @@ public class homepage extends JFrame {
         // creo una connessione TCP con il server
        this.socket = new Socket(this.server.IP, this.server.port);
 
-        this.comunication = new Communication(socket);
+        this.communication = new Communication(socket);
         // avvio il sottofondo musicale
         this.playMusic();
         // imposto il titolo al frame
@@ -137,7 +137,7 @@ public class homepage extends JFrame {
                     // setto il messaggio da inviare
                     message = new Message(false, START, username.getText(), "", "");
                     // invio il messaggio al server
-                    this.comunication.sendMessage(message);
+                    this.communication.sendMessage(message);
 
                     // <root_message>
                         // <command>reply</command>
@@ -154,7 +154,7 @@ public class homepage extends JFrame {
                     // overlayPanel.add(jl);
                     // add(overlayPanel);
                     // aspetto la risposta
-                    String response = this.comunication.listening();
+                    String response = this.communication.listening();
 
                     message.InitMessageFromStringXML(response);
 
@@ -166,7 +166,7 @@ public class homepage extends JFrame {
                         setVisible(false);
                         this.clip.stop();
                         // creo la gamepage
-                        gamepage gp = new gamepage(user);
+                        gamepage gp = new gamepage(user, this.communication);
                     }
                     else{
                         // messaggio di errore

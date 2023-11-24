@@ -441,6 +441,14 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
         //la carta in cima al mazzo si trova all'ultima posizione della lista
         return deck.get(deck.size() - 1).getNumber();
     }
+    /**
+     * metodo per ottenere la carta in cima al mazzo degli scarti
+     * @return la carta in cima al mazzo degli scarti
+     */
+    public Card getCardOnTop()
+    {
+        return deck.get(deck.size() - 1);
+    }
 
     //FINE METODI PER MAZZO DEGLI SCARTI
 

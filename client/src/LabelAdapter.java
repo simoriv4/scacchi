@@ -8,18 +8,28 @@ import javax.swing.border.CompoundBorder;
 class LabelAdapter extends MouseAdapter {
     private MyLabel ml;
     private gamepage gp;
+    private Boolean isDeck;
 
-    public LabelAdapter(MyLabel ml, gamepage gp) {
+    public LabelAdapter(MyLabel ml, gamepage gp, Boolean isDeck) {
         this.ml = ml;
         this.gp = gp;
+        this.isDeck = isDeck;
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println(ml.index);
-        this.gp.selected_card = ml.index;
-        
+        if(!isDeck)
+        {
+            System.out.println(ml.index);
+            this.gp.selected_card = ml.index;
         }
+        else{
+            // Message message = new Message(user.isUno, gp.DRAW, user.userName, "", "");
+            // communication.sendMessage(message);
+        }
+
+        
+    }
 
     @Override
     public void mouseEntered(MouseEvent e) {

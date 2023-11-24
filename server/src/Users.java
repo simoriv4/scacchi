@@ -20,14 +20,14 @@ public class Users {
      * @param username
      * @return l'oggetto utente
      */
-    public User findUserByUsername(String username) {
+    public int findUserByUsername(String username) {
         // scorro la lista
         for (User u : users) {
             // eseguo il controllo dell'username
             if (u.userName.equals(username))
-                return u;
+                return users.indexOf(u);
         }
-        return null;
+        return -1;
     }
 
     /**

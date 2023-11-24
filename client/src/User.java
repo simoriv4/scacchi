@@ -23,7 +23,7 @@ public class User {
      * costruttore non parametrico
      */
     public User() {
-        this.round = false;
+        this.round = true;  // PER DEBUG
         this.win = false;
         this.isUno = false;
         this.userName = "userName";

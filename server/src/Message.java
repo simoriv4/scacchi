@@ -34,9 +34,9 @@ class Message {
      * @param command
      * @param username
      * @param message
-     * @param discaredCard
+     * @param discardedCard
      */
-    public Message(Boolean isUno,String command, String username, String message, String discaredCard) {
+    public Message(Boolean isUno,String command, String username, String message, String discardedCard) {
         this.isUno = isUno;
         this.command = command;
         this.username = username;

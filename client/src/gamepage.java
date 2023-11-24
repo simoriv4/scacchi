@@ -39,15 +39,15 @@ public class gamepage extends JFrame {
     private final String MUSIC_ON_COMBOBOX = "Attiva audio";
 
     // lista comandi
-    private final String SKIP = "skip";
-    private final String UNO = "uno";
-    private final String PLAY = "play";
-    private final String DRAW = "draw";
-    private final String QUIT = "quit";
-    private final String INIT_DECK = "init";
-    private final String START = "start";
-    private final static String SORT_BY_NUMBER = "sortByNumber";
-    private final static String SORT_BY_COLOR = "sortByColor";
+    public final String SKIP = "skip";
+    public final String UNO = "uno";
+    public final String PLAY = "play";
+    public final String DRAW = "draw";
+    public final String QUIT = "quit";
+    public final String INIT_DECK = "init";
+    public final String START = "start";
+    public final static String SORT_BY_NUMBER = "sortByNumber";
+    public final static String SORT_BY_COLOR = "sortByColor";
 
     private final static String CARD_ADD_2_CARDS = "CardAdd2Cards";
     private final static String CARD_ADD_4_CARDS = "CardAdd4Cards";
@@ -105,13 +105,13 @@ public class gamepage extends JFrame {
     // private BufferedReader inStream;
     // private PrintWriter outStream;
 
-    public gamepage(User user) throws IOException, ParserConfigurationException, SAXException, TransformerException {
+    public gamepage(User user, Communication c) throws IOException, ParserConfigurationException, SAXException, TransformerException {
         // ininzializzo le informazioni del server
         this.server = new Server();
         // salvo le informazioni dell'utente
         this.user = user;
         this.socket = new Socket(this.server.IP, this.server.port);
-        this.communication = new Communication(this.socket);
+        this.communication = c;
 
         // avvio il sottofondo musicale
         this.playMusic();
@@ -127,16 +127,10 @@ public class gamepage extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         this.backgroundImage = ImageIO.read(new File(BACKGROUND_IMAGE_PATH));
-        // this.resizeBufferedImage(this.backgroundImage, (int) (screenWidth * 0.4),
-        // (int) (screenHeight * 0.4));
 
         // inizializzo una label che contiene l'immagine del logo
         this.UNO_Label = this.initImageLabel(this.UNO_Label, UNO_PATH, WIDTH_UNO_IMAGE, HEIGHT_UNO_IMAGE);
         this.deck_Label = this.initImageLabel(this.deck_Label, COVER_CARD_PATH, WIDTH_CARDS, HEIGHT_CARDS);
-
-        // unserializzo la carta
-        // Deck d = new Deck<>();
-        // d.unserializeDeck(card);
 
         // controllo il tipo di carta--> in base a quello cerco l'immagine corretta
         // creo un pannello personalizzato per sovrapporre i componenti
@@ -264,7 +258,7 @@ public class gamepage extends JFrame {
             // assegno l'indice alla carta
             card.index = i;
 
-            card.addMouseListener(new LabelAdapter(card, this));
+            card.addMouseListener(new LabelAdapter(card, this, false));
             // setto la posizione
             // la prima carta è sempre al centro--> poi si mette a x - n e x + n
             // setto posizione

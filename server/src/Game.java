@@ -44,7 +44,7 @@ public class Game {
     public Users users;
     private ServerSocket serverSocket;
     private Message message;
-    private Card discaredCard;
+    private Card discardedCard;
 
     /**
      * costruttore non parametrico del Game
@@ -85,41 +85,52 @@ public class Game {
             // Crea un oggetto di comunicazione per gestire la connessione con il client
             Communication communication = new Communication(clientSocket);
             do{
-                // // metto in ascolto il server
-                // Socket clientSocket = serverSocket.accept(); // bloccante--> aspetta una connessione
+                // metto in ascolto il server
 
-                // // Crea un oggetto di comunicazione per gestire la connessione con il client
-                // Communication communication = new Communication(clientSocket);
+                // Crea un oggetto di comunicazione per gestire la connessione con il client
                 String message_client = communication.listening();
                 System.out.println(message_client);
+
                 this.message = new Message();
                 this.message.InitMessageFromStringXML(message_client);
 
                 // prendo l'utente con quel username
-                User u = this.users.findUserByUsername(this.message.username);
-                        
+                int pos_user = this.users.findUserByUsername(this.message.username);
+
+                // controllo se nel mazzo degli scarti ci sono già delle carte
+                if(discardedCards.getSizeDeck() > 0)
+                // salvo la carta in cima al mazzo degli scarti
+                    discardedCard = discardedCards.getCardOnTop();
+                else
+                {
+                    // se non ci sono carte vuol dire che è appena 
+                    discardedCards.addCard(this.deck.getCard());
+                }
+                            
                 switch (this.message.command)
                 {
                     case START:
                         Boolean isAvailable = true;
                         // controllo che non ci siano utenti con quel nome
-                        if(this.users.findUserByUsername(this.message.username)!= null)
+                        if(pos_user != -1)
                         {
                             isAvailable = false;
                             // mando messaggio di errore--> esiste già
                             // inizializzo l'oggetto messaggio
-                            this.message = new Message(false, ERROR_USERNAME, "","Username non disponibile" , "");
+                            this.message = new Message(false, ERROR_USERNAME, "","Username non disponibile" , discardedCard.serializeToString());
                             //  invio messaggio di risposta
                             communication.sendMessage(this.message);
                         }
                         if(isAvailable)
                         {
                             // // creo l'utente e lo aggiungo alla lista
-                            User u2 = new User(clientSocket, false, false, false, this.message.username);
-                            this.users.addUser(u2);   
+                            //ROUND TRUE PER DEBUG
+                            User user = new User(clientSocket, true, false, false, this.message.username);
+                            this.users.addUser(user);   
                             // controllo che sia connesso almeno un altro client
-                            StartGameThread sgt = new StartGameThread(u2, communication, this);
+                            StartGameThread sgt = new StartGameThread(user, communication, this);
                             sgt.start();
+                            // this.message = new Message(user.isUno, CORRECT, user.userName,"Username disponibile", "");
                         }
                         //  invio messaggio di risposta
                         // communication.sendMessage(this.message);
@@ -128,8 +139,8 @@ public class Game {
                     case QUIT:
                         // // prendo l'utente con quel username
                         // User u = this.users.findUserByUsername(this.message.username);
-                        if(u != null)
-                            this.message = new Message(u.isUno, CORRECT, u.userName,"Rimozione dalla partita", "" );
+                        if(pos_user != -1)
+                            this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT, this.users.users.get(pos_user).userName,"Rimozione dalla partita", "" );
                         else
                             this.message = new Message(false, ERROR_EXIT, "","Errore rimozione dalla partita", "" );
 
@@ -137,7 +148,7 @@ public class Game {
                         break;
                     case SKIP:
                         //prendo l'utente dopo l'utente che ha chiesto lo skip
-                        User user = users.getProxUser(u);
+                        User user = users.getProxUser(this.users.users.get(pos_user));
 
                         //invio il messaggio
                         this.message = new Message(user.isUno, CORRECT, user.userName,"E' il tuo turno", "");
@@ -147,20 +158,20 @@ public class Game {
                         break;
                     case UNO:
                         //controllo se l'utente è a una carta
-                        if(u.cards.getSizeDeck() == 1)
+                        if(this.users.users.get(pos_user).cards.getSizeDeck() == 1)
                         {
-                            this.message = new Message(u.isUno, CORRECT, u.userName, "Complimenti! Sei a una carta", "");
+                            this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT, this.users.users.get(pos_user).userName, "Complimenti! Sei a una carta", "");
                         }
                         else
                         {
                             //l'utente pesca due carte
-                            drawCard(u);
-                            drawCard(u);
+                            drawCard(this.users.users.get(pos_user));
+                            drawCard(this.users.users.get(pos_user));
 
                             //messaggio con le nuove carte dell'utente
-                            String serialized_deck = u.cards.serializeDeck();
+                            String serialized_deck = this.users.users.get(pos_user).cards.serializeDeck();
                             // inizializzo il messaggio
-                            this.message = new Message(u.isUno, ERROR_UNO, u.userName, serialized_deck, "");
+                            this.message = new Message(this.users.users.get(pos_user).isUno, ERROR_UNO, this.users.users.get(pos_user).userName, serialized_deck, "");
                         }
 
                         //invio il messaggio
@@ -169,9 +180,6 @@ public class Game {
                     case PLAY:
                         //prendo la carta giocata dall'utente
                         Card cardPlayed = Card.unserialize(this.message.message);
-
-                        Deck deck_tmp = new Deck<>();
-                        deck_tmp.addCard(cardPlayed);
 
                         // String cardSerialized = cardPlayed.serializeToString();
                         // User tmp = this.users.findUserByUsername(this.message.username);
@@ -182,30 +190,32 @@ public class Game {
                         //controllo se la carta giocata è valida
                         if(this.checkCardPlayed(cardPlayed))
                         {
-                            //controllo se l'utente ha finito le carte
-                            if(u.cards.getSizeDeck() == 0)
-                                this.message = new Message(u.isUno, WINNER, u.userName, "Complimenti! Hai vinto",  deck_tmp.serializeDeck());
+                            
+                            //rimuovo la carta all'utente
+                            this.users.users.get(pos_user).removeCard(cardPlayed);
+
+                            //aggiungo la carta agli scarti
+                            discardedCards.addCard(cardPlayed);
+                                //controllo se l'utente ha finito le carte
+                            if(this.users.users.get(pos_user).cards.getSizeDeck() == 0)
+                                this.message = new Message(this.users.users.get(pos_user).isUno, WINNER, this.users.users.get(pos_user).userName, "Complimenti! Hai vinto",  cardPlayed.serializeToString());
+                            
                             else
-                            {
-                                //rimuovo la carta all'utente
-                                u.removeCard(cardPlayed);
+                            {                                
+                                // invio a tutti i client la carta scartata
+                                this.message = new Message(this.users.users.get(pos_user).isUno, DISCARDED_CARD, this.users.users.get(pos_user).userName, "", cardPlayed.serializeToString());
+                                this.users.sendToAllClient(this.message);
 
-                                //aggiungo la carta agli scarti
-                                discardedCards.addCard(cardPlayed);
+                                // serializzo il mazzo dell'utente per passarglielo nel messaggio
+                                String serialized_deck = this.users.users.get(pos_user).cards.serializeDeck();
 
-                                String serialized_deck = u.cards.serializeDeck();
                                 // inizializzo il messaggio
-                                this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck, deck_tmp.serializeDeck());
+                                this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT, this.users.users.get(pos_user).userName, serialized_deck, cardPlayed.serializeToString());
                             }
-                            // salvo la carta scartata
-                            this.discaredCard = cardPlayed;
-                            // invio a tutti i client la carta scartata
-                            this.message = new Message(u.isUno, DISCARDED_CARD, u.userName, "", deck_tmp.serializeDeck());
-                            this.users.sendToAllClient(this.message);
                         }
                         else
                         {
-                            this.message = new Message(u.isUno, ERROR_CARD_PALYED, "","Carta giocata in modo errato", "");
+                            this.message = new Message(this.users.users.get(pos_user).isUno, ERROR_CARD_PALYED, "","Carta giocata in modo errato", "");
                         }
 
                         //invio il messaggio
@@ -214,7 +224,7 @@ public class Game {
                         break;
                     case DRAW:
                         //l'utente pesca la carta
-                        drawCard(u);
+                        drawCard(this.users.users.get(pos_user));
 
                         //se il mazzo è finito
                         if(deck.getSizeDeck() == 0)
@@ -223,9 +233,9 @@ public class Game {
                             deck.repopulateDeck(discardedCards.deck);
                         }
 
-                        String serialized_deck4 = u.cards.serializeDeck();
+                        String serialized_deck4 = this.users.users.get(pos_user).cards.serializeDeck();
                         // inizializzo il messaggio
-                        this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck4, "");
+                        this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT, this.users.users.get(pos_user).userName, serialized_deck4, "");
                         //invio le carte all'utente
                         communication.sendMessage(this.message);
                         break;
@@ -242,29 +252,29 @@ public class Game {
                         // serializzo il mazzo
                         String serialized_deck = userDeck.serializeDeck();
                         // inizializzo il messaggio
-                        this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck, "");
+                        this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT, this.users.users.get(pos_user).userName, serialized_deck, "");
                         communication.sendMessage(this.message);
                         break;
                     case SORT_BY_COLOR:
                         //ordino le carte dell'utente per colore
-                        u.sortCardsByColor();
+                        this.users.users.get(pos_user).sortCardsByColor();
 
                         //invio le carte all'utente
-                        String serialized_deck2 = u.cards.serializeDeck();
-                        this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck2, "");
+                        String serialized_deck2 = this.users.users.get(pos_user).cards.serializeDeck();
+                        this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT, this.users.users.get(pos_user).userName, serialized_deck2, "");
                         communication.sendMessage(this.message);
                         break;   
                     case SORT_BY_NUMBER:
                         //ordino le carte dell'utente per numero
-                        u.sortCardsByColor();
+                        this.users.users.get(pos_user).sortCardsByColor();
 
                         //invio le carte all'utente
-                        String serialized_deck3 = u.cards.serializeDeck();
-                        this.message = new Message(u.isUno, CORRECT, u.userName, serialized_deck3, "");
+                        String serialized_deck3 = this.users.users.get(pos_user).cards.serializeDeck();
+                        this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT, this.users.users.get(pos_user).userName, serialized_deck3, "");
                         communication.sendMessage(this.message);
                         break;                                         
                 } 
-            }while(!this.users.users.get(index).round); // scorro fino a quando è il suo turno          
+            }while(this.users.users.get(index).round); // scorro fino a quando finisce il suo turno          
         }
     }
 

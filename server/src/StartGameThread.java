@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -40,22 +42,27 @@ public class StartGameThread extends Thread{
             this.message = new Message(user.isUno, CORRECT, user.userName,"Username disponibile", "");
 
             int i = 0;
-            while(this.game.users.users.size()> 2) // PER TEST HO MESSO >2 MA DEVE ESSERE <2
+            while(this.game.users.users.size()< 2) // PER TEST HO MESSO >2 MA DEVE ESSERE <2
             {
-                sleep(WAITING_TIME);
-                if(i < 2)
-                    i++;
-                else
-                {
-                    this.message = new Message(false, CONNECTION_ERROR, "","Tempo di attesa eccessivo.", "");
-                    break; // esco dal ciclo
-                }
+                // creo un timer per contare il tempo massimo di attesa
+                Timer timer = new Timer();
+
+                // specifico l'istruzione da eseguire
+                TimerTask task = new TimerTask() {
+                    @Override
+                    public void run() {
+                        message = new Message(false, CONNECTION_ERROR, "","Tempo di attesa eccessivo.", "");
+                    }
+                };
+
+                
+                timer.schedule(task, 2 * 60 * 1000);
             }
             // inoltro il messaggio al client
             this.c.sendMessage(this.message);
 
 
-        } catch (InterruptedException | IOException | ParserConfigurationException | TransformerException e) {
+        } catch (IOException | ParserConfigurationException | TransformerException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

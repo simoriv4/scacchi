@@ -15,7 +15,7 @@ public class Server {
     private final String rootName = "client";
 
     // costante nome file
-    private final String XML_PATH = "configServer.xml";
+    private final String XML_PATH = rootName + "\\configServer.xml";
     
     // nomi elementi del file XML con i dati del server
     private final String IP_ATTRIBUTE = "IP";

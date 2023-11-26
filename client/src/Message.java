@@ -25,7 +25,7 @@ class Message {
     String username;
     String message;
     String numberCardsRivals; // lista serializzata <u1><numberCard>3</numberCard></u1>
-    String discarderdCard;
+    String discardedCard;
 
     Boolean isUno;
 
@@ -42,7 +42,7 @@ class Message {
         this.command = command;
         this.username = username;
         this.message = message;
-        this.discarderdCard = discarderdCard;
+        this.discardedCard = discardedCard;
         this.numberCardsRivals = numberCardsRivals;
     }
 
@@ -153,7 +153,7 @@ class Message {
         this.message = this.unserializeMessage(d);
         this.username = this.unserializeUsername(d);
         this.isUno = this.unserializeIsUno(d);
-        this.discarderdCard = this.unserializeDiscardedCard(d);
+        this.discardedCard = this.unserializeDiscardedCard(d);
     }
     /**
      * funzione che converte il tag XML command in stringa

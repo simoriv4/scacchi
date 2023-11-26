@@ -16,67 +16,7 @@ import java.net.Socket;
 import java.net.URISyntaxException;
 import java.awt.event.*;
 
-public class gamepage extends JFrame {
-    // private final String rootName = "client";
-    private final String COVER_CARD_PATH = "src\\assets\\card-back.png";
-    private final String UNO_PATH = "src\\assets\\logo.png";
-    private final String BACKGROUND_IMAGE_PATH = "src\\assets\\backgrounds\\bgG.png";
-    private final String MUTE_PATH = "src\\assets\\mute.png";
-    private final String MUSIC_PATH = "audio\\UNO_track.wav";
-
-    // percorsi carte
-
-    private final String CARDS_PATH = "src\\assets\\cards-front";
-    private final String ADD_2_CARDS_NAME = "D2";
-    private final String ADD_4_CARDS_NAME = "D4W";
-    private final String CHANGE_COLOR_NAME = "W";
-    private final String BLOCK_CARD_NAME = "skip";
-    private final String CHANGE_TURN_CARD_NAME = "_";
-
-    private final String ROULES_COMBOBOX = "Regolamento";
-    private final String QUIT_COMBOBOX = "Esci";
-    private final String MUSIC_OFF_COMBOBOX = "Disattiva audio";
-    private final String MUSIC_ON_COMBOBOX = "Attiva audio";
-
-    // lista comandi
-    public final String SKIP = "skip";
-    public final String UNO = "uno";
-    public final String PLAY = "play";
-    public final String DRAW = "draw";
-    public final String QUIT = "quit";
-    public final String INIT_DECK = "init";
-    public final String START = "start";
-    public final static String SORT_BY_NUMBER = "sortByNumber";
-    public final static String SORT_BY_COLOR = "sortByColor";
-    private final static String DISCARDED_CARD = "discarded_card";
-    private final static String LOSE = "lose";
-    private final static String DRAW_USER = "draw_user";
-
-    private final static String CARD_ADD_2_CARDS = "CardAdd2Cards";
-    private final static String CARD_ADD_4_CARDS = "CardAdd4Cards";
-    private final static String CARD_BLOCK = "CardBlock";
-    private final static String CARD_CHANGE_COLOR = "CardChangeColor";
-    private final static String CARD_CHANGE_TURN = "CardChangeTurn";
-    private final static String CARD_NUMBER = "CardNumber";
-
-    private final static String RED = "red";
-    private final static String YELLOW = "yellow";
-    private final static String BLUE = "blue";
-    private final static String GREEN = "green";
-
-    // messaggi di risposta
-    private final static String CORRECT = "200";
-    private final static String ERROR_USERNAME = "400";
-    private final static String ERROR_CARD_PALYED = "406";
-    private final static String WINNER = "201";
-    private final static String ERROR_SKIP = "409";
-    private final static String ERROR_EXIT = "500";
-
-    private final static Integer WIDTH_UNO_IMAGE = 150;
-    private final static Integer HEIGHT_UNO_IMAGE = 150;
-
-    private final static Integer WIDTH_CARDS = 100;
-    private final static Integer HEIGHT_CARDS = 150;
+public class gamepage extends JFrame implements Constants {
 
     public Socket socket;
 

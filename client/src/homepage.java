@@ -14,21 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
-public class homepage extends JFrame {
+public class homepage extends JFrame implements Constants {
     private final String UNO_PATH = "src\\assets\\logo.png";
     private final String BACKGROUND_IMAGE_PATH = "src\\assets\\backgrounds\\wallpaper.png";
     private final String SONG_PATH = "audio\\UNO_track.wav";
-
-    // lista comandi
-    private final String START = "start";
-
-    // messaggi di risposta
-    private final static String CORRECT = "200";
-    private final static String ERROR_USERNAME = "400";
-    private final static String ERROR_CARD_PALYED = "406";
-    private final static String WINNER = "201";
-    private final static String ERROR_SKIP = "409";
-    private final static String ERROR_EXIT = "500";
 
     private final static Integer WIDTH_UNO_IMAGE = 200;
     private final static Integer HEIGHT_UNO_IMAGE = 200;

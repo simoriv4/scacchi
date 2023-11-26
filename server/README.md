@@ -1,1 +1,1 @@
-# Server del progetto UNO-GAME di Riva e Monti
+# Server del progetto UNO-GAME di Riva, Gobbetto e Monti

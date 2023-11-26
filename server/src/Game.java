@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -174,7 +176,7 @@ public class Game extends Constants {
                             discardedCards.addCard(cardPlayed);
                             // controllo se l'utente ha finito le carte
                             if (this.users.users.get(pos_user).cards.getSizeDeck() == 0) {
-                                // mado il messaggio agli altri che hanno perso
+                                // mando il messaggio agli altri che hanno perso
                                 this.message = new Message(this.users.users.get(pos_user).isUno, LOSE,
                                         this.users.users.get(pos_user).userName,
                                         "Hai perso." + this.users.users.get(pos_user).userName + " ha vinto.", " ", " ");
@@ -182,17 +184,25 @@ public class Game extends Constants {
                                 this.message = new Message(this.users.users.get(pos_user).isUno, WINNER,
                                         this.users.users.get(pos_user).userName, "Complimenti! Hai vinto",
                                         cardPlayed.serializeToString(), " ");
-                            } else {
+                            }
+                            else
+                            {
                                 // invio a tutti i client la carta scartata
                                 Deck<Card> tmp = new Deck<>();
                                 tmp.addCard(cardPlayed);
-                                // salvo qunte carte hanno i client e le invio
+
+                                //dichiaro una stringa che conterrà le stringhe (username;numero_carte) per ogni utente
+                                String str = "";
+
+                                //salvo quante carte hanno i client e le invio
                                 for(User u: this.users.users)
                                 {
-                                    // SALVARSI USERNAME E N. CARTE IN UNA LISTA
+                                    //inserisco nella stringa la stringa (username;numero_carte) per l'utente
+                                    str += u.userName + ";" + u.cards.getSizeDeck() + "||";
                                 }
+
                                 this.message = new Message(this.users.users.get(pos_user).isUno, DISCARDED_CARD,
-                                        this.users.users.get(pos_user).userName, "", tmp.serializeDeck(), " ");
+                                        this.users.users.get(pos_user).userName, str, tmp.serializeDeck(), " ");
                                 this.users.sendToAllClient(this.message);
 
                                 // serializzo il mazzo dell'utente per passarglielo nel messaggio
@@ -201,7 +211,9 @@ public class Game extends Constants {
                                 // inizializzo il messaggio
                                 this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT, this.users.users.get(pos_user).userName, serialized_deck, tmp.serializeDeck(), " ");
                             }
-                        } else {
+                        } 
+                        else
+                        {
                             this.message = new Message(this.users.users.get(pos_user).isUno, ERROR_CARD_PALYED, "",
                                     "Carta giocata in modo errato", " ", " ");
                         }

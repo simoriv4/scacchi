@@ -103,6 +103,8 @@ public class CardAdd4Cards implements Card
 
         Element root = d.createElement("card");
         root.appendChild(this.serializeType(d));
+        root.appendChild(this.serializeNewColor(d));
+
 
         d.appendChild(root);
 
@@ -128,6 +130,17 @@ public class CardAdd4Cards implements Card
         Node type = d.createElement("type");
         type.setTextContent(this.type);
         return type;
+    }
+    /**
+     * funzione che serializza in XML l'attributo type
+     * 
+     * @param d
+     * @return il nodo
+     */
+    public Node serializeNewColor(Document d) {
+        Node newColor = d.createElement("newColor");
+        newColor.setTextContent(this.newColor);
+        return newColor;
     }
 
 

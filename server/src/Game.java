@@ -37,6 +37,9 @@ public class Game {
     private final static String SORT_BY_NUMBER = "sortByNumber";
     private final static String SORT_BY_COLOR = "sortByColor"; 
     private final static String DISCARDED_CARD = "discarded_card";
+    private final static String LOSE = "lose";
+    private final static String DRAW_USER = "draw_user";
+    
 
     // attributi
     public Deck<Card> deck;
@@ -106,11 +109,11 @@ public class Game {
                     // se non ci sono carte vuol dire che è appena 
                     discardedCards.addCard(this.deck.getCard());
                 }
-                            
+                Boolean isAvailable = true;      
                 switch (this.message.command)
                 {
                     case START:
-                        Boolean isAvailable = true;
+                        // isAvailable = true;
                         // controllo che non ci siano utenti con quel nome
                         if(pos_user != -1)
                         {
@@ -198,8 +201,12 @@ public class Game {
                             discardedCards.addCard(cardPlayed);
                                 //controllo se l'utente ha finito le carte
                             if(this.users.users.get(pos_user).cards.getSizeDeck() == 0)
+                            {
+                                // mado il messaggio agli altri che hanno perso
+                                this.message = new Message(this.users.users.get(pos_user).isUno, LOSE, this.users.users.get(pos_user).userName, "Hai perso." + this.users.users.get(pos_user).userName + " ha vinto.","" );
+                                this.users.sendToAllClient(this.message);
                                 this.message = new Message(this.users.users.get(pos_user).isUno, WINNER, this.users.users.get(pos_user).userName, "Complimenti! Hai vinto",  cardPlayed.serializeToString());
-                            
+                            }
                             else
                             {                                
                                 // invio a tutti i client la carta scartata
@@ -232,25 +239,26 @@ public class Game {
                             //rimescolo il mazzo degli scarti
                             deck.repopulateDeck(discardedCards.deck);
                         }
-
                         String serialized_deck4 = this.users.users.get(pos_user).cards.serializeDeck();
                         // inizializzo il messaggio
                         this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT, this.users.users.get(pos_user).userName, serialized_deck4, "");
                         //invio le carte all'utente
                         communication.sendMessage(this.message);
+                        // invio a tutti gli altri utenti il numero di carte modificato di questo utente e il suo username
+                        this.message = new Message(this.users.users.get(pos_user).isUno, DRAW_USER, this.users.users.get(pos_user).userName, String.valueOf(this.users.users.get(pos_user).cards.deck.size()), "");
+                        this.users.sendToAllClient(this.message);
                         break;
                     case INIT_DECK:
-
                         //se devo mettere la prima carta degli scarti
                         if(discardedCards.getSizeDeck() == 0)
                         {
                             discardedCards.addCard(deck.getCard()); //metto la carta
                         }
-
+                        this.users.users.get(pos_user).cards =
                         // creo il mazzo di carte da dare all'utente
-                        Deck<Card> userDeck = this.deck.initUserDeck();
+                        this.users.users.get(pos_user).cards = this.deck.initUserDeck();
                         // serializzo il mazzo
-                        String serialized_deck = userDeck.serializeDeck();
+                        String serialized_deck = this.users.users.get(pos_user).cards.serializeDeck();
                         // inizializzo il messaggio
                         this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT, this.users.users.get(pos_user).userName, serialized_deck, "");
                         communication.sendMessage(this.message);
@@ -274,6 +282,8 @@ public class Game {
                         communication.sendMessage(this.message);
                         break;                                         
                 } 
+                if(isAvailable)
+                    break;
             }while(this.users.users.get(index).round); // scorro fino a quando finisce il suo turno          
         }
     }

@@ -508,9 +508,15 @@ public class Deck <E extends Card>  //<E extends Card> --> indica che la classe 
     {
         //creo un mazzo temporaneo
         List<Card> tmp = new ArrayList<Card>();
+        // clono il mazzo per non avere problemi con l'eliminazione della carte
+        List<Card> tmp2 = new ArrayList<Card>();
+        for (Card card : lst)
+        {
+            tmp2.add(card);
+        }
 
         //per ogni carta nella lista
-        for (Card card : lst)
+        for (Card card : tmp2)
         {
             //controllo il colore
             if(card.getColor().equals(color))

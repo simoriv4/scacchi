@@ -41,23 +41,22 @@ public class StartGameThread extends Thread{
             // se il contatore supera il 2 invio messaggio di errore di connessione
             this.message = new Message(user.isUno, CORRECT, user.userName,"Username disponibile", "");
 
-            int i = 0;
-            while(this.game.users.users.size()< 2) // PER TEST HO MESSO >2 MA DEVE ESSERE <2
-            {
-                // creo un timer per contare il tempo massimo di attesa
-                Timer timer = new Timer();
+            // creo un timer per contare il tempo massimo di attesa
+            Timer timer = new Timer();
 
-                // specifico l'istruzione da eseguire
-                TimerTask task = new TimerTask() {
-                    @Override
-                    public void run() {
-                        message = new Message(false, CONNECTION_ERROR, "","Tempo di attesa eccessivo.", "");
-                    }
-                };
+            // specifico l'istruzione da eseguire
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    message = new Message(false, CONNECTION_ERROR, "","Tempo di attesa eccessivo.", "");
+                }
+            };
+            // aspetto 2 minuti
+            timer.schedule(task, 2 * 60 * 1000);
 
-                
-                timer.schedule(task, 2 * 60 * 1000);
-            }
+            while(this.game.users.users.size()< 2); // PER TEST HO MESSO >2 MA DEVE ESSERE <2
+            // se esce dal ciclo vuol dire che si è connesso qualcuno
+            timer.cancel();
             // inoltro il messaggio al client
             this.c.sendMessage(this.message);
 

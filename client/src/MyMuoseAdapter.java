@@ -1,16 +1,22 @@
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 import javax.swing.border.CompoundBorder;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
-class LabelAdapter extends MouseAdapter {
+import org.xml.sax.SAXException;
+
+class MyMuoseAdapter extends MouseAdapter {
     private MyLabel ml;
     private gamepage gp;
     private Boolean isDeck;
 
-    public LabelAdapter(MyLabel ml, gamepage gp, Boolean isDeck) {
+    public MyMuoseAdapter(MyLabel ml, gamepage gp, Boolean isDeck) {
         this.ml = ml;
         this.gp = gp;
         this.isDeck = isDeck;
@@ -24,8 +30,20 @@ class LabelAdapter extends MouseAdapter {
             this.gp.selected_card = ml.index;
         }
         else{
-            // Message message = new Message(user.isUno, gp.DRAW, user.userName, "", "");
-            // communication.sendMessage(message);
+            try {
+                Message message = new Message(this.gp.user.isUno, gp.DRAW, this.gp.user.userName, "", "");
+                this.gp.communication.sendMessage(message);
+                // aspetto la risposta
+                String reply = this.gp.communication.listening();
+                // creo il panel che conterrà il nuovo mazzo di carte
+                this.gp.overlayPanel = this.gp.initDeck(this.gp.overlayPanel, reply);
+                this.gp.remove(this.gp.overlayPanel);
+                // aggiungo il nuovo deckPanel
+                this.gp.add(this.gp.overlayPanel);
+            } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
 
         

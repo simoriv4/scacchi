@@ -48,6 +48,9 @@ public class gamepage extends JFrame {
     public final String START = "start";
     public final static String SORT_BY_NUMBER = "sortByNumber";
     public final static String SORT_BY_COLOR = "sortByColor";
+    private final static String DISCARDED_CARD = "discarded_card";
+    private final static String LOSE = "lose";
+    private final static String DRAW_USER = "draw_user";
 
     private final static String CARD_ADD_2_CARDS = "CardAdd2Cards";
     private final static String CARD_ADD_4_CARDS = "CardAdd4Cards";
@@ -88,13 +91,14 @@ public class gamepage extends JFrame {
     private MyLabel discarded_Label;
     private JComboBox<String> combobox;
     private Clip clip;
-    private JPanel overlayPanel;
+    public JPanel overlayPanel;
+    public JPanel cards;
 
     private Integer screenWidth;
     private Integer screenHeight;
 
     private Message message;
-    private User user;
+    public User user;
     private Server server;
     private Card played_card;
     public Integer selected_card;
@@ -105,7 +109,8 @@ public class gamepage extends JFrame {
     // private BufferedReader inStream;
     // private PrintWriter outStream;
 
-    public gamepage(User user, Communication c) throws IOException, ParserConfigurationException, SAXException, TransformerException {
+    public gamepage(User user, Communication c)
+            throws IOException, ParserConfigurationException, SAXException, TransformerException {
         // ininzializzo le informazioni del server
         this.server = new Server();
         // salvo le informazioni dell'utente
@@ -145,6 +150,8 @@ public class gamepage extends JFrame {
 
         // imposto il layout manager su null per posizionare manualmente i componenti
         overlayPanel.setLayout(null);
+        this.cards = new JPanel();
+        this.cards.setLayout(getLayout());
 
         // richiedo carte
         this.message = new Message(user.isUno, INIT_DECK, user.userName, "", "");
@@ -177,37 +184,15 @@ public class gamepage extends JFrame {
         overlayPanel.add(this.UNO_Label);
         overlayPanel.add(this.deck_Label);
         overlayPanel.add(this.playButton);
-        // overlayPanel.add(this.quitButton);
         overlayPanel.add(this.skipButton);
         overlayPanel.add(this.sortbyColorButton);
         overlayPanel.add(this.sortbyNumberButton);
         overlayPanel.add(this.unoButton);
-        overlayPanel.add(combobox);
+        overlayPanel.add(this.combobox);
 
         // controllo il mouse click sul mazzo girato--> per pescare la carta
-        this.deck_Label.addMouseListener(new MouseAdapter() {
-            // private Communication communication = new Communication(socket);
+        this.deck_Label.addMouseListener(new MyMuoseAdapter(this.deck_Label, this, true));
 
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                // quando viene cliccato il mazzo richiede al server di pescare la carta
-                System.out.println("cliccato");
-                // invio il messaggio al server
-                try {
-                    Message message = new Message(user.isUno, DRAW, user.userName, "", "");
-                    communication.sendMessage(message);
-                    // aspetto la risposta
-                    String reply = communication.listening();
-                    JPanel overlayPanel = new JPanel();
-                    overlayPanel = initDeck(overlayPanel, reply);
-
-                } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-
-            }
-        });
         add(overlayPanel);
 
         // imposta il frame a schermo intero
@@ -216,7 +201,7 @@ public class gamepage extends JFrame {
 
     }
 
-    private JPanel initDeck(JPanel overlayPanel, String reply)
+    public JPanel initDeck(JPanel overlayPanel, String reply)
             throws IOException, ParserConfigurationException, TransformerException, SAXException {
 
         // unserializzo il messaggio
@@ -229,40 +214,7 @@ public class gamepage extends JFrame {
         int y = (int) (screenHeight * 0.7);
         // scorro le carte e le aggiungo all'overlay panel
         for (int i = 0; i < this.user.deck.getSizeDeck(); i++) {
-            MyLabel card = new MyLabel();
-            Card c = this.user.deck.deck.get(i);
-            String cardPath = "";
-            switch (c.getType()) {
-                case CARD_ADD_2_CARDS:
-                    cardPath = CARDS_PATH + "\\" + ADD_2_CARDS_NAME + this.getColor(c) + ".png";
-                    break;
-
-                case CARD_ADD_4_CARDS:
-                    cardPath = CARDS_PATH + "\\" + ADD_4_CARDS_NAME + ".png";
-                    break;
-
-                case CARD_BLOCK:
-                    cardPath = CARDS_PATH + "\\" + BLOCK_CARD_NAME + this.getColor(c) + ".png";
-                    break;
-                case CARD_CHANGE_COLOR:
-                    cardPath = CARDS_PATH + "\\" + CHANGE_COLOR_NAME + ".png";
-                    break;
-                case CARD_CHANGE_TURN:
-                    cardPath = CARDS_PATH + "\\" + CHANGE_TURN_CARD_NAME + this.getColor(c) + ".png";
-                    break;
-                case CARD_NUMBER:
-                    cardPath = CARDS_PATH + "\\" + c.getNumber() + this.getColor(c) + ".png";
-                    break;
-            }
-            card = this.initImageLabel(card, cardPath, WIDTH_CARDS, HEIGHT_CARDS);
-            // assegno l'indice alla carta
-            card.index = i;
-
-            card.addMouseListener(new LabelAdapter(card, this, false));
-            // setto la posizione
-            // la prima carta è sempre al centro--> poi si mette a x - n e x + n
-            // setto posizione
-            card.setBounds(x, y, WIDTH_CARDS, HEIGHT_CARDS);
+            MyLabel card = this.getImageCard(i, x, y);
             // aggiorno la x
             x += (WIDTH_CARDS + 10);
             // aggiungi la carta al panel
@@ -387,8 +339,14 @@ public class gamepage extends JFrame {
                 this.communication.sendMessage(message);
                 // aspetto la risposta
                 String reply = this.communication.listening();
+                SwingUtilities.invokeLater(() -> {
                 // unserializzo il messaggio
-                this.message.InitMessageFromStringXML(reply);
+                try {
+                    this.message.InitMessageFromStringXML(reply);
+                } catch (ParserConfigurationException | SAXException | IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
                 // controllo il codice di errore
                 if (this.message.command != CORRECT)
                     // messaggio di errore
@@ -396,58 +354,94 @@ public class gamepage extends JFrame {
                 else {
                     // rimane in ascolto fino a che non è il suo turno
                     while (!user.round) {
+                        try {
+
                         // leggo il messaggio del server
                         String server_message = this.communication.listening();
                         // unserializzo il messaggio
-                        this.message.InitMessageFromStringXML(server_message);
+                            this.message.InitMessageFromStringXML(server_message);
+                        } catch (ParserConfigurationException | SAXException | IOException e1) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        }
                         // se è stata passata una carta scartata
-                        if (!this.message.discarderdCard.isEmpty()) {
+                        if (!this.message.discarderdCard.isEmpty() || this.message.command.equals(DISCARDED_CARD)) {
                             int x = (int) (screenWidth * 0.5);
                             int y = (int) (screenHeight * 0.4);
                             // scorro le carte e le aggiungo all'overlay panel
                             for (int i = 0; i < this.user.deck.getSizeDeck(); i++) {
-                                MyLabel card = new MyLabel();
-                                Card c = this.user.deck.deck.get(i);
-                                String cardPath = "";
-                                switch (c.getType()) {
-                                    case CARD_ADD_2_CARDS:
-                                        cardPath = CARDS_PATH + "\\" + ADD_2_CARDS_NAME + this.getColor(c) + ".png";
-                                        break;
-
-                                    case CARD_ADD_4_CARDS:
-                                        cardPath = CARDS_PATH + "\\" + ADD_4_CARDS_NAME + ".png";
-                                        break;
-
-                                    case CARD_BLOCK:
-                                        cardPath = CARDS_PATH + "\\" + BLOCK_CARD_NAME + this.getColor(c) + ".png";
-                                        break;
-                                    case CARD_CHANGE_COLOR:
-                                        cardPath = CARDS_PATH + "\\" + CHANGE_COLOR_NAME + ".png";
-                                        break;
-                                    case CARD_CHANGE_TURN:
-                                        cardPath = CARDS_PATH + "\\" + CHANGE_TURN_CARD_NAME + this.getColor(c)
-                                                + ".png";
-                                        break;
-                                    case CARD_NUMBER:
-                                        cardPath = CARDS_PATH + "\\" + c.getNumber() + this.getColor(c) + ".png";
-                                        break;
+                                try {
+                                MyLabel card;
+                                
+                                    card = this.getImageCard(i, x, y);
+                                
+                                    this.overlayPanel.add(card);
+                                    remove(this.overlayPanel);
+                                    add(this.overlayPanel);
+                                } catch (IOException e1) {
+                                    // TODO Auto-generated catch block
+                                    e1.printStackTrace();
                                 }
-                                card = this.initImageLabel(card, cardPath, WIDTH_CARDS, HEIGHT_CARDS);
-                                card.setBounds(x, y, WIDTH_CARDS, HEIGHT_CARDS);
-
-                                this.overlayPanel.add(card);
-                                add(this.overlayPanel);
                             }
                         }
+                        switch (this.message.command) {
+                            case LOSE:
 
+                                break;
+                            case DRAW_USER:
+
+                                break;
+
+                        }
                     }
                 }
+            });
 
-            } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {
+            } catch (IOException | ParserConfigurationException | TransformerException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });
+    }
+
+    public MyLabel getImageCard(int index, int x, int y) throws IOException {
+        MyLabel card = new MyLabel();
+        Card c = this.user.deck.deck.get(index);
+        String cardPath = "";
+        switch (c.getType()) {
+            case CARD_ADD_2_CARDS:
+                cardPath = CARDS_PATH + "\\" + ADD_2_CARDS_NAME + this.getColor(c) + ".png";
+                break;
+
+            case CARD_ADD_4_CARDS:
+                cardPath = CARDS_PATH + "\\" + ADD_4_CARDS_NAME + ".png";
+                break;
+
+            case CARD_BLOCK:
+                cardPath = CARDS_PATH + "\\" + BLOCK_CARD_NAME + this.getColor(c) + ".png";
+                break;
+            case CARD_CHANGE_COLOR:
+                cardPath = CARDS_PATH + "\\" + CHANGE_COLOR_NAME + ".png";
+                break;
+            case CARD_CHANGE_TURN:
+                cardPath = CARDS_PATH + "\\" + CHANGE_TURN_CARD_NAME + this.getColor(c)
+                        + ".png";
+                break;
+            case CARD_NUMBER:
+                cardPath = CARDS_PATH + "\\" + c.getNumber() + this.getColor(c) + ".png";
+                break;
+        }
+        card = this.initImageLabel(card, cardPath, WIDTH_CARDS, HEIGHT_CARDS);
+        // assegno l'indice alla carta
+        card.index = index;
+
+        card.addMouseListener(new MyMuoseAdapter(card, this, false));
+        // setto la posizione
+        // la prima carta è sempre al centro--> poi si mette a x - n e x + n
+        // setto posizione
+        card.setBounds(x, y, WIDTH_CARDS, HEIGHT_CARDS);
+
+        return card;
     }
 
     /**
@@ -514,7 +508,7 @@ public class gamepage extends JFrame {
                 // impostato correttamente
                 // false e mazzo > 1
                 // true e mazzo == 1
-                this.message = new Message(user.isUno, SORT_BY_COLOR, user.userName, user.isUno.toString(), "");
+                this.message = new Message(user.isUno, SORT_BY_COLOR, user.userName, "", "");
                 this.communication.sendMessage(message);
 
                 // aspetto la risposta
@@ -522,7 +516,7 @@ public class gamepage extends JFrame {
                 // unserializzo il messaggio
                 this.message.InitMessageFromStringXML(reply);
                 // controllo il codice di errore
-                if (this.message.command == CORRECT) {
+                if (this.message.command.equals(CORRECT)) {
                     this.overlayPanel = initDeck(overlayPanel, reply);
                     remove(overlayPanel);
                     add(this.overlayPanel);
@@ -601,6 +595,8 @@ public class gamepage extends JFrame {
                 // false e mazzo > 1
                 // true e mazzo == 1
                 this.played_card = this.user.deck.deck.get(selected_card);
+                // controllo se sia stata giocata un add4cards o un changeColor--> faccio
+                // comparire uan selezione di colori
                 this.message = new Message(user.isUno, PLAY, user.userName, this.played_card.serializeToString(), "");
                 this.communication.sendMessage(message);
 

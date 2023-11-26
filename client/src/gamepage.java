@@ -141,6 +141,8 @@ public class gamepage extends JFrame implements Constants {
         // imposta il frame a schermo intero
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
+        // metto in ascolto il client se non è il suo turno
+        this.listening();
 
     }
 
@@ -303,54 +305,7 @@ public class gamepage extends JFrame implements Constants {
                         // messaggio di errore
                         JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
                     else {
-                        // rimane in ascolto fino a che non è il suo turno
-                        while (!user.round) {
-                            try {
-
-                                // leggo il messaggio del server
-                                String server_message = this.communication.listening();
-                                // unserializzo il messaggio
-                                this.message.InitMessageFromStringXML(server_message);
-                            } catch (ParserConfigurationException | SAXException | IOException e1) {
-                                // TODO Auto-generated catch block
-                                e1.printStackTrace();
-                            }
-                            // se è stata passata una carta scartata
-                            if (!this.message.discardedCard.isEmpty() || this.message.command.equals(DISCARDED_CARD)) {
-                                int x = (int) (screenWidth * 0.5);
-                                int y = (int) (screenHeight * 0.4);
-                                // scorro le carte e le aggiungo all'overlay panel
-                                for (int i = 0; i < this.user.deck.getSizeDeck(); i++) {
-                                    try {
-                                        MyLabel card;
-                                        Card c = this.user.deck.deck.get(i);
-
-                                        card = this.getImageCard(c, x, y, i);
-
-                                        remove(this.overlayPanel);
-                                        this.overlayPanel.add(card);
-                                        add(this.overlayPanel);
-                                    } catch (IOException e1) {
-                                        // TODO Auto-generated catch block
-                                        e1.printStackTrace();
-                                    }
-                                }
-                                // distribuisco le carte degli avversari
-                            }
-                            switch (this.message.command) {
-                                case LOSE:
-                                    // E' TERMINATO IL GIOCO
-                                    JOptionPane.showMessageDialog(this, message.message, "",
-                                            JOptionPane.INFORMATION_MESSAGE);
-                                    break;
-                                case DRAW_USER:
-                                    // rimuovo il vecchio panel per poi sostituirlo con quello corretto
-                                    remove(this.overlayPanel);
-                                    this.initUsersDecks();
-                                    add(this.overlayPanel);
-                                    break;
-                            }
-                        }
+                        this.listening();
                     }
                 });
 
@@ -361,6 +316,63 @@ public class gamepage extends JFrame implements Constants {
         });
     }
 
+    public void listening() {
+        MyLabel l = new MyLabel();
+        
+        // rimane in ascolto fino a che non è il suo turno
+        while (!user.round) {
+            try {
+
+                // leggo il messaggio del server
+                String server_message = this.communication.listening();
+                // unserializzo il messaggio
+                this.message.InitMessageFromStringXML(server_message);
+            } catch (ParserConfigurationException | SAXException | IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            // se è stata passata una carta scartata
+            if (!this.message.discardedCard.isEmpty() || this.message.command.equals(DISCARDED_CARD)) {
+                int x = (int) (screenWidth * 0.5);
+                int y = (int) (screenHeight * 0.4);
+                // scorro le carte e le aggiungo all'overlay panel
+                for (int i = 0; i < this.user.deck.getSizeDeck(); i++) {
+                    try {
+                        MyLabel card;
+                        Card c = this.user.deck.deck.get(i);
+
+                        card = this.getImageCard(c, x, y, i);
+
+                        remove(this.overlayPanel);
+                        this.overlayPanel.add(card);
+                        add(this.overlayPanel);
+                    } catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                }
+                // distribuisco le carte degli avversari
+            }
+            switch (this.message.command) {
+                case LOSE:
+                    // E' TERMINATO IL GIOCO
+                    JOptionPane.showMessageDialog(this, message.message, "",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                case DRAW_USER:
+                    // rimuovo il vecchio panel per poi sostituirlo con quello corretto
+                    remove(this.overlayPanel);
+                    this.initUsersDecks();
+                    add(this.overlayPanel);
+                    break;
+            }
+        }
+    }
+
+    /**
+     * metodo che inizializza tutti i deck degli altri client che stanno giocando-->
+     * visualizza il retro delle carte
+     */
     public void initUsersDecks() {
         String tmp = this.message.numberCardsRivals;
         // ottengo un vettore di stringhe
@@ -399,7 +411,6 @@ public class gamepage extends JFrame implements Constants {
                     int x = (int) (screenWidth * 0.8);
                     int y = (int) (screenHeight * 0.2);
 
-                    
                     // controllo di prendere solo l'altro utente e non il corrente
                     int count = 0; // contatore per gestire quali mazzi sono in verticale e quali in orizzontale
                     // scorro il vettore degli utenti
@@ -456,7 +467,6 @@ public class gamepage extends JFrame implements Constants {
                     int x = (int) (screenWidth * 0.8);
                     int y = (int) (screenHeight * 0.2);
 
-                    
                     // controllo di prendere solo l'altro utente e non il corrente
                     int count = 0; // contatore per gestire quali mazzi sono in verticale e quali in orizzontale
                     // scorro il vettore degli utenti
@@ -467,7 +477,7 @@ public class gamepage extends JFrame implements Constants {
                             String path = "";
                             // imposto il path in base alla posizione
                             switch (count) {
-                                case 0:  // posizione a destra del frame
+                                case 0: // posizione a destra del frame
                                     x = (int) (screenWidth * 0.8);
                                     y = (int) (screenHeight * 0.2);
                                     path = COVER_CARD_RIGHT_PATH;
@@ -497,7 +507,7 @@ public class gamepage extends JFrame implements Constants {
                                         overlayPanel.add(card);
                                     }
                                     break;
-                                case 2:  // posizione a sinistra del frame
+                                case 2: // posizione a sinistra del frame
                                     path = COVER_CARD_LEFT_PATH;
                                     x = (int) (screenWidth * 0.2);
                                     y = (int) (screenHeight * 0.2);

@@ -1,4 +1,4 @@
-# Documentazione UML del progetto UNO-GAME di Riva e Monti
+# Documentazione UML del progetto UNO-GAME di Riva, Gobbetto e Monti
 
 ### Estensioni
 - PlantUML

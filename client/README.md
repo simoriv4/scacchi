@@ -1,1 +1,1 @@
-# Client del progetto UNO-GAME di Riva e Monti
+# Client del progetto UNO-GAME di Riva, Gobbetto e Monti

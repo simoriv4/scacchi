@@ -378,7 +378,7 @@ public class Deck<E extends Card> // <E extends Card> --> indica che la classe √
     public void sortCardsByColor(Communication c, User u)
             throws IOException, ParserConfigurationException, TransformerException, SAXException {
         // creo un messaggio che invier√≤ al server
-        Message m = new Message(u.isUno, SORT_BY_COLOR, u.userName, "", "");
+        Message m = new Message(u.isUno, SORT_BY_COLOR, u.userName, "", "", "");
         // invio il messaggio
         c.sendMessage(m);
 
@@ -402,7 +402,7 @@ public class Deck<E extends Card> // <E extends Card> --> indica che la classe √
     public String sortCardsByNumber(Communication c, User u)
             throws IOException, ParserConfigurationException, TransformerException, SAXException {
         // creo un messaggio che invier√≤ al server
-        Message m = new Message(u.isUno, SORT_BY_NUMBER, u.userName, "", "");
+        Message m = new Message(u.isUno, SORT_BY_NUMBER, u.userName, "", "", "");
         // invio il messaggio
         c.sendMessage(m);
 

@@ -124,7 +124,7 @@ public class homepage extends JFrame implements Constants {
                     // quando premo il pulsante GIOCA mando una richiesta al server di aggiungere il
                     // client ad una nuova partita-->se non ci sono altri client rimane in attesa
                     // setto il messaggio da inviare
-                    message = new Message(false, START, username.getText(), "", "");
+                    message = new Message(false, START, username.getText(), "", "", "");
                     // invio il messaggio al server
                     this.communication.sendMessage(message);
 

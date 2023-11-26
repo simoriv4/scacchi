@@ -37,12 +37,13 @@ class Message {
      * @param message
      * @param discaredCard
      */
-    public Message(Boolean isUno,String command, String username, String message, String discaredCard) {
+    public Message(Boolean isUno,String command, String username, String message, String discaredCard, String numberCardsRivals) {
         this.isUno = isUno;
         this.command = command;
         this.username = username;
         this.message = message;
         this.discarderdCard = discarderdCard;
+        this.numberCardsRivals = numberCardsRivals;
     }
 
     /**
@@ -153,8 +154,6 @@ class Message {
         this.username = this.unserializeUsername(d);
         this.isUno = this.unserializeIsUno(d);
         this.discarderdCard = this.unserializeDiscardedCard(d);
-
-
     }
     /**
      * funzione che converte il tag XML command in stringa

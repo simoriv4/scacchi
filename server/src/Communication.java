@@ -27,6 +27,7 @@ public class Communication extends Constants{
         BufferedReader message = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         // leggo il messaggio inviato dal server
         tmp = message.readLine();
+        System.out.println(tmp);
         return tmp;
     }
 

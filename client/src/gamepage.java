@@ -94,7 +94,7 @@ public class gamepage extends JFrame implements Constants {
         this.cards.setLayout(getLayout());
 
         // richiedo carte
-        this.message = new Message(user.isUno, INIT_DECK, user.userName, "", "");
+        this.message = new Message(user.isUno, INIT_DECK, user.userName, "", "", "");
         this.communication.sendMessage(this.message);
         // attendo la risposta
         String reply = this.communication.listening();
@@ -151,15 +151,23 @@ public class gamepage extends JFrame implements Constants {
         this.user.deck.unserializeDeck(this.message.message);
 
         int x = (int) (screenWidth * 0.4);
-        int y = (int) (screenHeight * 0.7);
+        int y = (int) (screenHeight * 0.6);
         // scorro le carte e le aggiungo all'overlay panel
         for (int i = 0; i < this.user.deck.getSizeDeck(); i++) {
-            MyLabel card = this.getImageCard(i, x, y);
+            Card c = this.user.deck.deck.get(i);
+            MyLabel card = this.getImageCard(c, x, y, i);
             // aggiorno la x
             x += (WIDTH_CARDS + 10);
             // aggiungi la carta al panel
             overlayPanel.add(card);
         }
+        // posiziono la carta scartata
+        Deck<Card> tmp = new Deck<>();
+        tmp.unserializeDeck(this.message.discarderdCard);
+
+        discarded_Label = this.getImageCard(tmp.deck.get(0), x, y, 0);
+        discarded_Label.setBounds((int) (screenWidth * 0.5), (int) (screenHeight * 0.5), WIDTH_CARDS, HEIGHT_CARDS);
+        overlayPanel.add(discarded_Label);
         return overlayPanel;
 
     }
@@ -275,7 +283,7 @@ public class gamepage extends JFrame implements Constants {
                 // impostato correttamente
                 // false e mazzo > 1
                 // true e mazzo == 1
-                this.message = new Message(user.isUno, SKIP, user.userName, user.isUno.toString(), "");
+                this.message = new Message(user.isUno, SKIP, user.userName, user.isUno.toString(), "", "");
                 this.communication.sendMessage(message);
                 // aspetto la risposta
                 String reply = this.communication.listening();
@@ -312,8 +320,9 @@ public class gamepage extends JFrame implements Constants {
                             for (int i = 0; i < this.user.deck.getSizeDeck(); i++) {
                                 try {
                                 MyLabel card;
-                                
-                                    card = this.getImageCard(i, x, y);
+                                        Card c = this.user.deck.deck.get(i);
+
+                                    card = this.getImageCard(c, x, y, i);
                                 
                                     this.overlayPanel.add(card);
                                     remove(this.overlayPanel);
@@ -344,9 +353,8 @@ public class gamepage extends JFrame implements Constants {
         });
     }
 
-    public MyLabel getImageCard(int index, int x, int y) throws IOException {
+    public MyLabel getImageCard(Card c, int x, int y, int index) throws IOException {
         MyLabel card = new MyLabel();
-        Card c = this.user.deck.deck.get(index);
         String cardPath = "";
         switch (c.getType()) {
             case CARD_ADD_2_CARDS:
@@ -404,7 +412,7 @@ public class gamepage extends JFrame implements Constants {
                 // impostato correttamente
                 // false e mazzo > 1
                 // true e mazzo == 1
-                this.message = new Message(user.isUno, SORT_BY_NUMBER, user.userName, user.isUno.toString(), "");
+                this.message = new Message(user.isUno, SORT_BY_NUMBER, user.userName, user.isUno.toString(), "", "");
                 this.communication.sendMessage(message);
 
                 // aspetto la risposta
@@ -448,7 +456,7 @@ public class gamepage extends JFrame implements Constants {
                 // impostato correttamente
                 // false e mazzo > 1
                 // true e mazzo == 1
-                this.message = new Message(user.isUno, SORT_BY_COLOR, user.userName, "", "");
+                this.message = new Message(user.isUno, SORT_BY_COLOR, user.userName, "", "", "");
                 this.communication.sendMessage(message);
 
                 // aspetto la risposta
@@ -491,7 +499,7 @@ public class gamepage extends JFrame implements Constants {
                 // impostato correttamente
                 // false e mazzo > 1
                 // true e mazzo == 1
-                this.message = new Message(user.isUno, UNO, user.userName, user.isUno.toString(), "");
+                this.message = new Message(user.isUno, UNO, user.userName, user.isUno.toString(), "", "");
                 this.communication.sendMessage(message);
                 // aspetto la risposta
                 String reply = this.communication.listening();
@@ -537,7 +545,7 @@ public class gamepage extends JFrame implements Constants {
                 this.played_card = this.user.deck.deck.get(selected_card);
                 // controllo se sia stata giocata un add4cards o un changeColor--> faccio
                 // comparire uan selezione di colori
-                this.message = new Message(user.isUno, PLAY, user.userName, this.played_card.serializeToString(), "");
+                this.message = new Message(user.isUno, PLAY, user.userName, this.played_card.serializeToString(), "", "");
                 this.communication.sendMessage(message);
 
                 // aspetto la risposta
@@ -658,7 +666,7 @@ public class gamepage extends JFrame implements Constants {
                         // impostato correttamente
                         // false e mazzo > 1
                         // true e mazzo == 1
-                        this.message = new Message(user.isUno, QUIT, user.userName, "", "");
+                        this.message = new Message(user.isUno, QUIT, user.userName, "", "", "");
                         this.communication.sendMessage(message);
                         // aspetto la risposta
                         String reply = this.communication.listening();

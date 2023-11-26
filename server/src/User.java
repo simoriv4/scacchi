@@ -7,7 +7,6 @@ import javax.xml.transform.TransformerException;
 
 public class User
 {
-    public Integer port;
     // bolleana che permette di capire se sia il turno di questo utente
     public Boolean round;
     // booleana che permette di capire se ha vinto
@@ -15,7 +14,6 @@ public class User
     // booleana che permette di capire se ha detto UNO
     public Boolean isUno;
 
-    public String IP;
     public String userName;
     public Socket socket;
 
@@ -23,8 +21,6 @@ public class User
 
     /**
      * costruttore parametrico
-     * @param port
-     * @param IP
      * @param round
      * @param win
      * @param isUno
@@ -33,10 +29,8 @@ public class User
      * @throws UnknownHostException
      */
     public User(Socket clientSocket, Boolean round, Boolean win, Boolean isUno, String userName) throws UnknownHostException, IOException {
-        this.port = port;
         this.round = round;
         this.win = win;
-        this.IP = IP;
         this.userName = userName;
         this.isUno = isUno;
         // inizializzo la socket corrispondente all'untente
@@ -48,11 +42,9 @@ public class User
      * costruttore non parametrico
      */
     public User() {
-        this.port = null;
         this.round = false;
         this.win = false;
         this.isUno = false;
-        this.IP = "127.0.0.1"; // localhost come predefinito
         this.userName = "userName";
     }
 
@@ -101,7 +93,7 @@ public class User
     public void sendMessage(Message m) throws UnknownHostException, IOException, ParserConfigurationException, TransformerException
     {
         // avvio la comunicazione
-        Communication c = new Communication(new Socket(this.IP, this.port));
+        Communication c = new Communication(socket);
         c.sendMessage(m);
     }
 }

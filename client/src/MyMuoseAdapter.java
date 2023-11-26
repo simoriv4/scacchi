@@ -31,7 +31,7 @@ class MyMuoseAdapter extends MouseAdapter {
         }
         else{
             try {
-                Message message = new Message(this.gp.user.isUno, gp.DRAW, this.gp.user.userName, "", "");
+                Message message = new Message(this.gp.user.isUno, gp.DRAW, this.gp.user.userName, "", "", "");
                 this.gp.communication.sendMessage(message);
                 // aspetto la risposta
                 String reply = this.gp.communication.listening();

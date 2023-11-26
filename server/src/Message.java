@@ -25,7 +25,7 @@ class Message {
     String username;
     String message;
     String numberCardsRivals; // lista serializzata <u1><numberCard>3</numberCard></u1>
-    String discarderdCard;
+    String discardedCard;
     Boolean isUno;
 
     /**
@@ -41,7 +41,7 @@ class Message {
         this.command = command;
         this.username = username;
         this.message = message;
-        this.discarderdCard = discarderdCard;
+        this.discardedCard = discardedCard;
     }
 
     /**
@@ -52,6 +52,8 @@ class Message {
         this.command = "";
         this.message = "";
         this.username = "username";
+        this.discardedCard = "";
+
     }
 
     /**
@@ -75,8 +77,6 @@ class Message {
         root.appendChild(serializeMessage(d));
         root.appendChild(serializeIsUno(d));
         root.appendChild(serializeDiscardedCard(d));
-
-
 
         // aggiungo la root al documento
         d.appendChild(root);
@@ -109,7 +109,7 @@ class Message {
      */
     public Node serializeDiscardedCard(Document d) {
         Node discardedCard = d.createElement("discardedCard");
-        discardedCard.setTextContent(this.isUno.toString());
+        discardedCard.setTextContent(this.discardedCard);
         return discardedCard;
     }
     /**

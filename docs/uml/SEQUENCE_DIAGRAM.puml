@@ -1,0 +1,22 @@
+@startuml SEQUENCE_DIAGRAM
+skinparam sequenceMessageAlign center
+
+participant Giocatore
+participant Sistema
+participant Mazzo
+
+
+activate Giocatore
+Giocatore->Sistema: Inizia Partita
+Sistema->Mazzo: Mescola Carte
+Sistema->Giocatore: Distribuisci Carte
+loop Giocare Turni
+    Giocatore->Sistema: Gioca Carta
+    Sistema->Sistema: Valida Mossa
+    Sistema->Sistema: Aggiorna Stato Partita
+    Sistema->Giocatore: Notifica Risultato Mossa
+end
+Sistema->Sistema: Concludi Partita
+Sistema->Giocatore: Notifica Vittoria o Sconfitta
+deactivate Giocatore
+@enduml

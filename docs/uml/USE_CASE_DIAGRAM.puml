@@ -1,0 +1,15 @@
+@startuml USE_CASE_DIAGRAM
+
+:Giocatore: --> (Inizia Partita)
+:Giocatore: --> (Gioca Carta)
+:Giocatore: --> (Pesca Carta)
+:Giocatore: --> (Passa Turno)
+:Giocatore: --> (UNO)
+:Giocatore: --> (Vittoria)
+
+(UNO) <-- :Sistema: : Notifica
+(Gioca Carta) <-- :Sistema: : Valida
+(Pesca Carta) <-- :Sistema: : Distribuisci
+(Vittoria) <-- :Sistema: : Concludi Partita
+
+@enduml

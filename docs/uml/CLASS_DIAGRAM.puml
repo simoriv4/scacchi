@@ -1,0 +1,46 @@
+@startuml CLASS_DIAGRAM
+
+class Carta {
+    -colore: Colore
+    -valore: Valore
+    +Carta(colore: Colore, valore: Valore)
+}
+
+class Giocatore {
+    -mano: List<Carta>
+    +prendiCarta(carta: Carta)
+    +giocaCarta(carta: Carta)
+    +passaTurno()
+}
+
+class Mazzo {
+    -carte: List<Carta>
+    +mescola()
+    +pescaCarta(): Carta
+}
+
+enum Colore {
+    ROSSO, GIALLO, VERDE, BLU
+}
+
+enum Valore {
+    ZERO, UNO, DUE, TRE, QUATTRO, CINQUE, SEI, SETTE, OTTO, NOVE, SKIP, REVERSE, DUE_PIU
+}
+
+class Partita {
+    -giocatori: List<Giocatore>
+    -mazzo: Mazzo
+    -cartaInCima: Carta
+    +inizializzaPartita(numeroGiocatori: int)
+    +iniziaPartita()
+    +finePartita()
+    +gestisciTurno(giocatore: Giocatore)
+}
+
+Giocatore -- Carta : contiene
+Mazzo -- Carta : contiene
+Partita -- Giocatore : contiene
+Partita -- Mazzo : contiene
+Partita -- Carta : contiene
+
+@enduml

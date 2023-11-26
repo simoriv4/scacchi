@@ -36,12 +36,13 @@ class Message {
      * @param message
      * @param discardedCard
      */
-    public Message(Boolean isUno,String command, String username, String message, String discardedCard) {
+    public Message(Boolean isUno,String command, String username, String message, String discardedCard, String numberCardsRivals) {
         this.isUno = isUno;
         this.command = command;
         this.username = username;
         this.message = message;
         this.discardedCard = discardedCard;
+        this.numberCardsRivals = numberCardsRivals;
     }
 
     /**
@@ -53,7 +54,7 @@ class Message {
         this.message = "";
         this.username = "username";
         this.discardedCard = "";
-
+        this.numberCardsRivals ="";
     }
 
     /**

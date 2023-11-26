@@ -16,7 +16,7 @@ public class MyTimerTask extends TimerTask {
     @Override
     public void run() {
         // inizializzo il messaggio
-        this.sgt.message = new Message(false, StartGameThread.CONNECTION_ERROR, "","Tempo di attesa eccessivo.", "");
+        this.sgt.message = new Message(false, StartGameThread.CONNECTION_ERROR, "","Tempo di attesa eccessivo.", " ", " ");
         try {
             this.sgt.c.sendMessage(this.sgt.message);
             // elimino l'utente che avevo aggiunto alla lista di utenti nella classe game

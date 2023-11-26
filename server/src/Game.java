@@ -69,7 +69,7 @@ public class Game extends Constants {
                     // mando messaggio di errore--> esiste già
                     // inizializzo l'oggetto messaggio
                     this.message = new Message(false, ERROR_USERNAME, "", "Username non disponibile",
-                            " ");
+                            " ", " ");
                     // invio messaggio di risposta
                     communication.sendMessage(this.message);
                 }
@@ -91,7 +91,7 @@ public class Game extends Constants {
         // imposto il turno del primo client--> poi verrà gestito nel case SKIP
         // invio il messaggio
         this.message = new Message(this.users.users.get(0).isUno, CORRECT, this.users.users.get(0).userName,
-                "E' il tuo turno", " ");
+                "E' il tuo turno", " ", " ");
         // cambio la socket a cui comunicare
         Communication communication = new Communication(this.users.users.get(0).socket);
         communication.sendMessage(this.message);
@@ -131,9 +131,9 @@ public class Game extends Constants {
                         // User u = this.users.findUserByUsername(this.message.username);
                         if (pos_user != -1)
                             this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT,
-                                    this.users.users.get(pos_user).userName, "Rimozione dalla partita", " ");
+                                    this.users.users.get(pos_user).userName, "Rimozione dalla partita", " ", " ");
                         else
-                            this.message = new Message(false, ERROR_EXIT, "", "Errore rimozione dalla partita", " ");
+                            this.message = new Message(false, ERROR_EXIT, "", "Errore rimozione dalla partita", " ", " ");
 
                         communication.sendMessage(this.message);
                         break;
@@ -144,7 +144,7 @@ public class Game extends Constants {
                         // controllo se l'utente è a una carta
                         if (this.users.users.get(pos_user).cards.getSizeDeck() == 1) {
                             this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT,
-                                    this.users.users.get(pos_user).userName, "Complimenti! Sei a una carta", " ");
+                                    this.users.users.get(pos_user).userName, "Complimenti! Sei a una carta", " ", " ");
                         } else {
                             // l'utente pesca due carte
                             drawCard(this.users.users.get(pos_user));
@@ -154,7 +154,7 @@ public class Game extends Constants {
                             String serialized_deck = this.users.users.get(pos_user).cards.serializeDeck();
                             // inizializzo il messaggio
                             this.message = new Message(this.users.users.get(pos_user).isUno, ERROR_UNO,
-                                    this.users.users.get(pos_user).userName, serialized_deck, " ");
+                                    this.users.users.get(pos_user).userName, serialized_deck, " ", " ");
                         }
 
                         // invio il messaggio
@@ -177,28 +177,33 @@ public class Game extends Constants {
                                 // mado il messaggio agli altri che hanno perso
                                 this.message = new Message(this.users.users.get(pos_user).isUno, LOSE,
                                         this.users.users.get(pos_user).userName,
-                                        "Hai perso." + this.users.users.get(pos_user).userName + " ha vinto.", " ");
+                                        "Hai perso." + this.users.users.get(pos_user).userName + " ha vinto.", " ", " ");
                                 this.users.sendToAllClient(this.message);
                                 this.message = new Message(this.users.users.get(pos_user).isUno, WINNER,
                                         this.users.users.get(pos_user).userName, "Complimenti! Hai vinto",
-                                        cardPlayed.serializeToString());
+                                        cardPlayed.serializeToString(), " ");
                             } else {
                                 // invio a tutti i client la carta scartata
                                 Deck<Card> tmp = new Deck<>();
                                 tmp.addCard(cardPlayed);
+                                // salvo qunte carte hanno i client e le invio
+                                for(User u: this.users.users)
+                                {
+                                    // SALVARSI USERNAME E N. CARTE IN UNA LISTA
+                                }
                                 this.message = new Message(this.users.users.get(pos_user).isUno, DISCARDED_CARD,
-                                        this.users.users.get(pos_user).userName, "", tmp.serializeDeck());
+                                        this.users.users.get(pos_user).userName, "", tmp.serializeDeck(), " ");
                                 this.users.sendToAllClient(this.message);
 
                                 // serializzo il mazzo dell'utente per passarglielo nel messaggio
                                 String serialized_deck = this.users.users.get(pos_user).cards.serializeDeck();
 
                                 // inizializzo il messaggio
-                                this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT, this.users.users.get(pos_user).userName, serialized_deck, tmp.serializeDeck());
+                                this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT, this.users.users.get(pos_user).userName, serialized_deck, tmp.serializeDeck(), " ");
                             }
                         } else {
                             this.message = new Message(this.users.users.get(pos_user).isUno, ERROR_CARD_PALYED, "",
-                                    "Carta giocata in modo errato", " ");
+                                    "Carta giocata in modo errato", " ", " ");
                         }
 
                         // invio il messaggio
@@ -217,14 +222,14 @@ public class Game extends Constants {
                         String serialized_deck4 = this.users.users.get(pos_user).cards.serializeDeck();
                         // inizializzo il messaggio
                         this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT,
-                                this.users.users.get(pos_user).userName, serialized_deck4, " ");
+                                this.users.users.get(pos_user).userName, serialized_deck4, " ", " ");
                         // invio le carte all'utente
                         communication.sendMessage(this.message);
                         // invio a tutti gli altri utenti il numero di carte modificato di questo utente
                         // e il suo username
                         this.message = new Message(this.users.users.get(pos_user).isUno, DRAW_USER,
                                 this.users.users.get(pos_user).userName,
-                                String.valueOf(this.users.users.get(pos_user).cards.deck.size()), " ");
+                                String.valueOf(this.users.users.get(pos_user).cards.deck.size()), " ", " ");
                         this.users.sendToAllClient(this.message);
                         break;
                     case INIT_DECK:
@@ -238,7 +243,7 @@ public class Game extends Constants {
                         String serialized_deck = this.users.users.get(pos_user).cards.serializeDeck();
                         // inizializzo il messaggio
                         this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT,
-                                this.users.users.get(pos_user).userName, serialized_deck, " ");
+                                this.users.users.get(pos_user).userName, serialized_deck, " ", " ");
                         communication.sendMessage(this.message);
                         this.users.users.get(pos_user).round = false;
                         break;
@@ -249,7 +254,7 @@ public class Game extends Constants {
                         // invio le carte all'utente
                         String serialized_deck2 = this.users.users.get(pos_user).cards.serializeDeck();
                         this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT,
-                                this.users.users.get(pos_user).userName, serialized_deck2, " ");
+                                this.users.users.get(pos_user).userName, serialized_deck2, " ", " ");
                         communication.sendMessage(this.message);
                         break;
                     case SORT_BY_NUMBER:
@@ -259,7 +264,7 @@ public class Game extends Constants {
                         // invio le carte all'utente
                         String serialized_deck3 = this.users.users.get(pos_user).cards.serializeDeck();
                         this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT,
-                                this.users.users.get(pos_user).userName, serialized_deck3, " ");
+                                this.users.users.get(pos_user).userName, serialized_deck3, " ", " ");
                         communication.sendMessage(this.message);
                         break;
                 }
@@ -282,7 +287,7 @@ public class Game extends Constants {
         User user = users.getProxUser(this.users.users.get(pos_user));
 
         // invio il messaggio
-        this.message = new Message(user.isUno, CORRECT, user.userName, "E' il tuo turno", " ");
+        this.message = new Message(user.isUno, CORRECT, user.userName, "E' il tuo turno", " ", " ");
         // cambio la socket a cui comunicare
         Communication communication = new Communication(user.socket);
         communication.sendMessage(this.message);

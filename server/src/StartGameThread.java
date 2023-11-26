@@ -39,7 +39,7 @@ public class StartGameThread extends Thread {
             // prima controllo che la lunghezza di users sia > 0
             // se no riprendo i 30 s
             // se il contatore supera il 2 invio messaggio di errore di connessione
-            this.message = new Message(user.isUno, CORRECT, user.userName, "Username disponibile", " ");
+            this.message = new Message(user.isUno, CORRECT, user.userName, "Username disponibile", " ", " ");
 
             // creo un timer per contare il tempo massimo di attesa
             Timer timer = new Timer();
@@ -86,7 +86,7 @@ public class StartGameThread extends Thread {
                 // inizializzo il messaggio
                 // passo anche la carta scartata
                 this.message = new Message(this.game.users.users.get(pos_user).isUno, CORRECT,
-                        this.game.users.users.get(pos_user).userName, serialized_deck, discarded_card_deck_serialized);
+                        this.game.users.users.get(pos_user).userName, serialized_deck, discarded_card_deck_serialized, " ");
                 this.c.sendMessage(this.message);
                 this.game.users.users.get(pos_user).round = false;
             }

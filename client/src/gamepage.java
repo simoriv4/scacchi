@@ -338,7 +338,7 @@ public class gamepage extends JFrame implements Constants {
 
                                 break;
                             case DRAW_USER:
-
+                                
                                 break;
 
                         }

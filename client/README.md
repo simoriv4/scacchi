@@ -49,3 +49,6 @@ Contiene tutte le classi del progetto lato client
 - Server.java: è la classe che gestisce il server. Prende le informazioni del server dal file xml "configServer.xml".
 
 - User.java: è la classe che gestisce l'utente del gioco.
+
+## FILE
+- configServer.xml: contiene le informazioni (indirizzo IP e porta) del server per la connessione tramite protocollo TCP

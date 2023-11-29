@@ -1,6 +1,9 @@
 # Client del progetto UNO-GAME di Riva, Gobbetto e Monti
 
-## CARTELLE LATO CLIENT
+## FILE
+- configServer.xml: contiene le informazioni (indirizzo IP e porta) del server per la connessione tramite protocollo TCP
+
+## CARTELLE
 
 ### AUDIO
 Contiene i file audio per far sentire la musica in sottofondo.
@@ -14,7 +17,7 @@ Contiene tutte le classi del progetto lato client
 #### CLASSI LATO CLIENT
 - App.java: contiene il main che mette in esecuzione il client.
 
-- Card.java: è un'interfaccia che viene ereditata dai diversi tipi di carta del gioco. Contiene tutte le funzioni comuni a tutti i tipi di carta.ù
+- Card.java: è un'interfaccia che viene ereditata dai diversi tipi di carta del gioco. Contiene tutte le funzioni comuni a tutti i tipi di carta.
 
 - CardAdd2Cards.java: è un tipo di carta normale, ha colore ma non numero. Una volta giocata fa aggiungere due carte al giocatore successivo.
 
@@ -49,6 +52,3 @@ Contiene tutte le classi del progetto lato client
 - Server.java: è la classe che gestisce il server. Prende le informazioni del server dal file xml "configServer.xml".
 
 - User.java: è la classe che gestisce l'utente del gioco.
-
-## FILE
-- configServer.xml: contiene le informazioni (indirizzo IP e porta) del server per la connessione tramite protocollo TCP

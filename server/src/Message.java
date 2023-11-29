@@ -78,6 +78,8 @@ class Message {
         root.appendChild(serializeMessage(d));
         root.appendChild(serializeIsUno(d));
         root.appendChild(serializeDiscardedCard(d));
+        root.appendChild(serializeNumberCardsUsers(d));
+
 
         // aggiungo la root al documento
         d.appendChild(root);
@@ -145,6 +147,16 @@ class Message {
         return command;
     }
 
+    /**
+     * creo il nodo da aggiungere alla root
+     * @param d
+     * @return il nodo creato
+     */
+    public Node serializeNumberCardsUsers(Document d) {
+        Node numberCardsRivals = d.createElement("cardsRivals");
+        numberCardsRivals.setTextContent(this.numberCardsRivals);
+        return numberCardsRivals;
+    }
     /**
      * funzione che da una stringa xml estrae i le informazioni degli attributi del messaggio
      * @param message

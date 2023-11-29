@@ -98,7 +98,10 @@ public class gamepage extends JFrame implements Constants {
         this.communication.sendMessage(this.message);
         // attendo la risposta
         String reply = this.communication.listening();
-        overlayPanel = this.initDeck(overlayPanel, reply);
+
+        // inizializzo i mazzi di carte degli utenti --> compreso quello di questo
+        // client
+        this.initDeck(reply);
 
         // imposto la grafica del bottone
         this.initSkipButton();
@@ -138,10 +141,12 @@ public class gamepage extends JFrame implements Constants {
         // imposta il frame a schermo intero
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
+        // metto in ascolto il client se non è il suo turno
+        this.listening();
 
     }
 
-    public JPanel initDeck(JPanel overlayPanel, String reply)
+    public void initDeck(String reply)
             throws IOException, ParserConfigurationException, TransformerException, SAXException {
 
         // unserializzo il messaggio
@@ -159,17 +164,17 @@ public class gamepage extends JFrame implements Constants {
             // aggiorno la x
             x += (WIDTH_CARDS + 10);
             // aggiungi la carta al panel
-            overlayPanel.add(card);
+            this.overlayPanel.add(card);
         }
         // posiziono la carta scartata
         Deck<Card> tmp = new Deck<>();
-        tmp.unserializeDeck(this.message.discarderdCard);
+        tmp.unserializeDeck(this.message.discardedCard);
 
         discarded_Label = this.getImageCard(tmp.deck.get(0), x, y, 0);
-        discarded_Label.setBounds((int) (screenWidth * 0.5), (int) (screenHeight * 0.5), WIDTH_CARDS, HEIGHT_CARDS);
-        overlayPanel.add(discarded_Label);
-        return overlayPanel;
-
+        discarded_Label.setBounds((int) (screenWidth * 0.5), (int) (screenHeight * 0.4), WIDTH_CARDS, HEIGHT_CARDS);
+        this.overlayPanel.add(discarded_Label);
+        // imposto le carte degli altri giocatori
+        this.initUsersDecks();
     }
 
     /**
@@ -288,69 +293,248 @@ public class gamepage extends JFrame implements Constants {
                 // aspetto la risposta
                 String reply = this.communication.listening();
                 SwingUtilities.invokeLater(() -> {
-                // unserializzo il messaggio
-                try {
-                    this.message.InitMessageFromStringXML(reply);
-                } catch (ParserConfigurationException | SAXException | IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-                // controllo il codice di errore
-                if (this.message.command != CORRECT)
-                    // messaggio di errore
-                    JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
-                else {
-                    // rimane in ascolto fino a che non è il suo turno
-                    while (!user.round) {
-                        try {
-
-                        // leggo il messaggio del server
-                        String server_message = this.communication.listening();
-                        // unserializzo il messaggio
-                            this.message.InitMessageFromStringXML(server_message);
-                        } catch (ParserConfigurationException | SAXException | IOException e1) {
-                            // TODO Auto-generated catch block
-                            e1.printStackTrace();
-                        }
-                        // se è stata passata una carta scartata
-                        if (!this.message.discarderdCard.isEmpty() || this.message.command.equals(DISCARDED_CARD)) {
-                            int x = (int) (screenWidth * 0.5);
-                            int y = (int) (screenHeight * 0.4);
-                            // scorro le carte e le aggiungo all'overlay panel
-                            for (int i = 0; i < this.user.deck.getSizeDeck(); i++) {
-                                try {
-                                MyLabel card;
-                                        Card c = this.user.deck.deck.get(i);
-
-                                    card = this.getImageCard(c, x, y, i);
-                                
-                                    this.overlayPanel.add(card);
-                                    remove(this.overlayPanel);
-                                    add(this.overlayPanel);
-                                } catch (IOException e1) {
-                                    // TODO Auto-generated catch block
-                                    e1.printStackTrace();
-                                }
-                            }
-                        }
-                        switch (this.message.command) {
-                            case LOSE:
-
-                                break;
-                            case DRAW_USER:
-                                
-                                break;
-
-                        }
+                    // unserializzo il messaggio
+                    try {
+                        this.message.InitMessageFromStringXML(reply);
+                    } catch (ParserConfigurationException | SAXException | IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
                     }
-                }
-            });
+                    // controllo il codice di errore
+                    if (this.message.command != CORRECT)
+                        // messaggio di errore
+                        JOptionPane.showMessageDialog(this, message.message, "Errore", JOptionPane.ERROR_MESSAGE);
+                    else {
+                        this.listening();
+                    }
+                });
 
             } catch (IOException | ParserConfigurationException | TransformerException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });
+    }
+
+    public void listening() {
+        MyLabel l = new MyLabel();
+        
+        // rimane in ascolto fino a che non è il suo turno
+        while (!user.round) {
+            try {
+
+                // leggo il messaggio del server
+                String server_message = this.communication.listening();
+                // unserializzo il messaggio
+                this.message.InitMessageFromStringXML(server_message);
+            } catch (ParserConfigurationException | SAXException | IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            // se è stata passata una carta scartata
+            if (!this.message.discardedCard.isEmpty() || this.message.command.equals(DISCARDED_CARD)) {
+                int x = (int) (screenWidth * 0.5);
+                int y = (int) (screenHeight * 0.4);
+                // scorro le carte e le aggiungo all'overlay panel
+                for (int i = 0; i < this.user.deck.getSizeDeck(); i++) {
+                    try {
+                        MyLabel card;
+                        Card c = this.user.deck.deck.get(i);
+
+                        card = this.getImageCard(c, x, y, i);
+
+                        remove(this.overlayPanel);
+                        this.overlayPanel.add(card);
+                        add(this.overlayPanel);
+                    } catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                }
+                // distribuisco le carte degli avversari
+            }
+            switch (this.message.command) {
+                case LOSE:
+                    // E' TERMINATO IL GIOCO
+                    JOptionPane.showMessageDialog(this, message.message, "",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                case DRAW_USER:
+                    // rimuovo il vecchio panel per poi sostituirlo con quello corretto
+                    remove(this.overlayPanel);
+                    this.initUsersDecks();
+                    add(this.overlayPanel);
+                    break;
+            }
+        }
+    }
+
+    /**
+     * metodo che inizializza tutti i deck degli altri client che stanno giocando-->
+     * visualizza il retro delle carte
+     */
+    public void initUsersDecks() {
+        String tmp = this.message.numberCardsRivals;
+        // ottengo un vettore di stringhe
+        String[] vett = tmp.split("||");
+
+        // posizione le carte degli altri client
+        switch (vett.length) {
+            case 2:
+                try {
+                    int x = (int) (screenWidth * 0.4);
+                    int y = (int) (screenHeight * 0.2);
+                    String[] num_cards = vett[0].split(";");
+
+                    // controllo di prendere solo l'altro utente e non il corrente
+                    if (num_cards[0].equals(this.user.userName))
+                        num_cards = vett[1].split(";");
+
+                    for (int i = 0; i < Integer.parseInt(num_cards[1]); i++) {
+                        MyLabel card = new MyLabel();
+                        card = this.initImageLabel(card, COVER_CARD_PATH, WIDTH_CARDS,
+                                HEIGHT_CARDS);
+                        card.setBounds(x, y, WIDTH_CARDS, HEIGHT_CARDS);
+                        // aggiorno la x
+                        x += (WIDTH_CARDS + 10);
+                        // aggiungi la carta al panel
+                        overlayPanel.add(card);
+                    }
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+
+                break;
+            case 3:
+                try {
+                    int x = (int) (screenWidth * 0.8);
+                    int y = (int) (screenHeight * 0.2);
+
+                    // controllo di prendere solo l'altro utente e non il corrente
+                    int count = 0; // contatore per gestire quali mazzi sono in verticale e quali in orizzontale
+                    // scorro il vettore degli utenti
+                    for (int i = 0; i < vett.length; i++) {
+                        // ottengo un vettore contenente username e numero carte del client
+                        String[] num_cards = vett[i].split(";");
+                        if (!num_cards[i].equals(this.user.userName)) {
+                            String path = "";
+                            // imposto il path in base alla posizione
+                            switch (count) {
+                                case 0: // posizione a destra del frame
+                                    x = (int) (screenWidth * 0.8);
+                                    y = (int) (screenHeight * 0.2);
+                                    path = COVER_CARD_RIGHT_PATH;
+                                    for (int j = 0; j < Integer.parseInt(num_cards[1]); j++) {
+                                        MyLabel card = new MyLabel();
+                                        card = this.initImageLabel(card, path, WIDTH_CARDS,
+                                                HEIGHT_CARDS);
+                                        card.setBounds(x, y, WIDTH_CARDS, HEIGHT_CARDS);
+                                        // aggiorno la x
+                                        y += (WIDTH_CARDS + 10);
+                                        // aggiungi la carta al panel
+                                        overlayPanel.add(card);
+                                    }
+                                    break;
+                                case 1: // posizione a sinistra del frame
+                                    path = COVER_CARD_LEFT_PATH;
+                                    x = (int) (screenWidth * 0.2);
+                                    y = (int) (screenHeight * 0.2);
+                                    for (int j = 0; j < Integer.parseInt(num_cards[1]); j++) {
+                                        MyLabel card = new MyLabel();
+                                        card = this.initImageLabel(card, path, WIDTH_CARDS,
+                                                HEIGHT_CARDS);
+                                        card.setBounds(x, y, WIDTH_CARDS, HEIGHT_CARDS);
+                                        // aggiorno la x
+                                        y += (WIDTH_CARDS + 10);
+                                        // aggiungi la carta al panel
+                                        overlayPanel.add(card);
+                                    }
+                                    break;
+                            }
+                            count++;
+                        }
+                    }
+                    // aggiungo il nuovo panel al frame
+                    add(overlayPanel);
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                break;
+            case 4:
+                try {
+                    int x = (int) (screenWidth * 0.8);
+                    int y = (int) (screenHeight * 0.2);
+
+                    // controllo di prendere solo l'altro utente e non il corrente
+                    int count = 0; // contatore per gestire quali mazzi sono in verticale e quali in orizzontale
+                    // scorro il vettore degli utenti
+                    for (int i = 0; i < vett.length; i++) {
+                        // ottengo un vettore contenente username e numero carte del client
+                        String[] num_cards = vett[i].split(";");
+                        if (!num_cards[i].equals(this.user.userName)) {
+                            String path = "";
+                            // imposto il path in base alla posizione
+                            switch (count) {
+                                case 0: // posizione a destra del frame
+                                    x = (int) (screenWidth * 0.8);
+                                    y = (int) (screenHeight * 0.2);
+                                    path = COVER_CARD_RIGHT_PATH;
+                                    for (int j = 0; j < Integer.parseInt(num_cards[1]); j++) {
+                                        MyLabel card = new MyLabel();
+                                        card = this.initImageLabel(card, path, WIDTH_CARDS,
+                                                HEIGHT_CARDS);
+                                        card.setBounds(x, y, WIDTH_CARDS, HEIGHT_CARDS);
+                                        // aggiorno la x
+                                        y += (WIDTH_CARDS + 10);
+                                        // aggiungi la carta al panel
+                                        overlayPanel.add(card);
+                                    }
+                                    break;
+                                case 1: // posizione al centro in alto del frame
+                                    x = (int) (screenWidth * 0.4);
+                                    y = (int) (screenHeight * 0.2);
+                                    path = COVER_CARD_PATH;
+                                    for (int j = 0; j < Integer.parseInt(num_cards[1]); j++) {
+                                        MyLabel card = new MyLabel();
+                                        card = this.initImageLabel(card, path, WIDTH_CARDS,
+                                                HEIGHT_CARDS);
+                                        card.setBounds(x, y, WIDTH_CARDS, HEIGHT_CARDS);
+                                        // aggiorno la x
+                                        x += (WIDTH_CARDS + 10);
+                                        // aggiungi la carta al panel
+                                        overlayPanel.add(card);
+                                    }
+                                    break;
+                                case 2: // posizione a sinistra del frame
+                                    path = COVER_CARD_LEFT_PATH;
+                                    x = (int) (screenWidth * 0.2);
+                                    y = (int) (screenHeight * 0.2);
+                                    for (int j = 0; j < Integer.parseInt(num_cards[1]); j++) {
+                                        MyLabel card = new MyLabel();
+                                        card = this.initImageLabel(card, path, WIDTH_CARDS,
+                                                HEIGHT_CARDS);
+                                        card.setBounds(x, y, WIDTH_CARDS, HEIGHT_CARDS);
+                                        // aggiorno la x
+                                        y += (WIDTH_CARDS + 10);
+                                        // aggiungi la carta al panel
+                                        overlayPanel.add(card);
+                                    }
+                                    break;
+                            }
+                            count++;
+                        }
+                    }
+                    // // aggiungo il nuovo panel al frame
+                    // add(overlayPanel);
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                break;
+        }
+
     }
 
     public MyLabel getImageCard(Card c, int x, int y, int index) throws IOException {
@@ -420,9 +604,9 @@ public class gamepage extends JFrame implements Constants {
                 // unserializzo il messaggio
                 this.message.InitMessageFromStringXML(reply);
                 // controllo il codice di errore
-                if (this.message.command == CORRECT) {
-                    this.overlayPanel = initDeck(overlayPanel, reply);
+                if (this.message.command.equals(CORRECT)) {
                     remove(overlayPanel);
+                    initDeck(reply);
                     add(this.overlayPanel);
                 } else
                     // messaggio di errore
@@ -465,8 +649,8 @@ public class gamepage extends JFrame implements Constants {
                 this.message.InitMessageFromStringXML(reply);
                 // controllo il codice di errore
                 if (this.message.command.equals(CORRECT)) {
-                    this.overlayPanel = initDeck(overlayPanel, reply);
                     remove(overlayPanel);
+                    initDeck(reply);
                     add(this.overlayPanel);
                 } else
                     // messaggio di errore
@@ -506,9 +690,9 @@ public class gamepage extends JFrame implements Constants {
                 // unserializzo il messaggio
                 this.message.InitMessageFromStringXML(reply);
                 // controllo il codice di errore
-                if (this.message.command == CORRECT) {
-                    this.overlayPanel = initDeck(overlayPanel, reply);
+                if (this.message.command.equals(CORRECT)) {
                     remove(overlayPanel);
+                    initDeck(reply);
                     add(this.overlayPanel);
 
                     JOptionPane.showMessageDialog(this, "Non hai una sola carta!", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -545,7 +729,8 @@ public class gamepage extends JFrame implements Constants {
                 this.played_card = this.user.deck.deck.get(selected_card);
                 // controllo se sia stata giocata un add4cards o un changeColor--> faccio
                 // comparire uan selezione di colori
-                this.message = new Message(user.isUno, PLAY, user.userName, this.played_card.serializeToString(), "", "");
+                this.message = new Message(user.isUno, PLAY, user.userName, this.played_card.serializeToString(), "",
+                        "");
                 this.communication.sendMessage(message);
 
                 // aspetto la risposta
@@ -553,9 +738,9 @@ public class gamepage extends JFrame implements Constants {
                 // unserializzo il messaggio
                 this.message.InitMessageFromStringXML(reply);
                 // controllo il codice di errore
-                if (this.message.command == CORRECT) {
-                    this.overlayPanel = initDeck(overlayPanel, reply);
+                if (this.message.command.equals(CORRECT)) {
                     remove(overlayPanel);
+                    initDeck(reply);
                     add(this.overlayPanel);
                 } else
                     // messaggio di errore

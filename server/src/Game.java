@@ -202,14 +202,14 @@ public class Game extends Constants {
                                 }
 
                                 this.message = new Message(this.users.users.get(pos_user).isUno, DISCARDED_CARD,
-                                        this.users.users.get(pos_user).userName, str, tmp.serializeDeck(), " ");
+                                        this.users.users.get(pos_user).userName, str, tmp.serializeDeck(), str);
                                 this.users.sendToAllClient(this.message);
 
                                 // serializzo il mazzo dell'utente per passarglielo nel messaggio
                                 String serialized_deck = this.users.users.get(pos_user).cards.serializeDeck();
 
                                 // inizializzo il messaggio
-                                this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT, this.users.users.get(pos_user).userName, serialized_deck, tmp.serializeDeck(), " ");
+                                this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT, this.users.users.get(pos_user).userName, serialized_deck, tmp.serializeDeck(), str);
                             }
                         } 
                         else
@@ -232,6 +232,14 @@ public class Game extends Constants {
                             deck.repopulateDeck(discardedCards.deck);
                         }
                         String serialized_deck4 = this.users.users.get(pos_user).cards.serializeDeck();
+                        String str = "";
+
+                        //salvo quante carte hanno i client e le invio
+                        for(User u: this.users.users)
+                        {
+                            //inserisco nella stringa la stringa (username;numero_carte) per l'utente
+                            str += u.userName + ";" + u.cards.getSizeDeck() + "||";
+                        }
                         // inizializzo il messaggio
                         this.message = new Message(this.users.users.get(pos_user).isUno, CORRECT,
                                 this.users.users.get(pos_user).userName, serialized_deck4, " ", " ");
@@ -241,7 +249,7 @@ public class Game extends Constants {
                         // e il suo username
                         this.message = new Message(this.users.users.get(pos_user).isUno, DRAW_USER,
                                 this.users.users.get(pos_user).userName,
-                                String.valueOf(this.users.users.get(pos_user).cards.deck.size()), " ", " ");
+                                String.valueOf(this.users.users.get(pos_user).cards.deck.size()), " ", str);
                         this.users.sendToAllClient(this.message);
                         break;
                     case INIT_DECK:

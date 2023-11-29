@@ -2,6 +2,9 @@ public interface Constants {
 
     // COSTANTI
     public final String COVER_CARD_PATH = "src\\assets\\card-back.png";
+    public final String COVER_CARD_LEFT_PATH = "src\\assets\\card-back-left.png";
+    public final String COVER_CARD_RIGHT_PATH = "src\\assets\\card-back-right.png";
+
     public final String UNO_PATH = "src\\assets\\logo.png";
     public final String BACKGROUND_IMAGE_PATH = "src\\assets\\backgrounds\\bgG.png";
     public final String MUTE_PATH = "src\\assets\\mute.png";

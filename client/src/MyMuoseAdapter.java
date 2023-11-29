@@ -36,8 +36,8 @@ class MyMuoseAdapter extends MouseAdapter {
                 // aspetto la risposta
                 String reply = this.gp.communication.listening();
                 // creo il panel che conterrà il nuovo mazzo di carte
-                this.gp.overlayPanel = this.gp.initDeck(this.gp.overlayPanel, reply);
                 this.gp.remove(this.gp.overlayPanel);
+                this.gp.initDeck(reply);
                 // aggiungo il nuovo deckPanel
                 this.gp.add(this.gp.overlayPanel);
             } catch (IOException | ParserConfigurationException | TransformerException | SAXException e1) {

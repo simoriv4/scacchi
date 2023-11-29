@@ -9,7 +9,7 @@ Contiene il client in Java, con parte grafica sviluppata con Java Swing.
 Contiene la documentazione del progetto con diagrammi uml e slides power point.
 
 ### OUT
-Contiene le foto dei diagrammi uml presente in formato di codice nella cartella docs.
+Contiene le foto dei diagrammi uml presente in formato di codice nella cartella [Link](https://github.com/simoriv4/uno-game/tree/main/docs "docs").
 
 ### SERVER
 Contiene il server in Java.

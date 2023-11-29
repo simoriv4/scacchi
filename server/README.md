@@ -5,7 +5,7 @@
 ### SRC
 Contiene tutte le classi del progetto lato client
 
-#### CLASSI LATO CLIENT
+#### CLASSI
 - App.java: contiene il main che mette in esecuzione il server.
 
 - Card.java: è un'interfaccia che viene ereditata dai diversi tipi di carta del gioco. Contiene tutte le funzioni comuni a tutti i tipi di carta.

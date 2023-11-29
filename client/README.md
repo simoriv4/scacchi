@@ -14,7 +14,7 @@ Contiene tutte le immagini (carte, sfondo, ecc...) usate e visualizzate nel gioc
 ### SRC
 Contiene tutte le classi del progetto lato client
 
-#### CLASSI LATO CLIENT
+#### CLASSI
 - App.java: contiene il main che mette in esecuzione il client.
 
 - Card.java: è un'interfaccia che viene ereditata dai diversi tipi di carta del gioco. Contiene tutte le funzioni comuni a tutti i tipi di carta.

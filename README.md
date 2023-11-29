@@ -1,8 +1,19 @@
 # Repository del progetto UNO-GAME di Riva, Gobbetto e Monti
 
-## Struttura directory
-- client : contiene il client in Java, con parte grafica sviluppata con Java Swing
-- server : contiene il server in Java
+## CARTELLE
+
+### CLIENT
+Contiene il client in Java, con parte grafica sviluppata con Java Swing.
+
+### DOCS
+Contiene la documentazione del progetto con diagrammi uml e slides power point.
+
+### OUT
+Contiene le foto dei diagrammi uml presente in formato di codice nella cartella docs.
+
+### SERVER
+Contiene il server in Java.
+
 
 ## Istruzioni
 

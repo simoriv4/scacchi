@@ -1,7 +1,17 @@
 # Client del progetto UNO-GAME di Riva, Gobbetto e Monti
 
+## CARTELLE LATO CLIENT
 
-## CLASSI LATO CLIENT
+### AUDIO
+Contiene i file audio per far sentire la musica in sottofondo.
+
+### IMG
+Contiene tutte le immagini (carte, sfondo, ecc...) usate e visualizzate nel gioco.
+
+### SRC
+Contiene tutte le classi del progetto lato client
+
+#### CLASSI LATO CLIENT
 - App.java: contiene il main che mette in esecuzione il client.
 
 - Card.java: è un'interfaccia che viene ereditata dai diversi tipi di carta del gioco. Contiene tutte le funzioni comuni a tutti i tipi di carta.ù
